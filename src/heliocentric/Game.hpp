@@ -12,6 +12,8 @@
 
 #include "Window.hpp"
 
+class InputListener;
+
 /**
  * The central class of Heliocentric. Provides a game loop, delegates user input
  * and manages a window.
@@ -19,6 +21,7 @@
 class Game {
 private:
 	Window window;
+	InputListener* inputListener;
 	double prevTime, prevCalcTime;
 	int fps;
 public:
@@ -26,6 +29,7 @@ public:
 	virtual ~Game();
 	// Game loop
 	void run();
+	void exit();
 	virtual void init();
 	virtual void update(double dt);
 	virtual void render();
@@ -33,7 +37,10 @@ public:
 	virtual bool shouldStop();
 	// Getters and setters
 	Window& getWindow();
+	InputListener* getInputListener();
+	void setInputListener(InputListener* inputListener);
 private:
+	// Timing
 	double getTime();
 	double getDelta();
 	void updateFPS();

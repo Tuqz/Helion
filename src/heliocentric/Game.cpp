@@ -10,11 +10,25 @@
 
 #include "Game.hpp"
 #include "Window.hpp"
+#include "InputListener.hpp"
 
 using namespace std;
 
 void glfwErrorCallback(int error, const char* description) {
 	cerr << "Error: " /*<< error << " - "*/ << description << endl;
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	if (game->getInputListener()) {
+		if (action == GLFW_PRESS) {
+			game->getInputListener()->keyPressed(key, scancode, mods);
+		} else if (action == GLFW_RELEASE) {
+			game->getInputListener()->keyReleased(key, scancode, mods);
+		} else {
+			game->getInputListener()->keyRepeat(key, scancode, mods);
+		}
+	}
 }
 
 Game::Game() {
@@ -24,12 +38,16 @@ Game::Game() {
 		cerr << "Unable to initialize GLFW..." << endl;
 		throw ERROR_GLFW_INIT;
 	}
-	
+
 	// Create a window
 	if (!window.create()) {
 		cerr << "Unable to create GLFW window..." << endl;
 		throw ERROR_GLFW_INIT;
 	}
+
+	// Set up input handling
+	glfwSetWindowUserPointer(window.getWindow(), this);
+	glfwSetKeyCallback(window.getWindow(), keyCallback);
 }
 
 Game::~Game() {
@@ -40,21 +58,23 @@ void Game::run() {
 	// Initialize FPS counter
 	getDelta();
 	prevCalcTime = getTime();
-	
+
 	// Allow user to initialize the game
 	init();
-	
+
+	// Show the window
+	window.show();
+
 	while (!glfwWindowShouldClose(window.getWindow())) {
-//	while (!shouldStop()) {
+		//	while (!shouldStop()) {
 		// Handle window resizing
 		//resized();
 
 		// Update the game state
-		glfwPollEvents();
 		update(getDelta());
-//		getMousePosition(&prev_x, &prev_y);
-//		scroll_dx = 0;
-//		scroll_dy = 0;
+		//		getMousePosition(&prev_x, &prev_y);
+		//		scroll_dx = 0;
+		//		scroll_dy = 0;
 
 		// Draw the next frame
 		render();
@@ -66,9 +86,13 @@ void Game::run() {
 		updateFPS();
 		glfwPollEvents();
 	}
-	
+
 	// Allow user to clean up
 	shutdown();
+}
+
+void Game::exit() {
+	window.close();
 }
 
 void Game::init() {
@@ -85,6 +109,18 @@ void Game::shutdown() {
 
 bool Game::shouldStop() {
 	return glfwWindowShouldClose(window.getWindow());
+}
+
+Window& Game::getWindow() {
+	return window;
+}
+
+InputListener* Game::getInputListener() {
+	return inputListener;
+}
+
+void Game::setInputListener(InputListener* inputListener) {
+	this->inputListener = inputListener;
 }
 
 double Game::getTime() {
@@ -106,8 +142,4 @@ void Game::updateFPS() {
 		prevCalcTime += 1;
 	}
 	fps++;
-}
-
-Window& Game::getWindow() {
-	return window;
 }

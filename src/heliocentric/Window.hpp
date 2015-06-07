@@ -22,7 +22,6 @@ public:
 	Window();
 	Window(const Window& orig);
 	virtual ~Window();
-//	void setWindow(GLFWwindow* window);
 	GLFWwindow* getWindow();
 	void setTitle(std::string title);
 	std::string getTitle();
@@ -30,6 +29,8 @@ public:
 	void getWindowSize(int& width, int& height);
 private:
 	bool create();
+	void show();
+	void close();
 };
 
 #endif	/* WINDOW_HPP */

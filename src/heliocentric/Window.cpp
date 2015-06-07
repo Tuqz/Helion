@@ -20,10 +20,6 @@ Window::Window(const Window& orig) {
 Window::~Window() {
 }
 
-//void Window::setWindow(GLFWwindow* window) {
-//	this->window = window;
-//}
-
 GLFWwindow* Window::getWindow() {
 	return window;
 }
@@ -48,7 +44,19 @@ void Window::getWindowSize(int& width, int& height) {
 	height = this->height;
 }
 
+void Window::show() {
+	glfwShowWindow(window);
+}
+
+void Window::close() {
+	glfwSetWindowShouldClose(window, true);
+}
+
 bool Window::create() {
+	
+	// Set window hints
+	glfwWindowHint(GLFW_VISIBLE, false);
+	glfwWindowHint(GLFW_RESIZABLE, false);
 	
 	// Create the window
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
