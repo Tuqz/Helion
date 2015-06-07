@@ -9,6 +9,8 @@
 #define	GAME_HPP
 
 #define ERROR_GLFW_INIT 1
+#define ERROR_GLFW_WINDOW 2
+#define ERROR_GLEW_INIT 3
 
 #include "Window.hpp"
 
@@ -21,7 +23,7 @@ class InputListener;
 class Game {
 private:
 	Window window;
-	InputListener* inputListener;
+	InputListener* inputListener = nullptr;
 	double prevTime, prevCalcTime;
 	int fps;
 public:

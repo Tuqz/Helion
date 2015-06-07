@@ -6,13 +6,13 @@
   - [x] Keyboard event handling
   - [ ] Keyboard polling
   - [ ] Mouse input handling
-- [ ] Initially window invisible
+- [x] Initially window invisible
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
   - [ ] Resizable toggle
 - [ ] 3D rendering tools:
-  - [ ] Game3D layer
+  - [x] Game3D layer
   - [ ] Camera
   - [ ] Shaders
   - [ ] Scene Graph

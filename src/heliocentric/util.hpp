@@ -9,6 +9,7 @@
 #define	UTIL_HPP
 
 void getCurrentResolution(int* width, int* height);
+bool glversion(int requiredMajor, int requiredMinor);
 
 #endif	/* UTIL_HPP */
 

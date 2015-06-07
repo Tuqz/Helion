@@ -5,6 +5,7 @@
  * Created on June 7, 2015, 11:56 AM
  */
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
@@ -42,9 +43,19 @@ Game::Game() {
 	// Create a window
 	if (!window.create()) {
 		cerr << "Unable to create GLFW window..." << endl;
-		throw ERROR_GLFW_INIT;
+		throw ERROR_GLFW_WINDOW;
+	}
+	
+	// Initialize glew for the current context
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		cerr << "Unable to initialize GLEW..." << endl;
+		throw ERROR_GLEW_INIT;
 	}
 
+	// Print OpenGL version
+	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
+	
 	// Set up input handling
 	glfwSetWindowUserPointer(window.getWindow(), this);
 	glfwSetKeyCallback(window.getWindow(), keyCallback);
@@ -65,9 +76,12 @@ void Game::run() {
 	// Show the window
 	window.show();
 
-	while (!glfwWindowShouldClose(window.getWindow())) {
-		//	while (!shouldStop()) {
+	// Enter the game loop
+	while (!shouldStop()) {
 		// Handle window resizing
+		int w,h;
+		window.getWindowSize(w, h);
+		glViewport(0, 0, (GLsizei) w, (GLsizei) h);
 		//resized();
 
 		// Update the game state

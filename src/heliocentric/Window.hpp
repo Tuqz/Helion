@@ -12,6 +12,9 @@
 
 struct GLFWwindow;
 
+/**
+ * A wrapper class for the GLFW window.
+ */
 class Window {
 	friend class Game;
 private:
