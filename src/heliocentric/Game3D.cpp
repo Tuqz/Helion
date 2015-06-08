@@ -19,20 +19,20 @@ Game3D::~Game3D() {
 
 void Game3D::init() {
 	// Enable face culling
-//    glEnable(GL_CULL_FACE);
-//    glCullFace(GL_BACK);
-//    glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     // Enable depth testing with clamping
-//    glEnable(GL_DEPTH_TEST);
-//    glDepthMask(true);
-//    glDepthFunc(GL_LEQUAL);
-//    glDepthRange(0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(true);
+    glDepthFunc(GL_LEQUAL);
+    glDepthRange(0.0f, 1.0f);
 
     // Enable depth clamping if available (OpenGL 3.2)
-//    if (glversion(3, 2)) {
-//        glEnable(GL_DEPTH_CLAMP);
-//    }
+    if (glversion(3, 2)) {
+        glEnable(GL_DEPTH_CLAMP);
+    }
 	
 	// Allow user to initialize the game
 	game.init();
@@ -47,12 +47,12 @@ void Game3D::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// Render the world
-//    glEnable(GL_DEPTH_TEST); // Making sure it is enabled
+    glEnable(GL_DEPTH_TEST); // Making sure it is enabled
 //    game.renderWorld(getCamera().getWorldToCameraMatrix());
     game.renderWorld(glm::mat4());
 	
 	// Render the HUD
-//    glDisable(GL_DEPTH_TEST); // Such that the HUD is rendered on top
+    glDisable(GL_DEPTH_TEST); // Such that the HUD is rendered on top
     game.renderHUD(glm::mat4());
 }
 

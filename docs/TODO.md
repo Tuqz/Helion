@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Move SConstruct file and build output to build directory
+- [ ] Move build output (and maybe SConstruct file) to build directory
 - [ ] Finish framework design
 - [ ] Input handling
   - [x] Keyboard event handling
@@ -10,9 +10,9 @@
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
-  - [ ] Resizable toggle
+  - [ ] resizable window
 - [ ] 3D rendering tools:
   - [x] Game3D layer
   - [ ] Camera
-  - [ ] Shaders
+  - [x] Shaders
   - [ ] Scene Graph
