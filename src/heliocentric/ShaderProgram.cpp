@@ -59,9 +59,10 @@ int createShader(int shaderType, string filename) {
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char log[logLength];
 		glGetShaderInfoLog(shader, logLength, &logLength, log);
-		cout << "Failure in compiling " << getName(shaderType) << " shader. "
-				<< "Error log:\n" << log << endl;
-		exit(1);
+		string msg = string("Failure in compiling ") 
+				+ getName(shaderType) + " shader. "	+ "Error log:\n" + log;
+		cerr << msg << endl;
+		throw ShaderException(msg);
 	}
 
 	// Return the shader upon success
@@ -80,7 +81,7 @@ ShaderProgram::ShaderProgram(string vertexShader, string geometryShader, string 
 		: ShaderProgram(vertexShader, geometryShader, fragmentShader, nullptr) {
 }
 
-ShaderProgram::ShaderProgram(string vertexShader, string geometryShader, 
+ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
 		string fragmentShader, vector<string>* attributes) {
 	// Create the shaders
 	int vs = createShader(GL_VERTEX_SHADER, vertexShader);
@@ -118,7 +119,9 @@ ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char log[logLength];
 		glGetProgramInfoLog(program, logLength, &logLength, log);
-		cout << "Failure in linking program. Error log:\n" << log << endl;
+		string msg = string("Failure in linking program. Error log:\n") + log;
+		cerr << msg << endl;
+		throw ShaderException(msg);
 	}
 
 	// Clean up
@@ -139,7 +142,6 @@ ShaderProgram::~ShaderProgram() {
 	glDeleteProgram(program);
 }
 
-
 GLuint ShaderProgram::getProgram() {
 	return program;
 }
@@ -150,4 +152,16 @@ GLint ShaderProgram::getUniformLocation(string name) {
 
 GLuint ShaderProgram::getUniformBlockIndex(string name) {
 	return glGetUniformBlockIndex(program, name.c_str());
+}
+
+ShaderException::ShaderException(std::string message) 
+	: msg(message) {
+}
+
+//const char* ShaderException::what() {
+//	return msg.c_str();
+//}
+
+string ShaderException::what() {
+	return msg;
 }

@@ -8,6 +8,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <exception>
 
 #include "Game.hpp"
 #include "Window.hpp"
@@ -66,39 +67,45 @@ Game::~Game() {
 }
 
 void Game::run() {
-	// Initialize FPS counter
-	getDelta();
-	prevCalcTime = getTime();
+	try {
+		// Initialize FPS counter
+		getDelta();
+		prevCalcTime = getTime();
 
-	// Allow user to initialize the game
-	init();
+		// Allow user to initialize the game
+		init();
 
-	// Show the window
-	window.show();
+		// Show the window
+		window.show();
 
-	// Enter the game loop
-	while (!shouldStop()) {
-		// Handle window resizing
-		int w,h;
-		window.getWindowSize(w, h);
-		glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-		//resized();
+		// Enter the game loop
+		while (!shouldStop()) {
+			// Handle window resizing
+			int w,h;
+			window.getWindowSize(w, h);
+			glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+			//resized();
 
-		// Update the game state
-		update(getDelta());
-		//		getMousePosition(&prev_x, &prev_y);
-		//		scroll_dx = 0;
-		//		scroll_dy = 0;
+			// Update the game state
+			update(getDelta());
+			//		getMousePosition(&prev_x, &prev_y);
+			//		scroll_dx = 0;
+			//		scroll_dy = 0;
 
-		// Draw the next frame
-		render();
+			// Draw the next frame
+			render();
 
-		// Switch draw buffers
-		glfwSwapBuffers(window.getWindow());
+			// Switch draw buffers
+			glfwSwapBuffers(window.getWindow());
 
-		// Update the FPS calculation
-		updateFPS();
-		glfwPollEvents();
+			// Update the FPS calculation
+			updateFPS();
+			glfwPollEvents();
+		}
+//	} catch (exception& e) {
+//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
+	} catch (...) {
+		cerr << "Stopping execution due to unidentified exception in game loop." << endl;
 	}
 
 	// Allow user to clean up

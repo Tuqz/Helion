@@ -16,3 +16,6 @@
   - [ ] Camera
   - [x] Shaders
   - [ ] Scene Graph
+- [ ] Better error handling
+  - [ ] Handle missing shader files
+  - [ ] catch exception objects

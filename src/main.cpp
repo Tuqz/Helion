@@ -51,11 +51,11 @@ public:
 class Helion : public GameInterface {
 private:
 	GLuint vao, vbo;
-	ShaderProgram* program;
+	ShaderProgram* program = nullptr;
 public:
 	void init() {
 		program = new ShaderProgram("data/shaders/wip.vert", "data/shaders/wip.frag");
-
+		
 		// Initialize vertex buffer
 		glGenBuffers(1, &vbo);
 
@@ -66,14 +66,13 @@ public:
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 		
-		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	void renderHUD(glm::mat4 base) {
 	}
 
-	void renderWorld(glm::mat4 base) {	
+	void renderWorld(glm::mat4 base) {
 		glUseProgram(program->getProgram());
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -91,6 +90,7 @@ public:
 	}
 
 	void shutdown() {
+		delete program;
 	}
 
 	void update(double dt) {

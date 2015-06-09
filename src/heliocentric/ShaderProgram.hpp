@@ -9,22 +9,33 @@
 #define	SHADERPROGRAM_HPP
 
 #include <vector>
+#include <exception>
+
 
 class ShaderProgram {
 private:
 	int program;
 public:
 	ShaderProgram(std::string vertexShader, std::string fragmentShader);
-	ShaderProgram(std::string vertexShader, std::string geometryShader, 
+	ShaderProgram(std::string vertexShader, std::string geometryShader,
 			std::vector<std::string>* attributes);
-	ShaderProgram(std::string vertexShader, std::string geometryShader, 
+	ShaderProgram(std::string vertexShader, std::string geometryShader,
 			std::string fragmentShader);
-	ShaderProgram(std::string vertexShader, std::string geometryShader, 
+	ShaderProgram(std::string vertexShader, std::string geometryShader,
 			std::string fragmentShader, std::vector<std::string>* attributes);
 	virtual ~ShaderProgram();
 	GLuint getProgram();
 	GLint getUniformLocation(std::string name);
 	GLuint getUniformBlockIndex(std::string name);
+};
+
+class ShaderException {
+private:
+	std::string msg;
+public:
+	ShaderException(std::string message);
+//	virtual const char* what();
+	virtual std::string what();
 };
 
 #endif	/* SHADERPROGRAM_HPP */
