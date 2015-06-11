@@ -1,9 +1,6 @@
 # Linux executable
 helion
 
-# Windows executable
-helion.exe
-
 # SCons files
 .sconsign.dblite
 
@@ -17,19 +14,8 @@ helion.exe
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
 # Fortran module files
 *.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
 
 # Executables
 *.exe
