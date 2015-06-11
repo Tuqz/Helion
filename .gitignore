@@ -1,6 +1,9 @@
 # Linux executable
 helion
 
+# Windows executable
+helion.exe
+
 # SCons files
 .sconsign.dblite
 
