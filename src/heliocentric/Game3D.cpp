@@ -12,6 +12,7 @@
 #include "util.hpp"
 
 Game3D::Game3D(GameInterface& gameInterface) : game(gameInterface) {
+	gameInterface.setGame(this);
 }
 
 Game3D::~Game3D() {
@@ -62,4 +63,8 @@ void Game3D::shutdown() {
 
 bool Game3D::shouldStop() {
 	return Game::shouldStop() || game.shouldstop();
+}
+
+Camera& Game3D::getCamera() {
+	return camera;
 }

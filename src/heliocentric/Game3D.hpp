@@ -9,6 +9,7 @@
 #define	GAME3D_HPP
 
 #include "Game.hpp"
+#include "Camera.hpp"
 class GameInterface;
 
 /**
@@ -17,6 +18,7 @@ class GameInterface;
 class Game3D : public Game {
 private:
 	GameInterface& game;
+	Camera camera;
 public:
 	Game3D(GameInterface& gameInterface);
 	virtual ~Game3D();
@@ -26,6 +28,8 @@ public:
 	virtual void render();
 	virtual void shutdown();
 	virtual bool shouldStop();
+	// Getters
+	Camera& getCamera();
 private:
 
 };

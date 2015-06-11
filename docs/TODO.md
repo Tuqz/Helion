@@ -14,8 +14,11 @@
 - [ ] 3D rendering tools:
   - [x] Game3D layer
   - [ ] Camera
+    - [x] Camera based rendering
+    - [ ] Camera movement
   - [x] Shaders
   - [ ] Scene Graph
 - [ ] Better error handling
   - [ ] Handle missing shader files
   - [ ] catch exception objects
+- [ ] Use const where useful
