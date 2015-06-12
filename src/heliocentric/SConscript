@@ -1,0 +1,12 @@
+# Helion SConscript
+# Written by Jacob
+
+import glob
+Import('env')
+
+print "Building backend..."
+
+env.Append(CPPPATH=['../../include/'])
+
+sources = glob.glob("*/*.cpp")
+env.StaticLibrary("../../lib/hc", source = sources)

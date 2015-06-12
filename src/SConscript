@@ -1,0 +1,17 @@
+# Helion SConscript
+# Written by Jacob
+
+import glob
+Import('*')
+
+print "Building program..."
+
+env.Append(CPPPATH=['../include/'])
+env['LIBPATH']=['../lib/']
+
+if buildWithLib == False:
+    sources = [glob.glob("*.cpp"), glob.glob("heliocentric/*.cpp")]
+else:
+    sources = [glob.glob("*.cpp")]
+	
+env.Program("../bin/helion", source = sources)
