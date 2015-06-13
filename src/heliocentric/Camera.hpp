@@ -41,16 +41,17 @@ public:
 	void setFrustumScale(float frustumScale);
 	float getFrustumScale();
 	void updateAspect(int width, int height);
-	// Orientation functions
-//	void setPosition(vec3 position);
+	// Position functions
+	void setPosition(vec3 position);
 	vec3 getPosition();
-//	void move(vec3 translation);
-//	void moveRelative(vec3 translation);
-//	void move(float x, float y, float z);
-//	void moveRelative(float x, float y, float z);
-//	void pan(float angle);
-//	void tilt(float angle);
-//	void roll(float angle);
+	void move(vec3 translation);
+	void moveRelative(vec3 translation);
+	void move(float x, float y, float z);
+	void moveRelative(float x, float y, float z);
+	// Orientation functions
+	void pan(float angle);
+	void tilt(float angle);
+	void roll(float angle);
 };
 
 #endif	/* CAMERA_HPP */

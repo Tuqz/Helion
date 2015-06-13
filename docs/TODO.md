@@ -13,9 +13,9 @@
   - [ ] resizable window
 - [ ] 3D rendering tools:
   - [x] Game3D layer
-  - [ ] Camera
+  - [x] Camera
     - [x] Camera based rendering
-    - [ ] Camera movement
+    - [x] Camera movement
   - [x] Shaders
   - [ ] Scene Graph
 - [ ] Better error handling

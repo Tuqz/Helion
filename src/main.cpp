@@ -126,15 +126,55 @@ const float vertices[] = {
 
 class Input : public InputListener {
 private:
-	Game& game;
+	Game3D& game;
+	float movementSpeed = 0.2;
+	float turnSpeed = 0.1;
 public:
 
-	Input(Game& game) : game(game) {
+	Input(Game3D& game) : game(game) {
 	};
 
 	virtual void keyPressed(int key, int scancode, int mods) {
-		if (key == GLFW_KEY_ESCAPE) {
-			game.exit();
+		switch (key) {
+			case GLFW_KEY_ESCAPE:
+				game.exit();
+				break;
+			case GLFW_KEY_W:
+				game.getCamera().moveRelative( 0,  0, -movementSpeed);
+				break;
+			case GLFW_KEY_S:
+				game.getCamera().moveRelative( 0,  0,  movementSpeed);
+				break;
+			case GLFW_KEY_A:
+				game.getCamera().moveRelative(-movementSpeed,  0,  0);
+				break;
+			case GLFW_KEY_D:
+				game.getCamera().moveRelative( movementSpeed,  0,  0);
+				break;
+			case GLFW_KEY_SPACE:
+				game.getCamera().moveRelative( 0,  movementSpeed,  0);
+				break;
+			case GLFW_KEY_X:
+				game.getCamera().moveRelative( 0, -movementSpeed,  0);
+				break;
+			case GLFW_KEY_KP_8:
+				game.getCamera().tilt(turnSpeed);
+				break;
+			case GLFW_KEY_KP_5:
+				game.getCamera().tilt(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_4:
+				game.getCamera().pan(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_6:
+				game.getCamera().pan(turnSpeed);
+				break;
+			case GLFW_KEY_KP_7:
+				game.getCamera().roll(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_9:
+				game.getCamera().roll(turnSpeed);
+				break;
 		}
 	}
 
@@ -191,7 +231,7 @@ public:
 	void renderWorld(glm::mat4 base) {
 		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
-                1, GL_FALSE, value_ptr(base));
+                1, GL_FALSE, value_ptr(game->getCamera().getWorldToCameraMatrix()));
 		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glEnableVertexAttribArray(0);
