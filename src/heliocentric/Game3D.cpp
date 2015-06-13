@@ -49,8 +49,7 @@ void Game3D::render() {
 	
 	// Render the world
     glEnable(GL_DEPTH_TEST); // Making sure it is enabled
-//    game.renderWorld(getCamera().getWorldToCameraMatrix());
-    game.renderWorld(glm::mat4());
+    game.renderWorld(getCamera().getWorldToCameraMatrix());
 	
 	// Render the HUD
     glDisable(GL_DEPTH_TEST); // Such that the HUD is rendered on top

@@ -23,57 +23,57 @@
 #include "heliocentric/ShaderProgram.hpp"
 
 using namespace std;
-	
+
 const float vertices[] = {
 	// Vertex coordinates
-	 0.25f,  0.25f, -1.25f, 1.0f,
-	 0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f,  0.25f, -1.25f, 1.0f,
+	0.25f, 0.25f, -1.25f, 1.0f,
+	0.25f, -0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
 
-	 0.25f, -0.25f, -1.25f, 1.0f,
+	0.25f, -0.25f, -1.25f, 1.0f,
 	-0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f,  0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
 
-	 0.25f,  0.25f, -2.75f, 1.0f,
-	-0.25f,  0.25f, -2.75f, 1.0f,
-	 0.25f, -0.25f, -2.75f, 1.0f,
+	0.25f, 0.25f, -2.75f, 1.0f,
+	-0.25f, 0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
 
-	 0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f,  0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
+	-0.25f, 0.25f, -2.75f, 1.0f,
 	-0.25f, -0.25f, -2.75f, 1.0f,
 
-	-0.25f,  0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
 	-0.25f, -0.25f, -1.25f, 1.0f,
 	-0.25f, -0.25f, -2.75f, 1.0f,
 
-	-0.25f,  0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
 	-0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f,  0.25f, -2.75f, 1.0f,
+	-0.25f, 0.25f, -2.75f, 1.0f,
 
-	 0.25f,  0.25f, -1.25f, 1.0f,
-	 0.25f, -0.25f, -2.75f, 1.0f,
-	 0.25f, -0.25f, -1.25f, 1.0f,
+	0.25f, 0.25f, -1.25f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -1.25f, 1.0f,
 
-	 0.25f,  0.25f, -1.25f, 1.0f,
-	 0.25f,  0.25f, -2.75f, 1.0f,
-	 0.25f, -0.25f, -2.75f, 1.0f,
+	0.25f, 0.25f, -1.25f, 1.0f,
+	0.25f, 0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
 
-	 0.25f,  0.25f, -2.75f, 1.0f,
-	 0.25f,  0.25f, -1.25f, 1.0f,
-	-0.25f,  0.25f, -1.25f, 1.0f,
+	0.25f, 0.25f, -2.75f, 1.0f,
+	0.25f, 0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
 
-	 0.25f,  0.25f, -2.75f, 1.0f,
-	-0.25f,  0.25f, -1.25f, 1.0f,
-	-0.25f,  0.25f, -2.75f, 1.0f,
+	0.25f, 0.25f, -2.75f, 1.0f,
+	-0.25f, 0.25f, -1.25f, 1.0f,
+	-0.25f, 0.25f, -2.75f, 1.0f,
 
-	 0.25f, -0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
 	-0.25f, -0.25f, -1.25f, 1.0f,
-	 0.25f, -0.25f, -1.25f, 1.0f,
+	0.25f, -0.25f, -1.25f, 1.0f,
 
-	 0.25f, -0.25f, -2.75f, 1.0f,
+	0.25f, -0.25f, -2.75f, 1.0f,
 	-0.25f, -0.25f, -2.75f, 1.0f,
 	-0.25f, -0.25f, -1.25f, 1.0f,
-	
+
 	// Colors
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
@@ -140,22 +140,22 @@ public:
 				game.exit();
 				break;
 			case GLFW_KEY_W:
-				game.getCamera().moveRelative( 0,  0, -movementSpeed);
+				game.getCamera().moveRelative(0, 0, -movementSpeed);
 				break;
 			case GLFW_KEY_S:
-				game.getCamera().moveRelative( 0,  0,  movementSpeed);
+				game.getCamera().moveRelative(0, 0, movementSpeed);
 				break;
 			case GLFW_KEY_A:
-				game.getCamera().moveRelative(-movementSpeed,  0,  0);
+				game.getCamera().moveRelative(-movementSpeed, 0, 0);
 				break;
 			case GLFW_KEY_D:
-				game.getCamera().moveRelative( movementSpeed,  0,  0);
+				game.getCamera().moveRelative(movementSpeed, 0, 0);
 				break;
 			case GLFW_KEY_SPACE:
-				game.getCamera().moveRelative( 0,  movementSpeed,  0);
+				game.getCamera().moveRelative(0, movementSpeed, 0);
 				break;
 			case GLFW_KEY_X:
-				game.getCamera().moveRelative( 0, -movementSpeed,  0);
+				game.getCamera().moveRelative(0, -movementSpeed, 0);
 				break;
 			case GLFW_KEY_KP_8:
 				game.getCamera().tilt(turnSpeed);
@@ -191,16 +191,17 @@ private:
 	GLuint vao, vbo;
 	ShaderProgram* program = nullptr;
 public:
+
 	void setGame(Game3D* game) {
 		this->game = game;
 	}
-	
+
 	void init() {
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("color");
 		program = new ShaderProgram("data/shaders/wip.vert", "data/shaders/wip.frag", &attributes);
-		
+
 		// Initialize vertex buffer
 		glGenBuffers(1, &vbo);
 
@@ -211,33 +212,34 @@ public:
 		// Create a VAO
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
-		
+
 		// Set camera-to-clip matrix
 		int w, h;
 		game->getWindow().getWindowSize(w, h);
 		game->getCamera().updateAspect(w, h);
 		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
-                1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
+				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
-		
+
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	void renderHUD(glm::mat4 base) {
+		game->getWindow().setTitle("Helion   -   "	+ to_string(game->getFPS()) + "fps");
 	}
 
 	void renderWorld(glm::mat4 base) {
 		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
-                1, GL_FALSE, value_ptr(game->getCamera().getWorldToCameraMatrix()));
-		
+				1, GL_FALSE, value_ptr(base));
+
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices)/2));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) (sizeof (vertices) / 2));
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 

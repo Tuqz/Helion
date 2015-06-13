@@ -25,7 +25,7 @@ private:
 	Window window;
 	InputListener* inputListener = nullptr;
 	double prevTime, prevCalcTime;
-	int fps;
+	int fpsCounter = 0, fps = 0;
 public:
 	Game();
 	virtual ~Game();
@@ -41,6 +41,7 @@ public:
 	Window& getWindow();
 	InputListener* getInputListener();
 	void setInputListener(InputListener* inputListener);
+	int getFPS();
 private:
 	// Timing
 	double getTime();

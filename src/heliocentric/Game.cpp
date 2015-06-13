@@ -159,8 +159,13 @@ double Game::getDelta() {
 void Game::updateFPS() {
 	if (getTime() - prevCalcTime > 1) {
 		//glfwSetWindowTitle(window, (title + " (" + to_string(fps) + "FPS)").c_str());
-		fps = 0;
+		fps = fpsCounter;
+		fpsCounter = 0;
 		prevCalcTime += 1;
 	}
-	fps++;
+	fpsCounter++;
+}
+
+int Game::getFPS() {
+	return fps;
 }

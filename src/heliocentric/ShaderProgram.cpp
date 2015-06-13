@@ -101,7 +101,7 @@ ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
 	}
 	glAttachShader(program, fs);
 
-	// Bind the shader attributes TODO: REQUIRED FOR OPENGL < 3.3
+	// Bind the shader attributes
 	if (attributes != nullptr) {
 		for (int i = 0; i < attributes->size(); i++) {
 			glBindAttribLocation(program, i, attributes->at(i).c_str());
