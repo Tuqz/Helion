@@ -10,9 +10,12 @@
 
 #include <glm/mat4x4.hpp>
 
+class Game3D;
+
 class GameInterface {
 public:
 	virtual ~GameInterface() {};
+	virtual void setGame(Game3D* game) = 0;
 	virtual void init() = 0;
 	virtual void update(double dt) = 0;
 	virtual void renderWorld(glm::mat4 base) = 0;

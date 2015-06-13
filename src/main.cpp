@@ -12,133 +12,75 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#define GLM_FORCE_RADIANS
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "heliocentric/Game3D.hpp"
 #include "heliocentric/InputListener.hpp"
 #include "heliocentric/GameInterface.hpp"
+#include "heliocentric/ShaderProgram.hpp"
+#include "heliocentric/loaders.hpp"
+#include "heliocentric/Mesh.hpp"
 
 using namespace std;
 
-/////////////////////////////////////////////////////////////////////////////////
-// TEMPORARY  TEMPORARY  TEMPORARY  TEMPORARY  TEMPORARY  TEMPORARY  TEMPORARY //
-/////////////////////////////////////////////////////////////////////////////////
-
-GLuint CreateShader(GLenum eShaderType, const std::string &strShaderFile) {
-	GLuint shader = glCreateShader(eShaderType);
-	const char *strFileData = strShaderFile.c_str();
-	glShaderSource(shader, 1, &strFileData, NULL);
-
-	glCompileShader(shader);
-
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE) {
-		GLint infoLogLength;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
-
-		const char *strShaderType = NULL;
-		switch (eShaderType) {
-			case GL_VERTEX_SHADER: strShaderType = "vertex";
-				break;
-			case GL_GEOMETRY_SHADER: strShaderType = "geometry";
-				break;
-			case GL_FRAGMENT_SHADER: strShaderType = "fragment";
-				break;
-		}
-
-		fprintf(stderr, "Compile failure in %s shader:\n%s\n", strShaderType, strInfoLog);
-		delete[] strInfoLog;
-	}
-
-	return shader;
-}
-
-GLuint CreateProgram(const std::vector<GLuint> &shaderList) {
-	GLuint program = glCreateProgram();
-
-	for (size_t iLoop = 0; iLoop < shaderList.size(); iLoop++)
-		glAttachShader(program, shaderList[iLoop]);
-
-	glLinkProgram(program);
-
-	GLint status;
-	glGetProgramiv(program, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE) {
-		GLint infoLogLength;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetProgramInfoLog(program, infoLogLength, NULL, strInfoLog);
-		fprintf(stderr, "Linker failure: %s\n", strInfoLog);
-		delete[] strInfoLog;
-	}
-
-	for (size_t iLoop = 0; iLoop < shaderList.size(); iLoop++)
-		glDetachShader(program, shaderList[iLoop]);
-
-	return program;
-}
-
-GLuint theProgram;
-
-const std::string strVertexShader(
-		"#version 330\n"
-		"layout(location = 0) in vec4 position;\n"
-		"void main()\n"
-		"{\n"
-		"   gl_Position = position;\n"
-		"}\n"
-		);
-
-const std::string strFragmentShader(
-		"#version 330\n"
-		"out vec4 outputColor;\n"
-		"void main()\n"
-		"{\n"
-		"   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"}\n"
-		);
-
-void InitializeProgram() {
-	std::vector<GLuint> shaderList;
-
-	shaderList.push_back(CreateShader(GL_VERTEX_SHADER, strVertexShader));
-	shaderList.push_back(CreateShader(GL_FRAGMENT_SHADER, strFragmentShader));
-
-	theProgram = CreateProgram(shaderList);
-
-	std::for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
-}
-
-const float vertices[] = {
-	0.75f, 0.75f, 0.0f, 1.0f,
-	0.75f, -0.75f, 0.0f, 1.0f,
-	-0.75f, -0.75f, 0.0f, 1.0f
-};
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// OWN CODE   OWN CODE   OWN CODE   OWN CODE   OWN CODE   OWN CODE   OWN CODE //
-////////////////////////////////////////////////////////////////////////////////
-
 class Input : public InputListener {
 private:
-	Game& game;
+	Game3D& game;
+	float movementSpeed = 1;
+	float turnSpeed = 0.25;
 public:
 
-	Input(Game& game) : game(game) {
+	Input(Game3D& game) : game(game) {
 	};
 
 	virtual void keyPressed(int key, int scancode, int mods) {
-		if (key == GLFW_KEY_ESCAPE) {
-			game.exit();
+		switch (key) {
+			case GLFW_KEY_ESCAPE:
+				game.exit();
+				break;
+			case GLFW_KEY_W:
+				game.getCamera().moveRelative(0, 0, -movementSpeed);
+				break;
+			case GLFW_KEY_S:
+				game.getCamera().moveRelative(0, 0, movementSpeed);
+				break;
+			case GLFW_KEY_A:
+				game.getCamera().moveRelative(-movementSpeed, 0, 0);
+				break;
+			case GLFW_KEY_D:
+				game.getCamera().moveRelative(movementSpeed, 0, 0);
+				break;
+			case GLFW_KEY_SPACE:
+				game.getCamera().moveRelative(0, movementSpeed, 0);
+				break;
+			case GLFW_KEY_X:
+				game.getCamera().moveRelative(0, -movementSpeed, 0);
+				break;
+			case GLFW_KEY_KP_8:
+				game.getCamera().tilt(turnSpeed);
+				break;
+			case GLFW_KEY_KP_5:
+				game.getCamera().tilt(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_4:
+				game.getCamera().pan(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_6:
+				game.getCamera().pan(turnSpeed);
+				break;
+			case GLFW_KEY_KP_7:
+				game.getCamera().roll(-turnSpeed);
+				break;
+			case GLFW_KEY_KP_9:
+				game.getCamera().roll(turnSpeed);
+				break;
+			case GLFW_KEY_KP_0:
+				game.getCamera().setPosition(vec3(0, 0, 2));
+				game.getCamera().resetOrientation();
+				break;
 		}
 	}
 
@@ -151,36 +93,77 @@ public:
 
 class Helion : public GameInterface {
 private:
-	GLuint vao, vbo;
+	Game3D* game;
+	GLuint vao, vbo, ibo;
+	ShaderProgram* program = nullptr;
+	Mesh* cube;
 public:
+
+	void setGame(Game3D* game) {
+		this->game = game;
+	}
+
 	void init() {
-		InitializeProgram();
+		vector<string> attributes;
+		attributes.push_back("position");
+		program = new ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
 
-		// Initialize vertex buffer
+		// Load meshes;
+		cube = loaders::loadOBJ("data/meshes/test.obj");
+		cube->print();
+		
+		// Create vertex buffer
 		glGenBuffers(1, &vbo);
-
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 
+				cube->getVertices().size()*sizeof(float), 
+				cube->getVertices().data(), GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+		// Create index buffer
+		glGenBuffers(1, &ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+				cube->getIndices().size()*sizeof(unsigned short), 
+				cube->getIndices().data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+		// Create a VAO
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 		
+		// Set camera-to-clip matrix
+		int w, h;
+		game->getWindow().getWindowSize(w, h);
+		game->getCamera().updateAspect(w, h);
+		glUseProgram(program->getProgram());
+		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
+				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
+		glUseProgram(0);
 		
+		// Set initial camera location
+		game->getCamera().setPosition(vec3(0, 0, 2));
+
+		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	void renderHUD(glm::mat4 base) {
+		game->getWindow().setTitle("Helion   -   "	+ to_string(game->getFPS()) + "fps");
 	}
 
-	void renderWorld(glm::mat4 base) {	
-		glUseProgram(theProgram);
+	void renderWorld(glm::mat4 base) {
+		glUseProgram(program->getProgram());
+		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
+				1, GL_FALSE, value_ptr(base));
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+//		glDrawArrays(GL_TRIANGLES, 0, cube->getVertices().size()/4);
+		glDrawElements(GL_TRIANGLES, cube->getIndices().size(), GL_UNSIGNED_SHORT, 0);
 
 		glDisableVertexAttribArray(0);
 		glUseProgram(0);
@@ -191,6 +174,8 @@ public:
 	}
 
 	void shutdown() {
+		delete program;
+		delete cube;
 	}
 
 	void update(double dt) {
