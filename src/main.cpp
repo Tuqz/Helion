@@ -21,114 +21,16 @@
 #include "heliocentric/InputListener.hpp"
 #include "heliocentric/GameInterface.hpp"
 #include "heliocentric/ShaderProgram.hpp"
+#include "heliocentric/loaders.hpp"
+#include "heliocentric/Mesh.hpp"
 
 using namespace std;
-
-const float vertices[] = {
-	// Vertex coordinates
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-
-	// Colors
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-};
 
 class Input : public InputListener {
 private:
 	Game3D& game;
-	float movementSpeed = 0.2;
-	float turnSpeed = 0.1;
+	float movementSpeed = 1;
+	float turnSpeed = 0.25;
 public:
 
 	Input(Game3D& game) : game(game) {
@@ -175,6 +77,10 @@ public:
 			case GLFW_KEY_KP_9:
 				game.getCamera().roll(turnSpeed);
 				break;
+			case GLFW_KEY_KP_0:
+				game.getCamera().setPosition(vec3(0, 0, 2));
+				game.getCamera().resetOrientation();
+				break;
 		}
 	}
 
@@ -188,8 +94,9 @@ public:
 class Helion : public GameInterface {
 private:
 	Game3D* game;
-	GLuint vao, vbo;
+	GLuint vao, vbo, ibo;
 	ShaderProgram* program = nullptr;
+	Mesh* cube;
 public:
 
 	void setGame(Game3D* game) {
@@ -199,20 +106,32 @@ public:
 	void init() {
 		vector<string> attributes;
 		attributes.push_back("position");
-		attributes.push_back("color");
-		program = new ShaderProgram("data/shaders/wip.vert", "data/shaders/wip.frag", &attributes);
+		program = new ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
 
-		// Initialize vertex buffer
+		// Load meshes;
+		cube = loaders::loadOBJ("data/meshes/test.obj");
+		cube->print();
+		
+		// Create vertex buffer
 		glGenBuffers(1, &vbo);
-
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 
+				cube->getVertices().size()*sizeof(float), 
+				cube->getVertices().data(), GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+		// Create index buffer
+		glGenBuffers(1, &ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+				cube->getIndices().size()*sizeof(unsigned short), 
+				cube->getIndices().data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		// Create a VAO
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
-
+		
 		// Set camera-to-clip matrix
 		int w, h;
 		game->getWindow().getWindowSize(w, h);
@@ -221,6 +140,9 @@ public:
 		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
+		
+		// Set initial camera location
+		game->getCamera().setPosition(vec3(0, 0, 2));
 
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -236,12 +158,12 @@ public:
 				1, GL_FALSE, value_ptr(base));
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) (sizeof (vertices) / 2));
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+//		glDrawArrays(GL_TRIANGLES, 0, cube->getVertices().size()/4);
+		glDrawElements(GL_TRIANGLES, cube->getIndices().size(), GL_UNSIGNED_SHORT, 0);
 
 		glDisableVertexAttribArray(0);
 		glUseProgram(0);
@@ -253,6 +175,7 @@ public:
 
 	void shutdown() {
 		delete program;
+		delete cube;
 	}
 
 	void update(double dt) {

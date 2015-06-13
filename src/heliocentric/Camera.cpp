@@ -106,6 +106,12 @@ quat orient(float angle, float x, float y, float z) {
 	return quat(cos(angle / 2.0f), x*f, y*f, z*f);
 }
 
+void Camera::resetOrientation() {
+	orientation = quat();
+	dirChanged = true;
+}
+
+
 void Camera::pan(float angle) {
 	orientation = normalize(orient(angle, 0, 1, 0) * orientation);
 	dirChanged = true;

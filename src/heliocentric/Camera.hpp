@@ -49,6 +49,7 @@ public:
 	void move(float x, float y, float z);
 	void moveRelative(float x, float y, float z);
 	// Orientation functions
+	void resetOrientation();
 	void pan(float angle);
 	void tilt(float angle);
 	void roll(float angle);
