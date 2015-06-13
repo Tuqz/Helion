@@ -17,9 +17,9 @@ env=Environment(LIBS = libs,
                 CPPPATH = cpppath,
                 CXXFLAGS = cxxflags)
                 
-# By default, build with the backend as a static library.
-# Windows doesn't seem to like doing this, so everything is pushed into one big executable with no backend library
-buildWithLib = True
+# By default, do NOT build with the backend as a static library.
+# For some reason, the linker doesn't like to play nicely with the backend as a library.
+buildWithLib = False
 
 # Dependent on OS, setup proper settings
 if _platform == "linux" or _platform == "linux2":
@@ -42,7 +42,6 @@ elif _platform == "win32":
                     LIBS = libs,
                     CXXFLAGS = cxxflags,
                     ENV = {'PATH' : os.environ['PATH']})
-    buildWithLib = False
     
 if buildWithLib == True:
     print "Building with backend as a library"
