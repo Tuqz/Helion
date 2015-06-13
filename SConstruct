@@ -11,7 +11,7 @@ from sys import platform as _platform # Required to check OS
 libs = ['hc', 'glfw', 'GLEW', 'GL']
 libpath = ['.']
 cpppath = ['include/']
-cxxflags = ['-std-c++11']
+cxxflags = ['-std=c++11']
 env=Environment(LIBS = libs,
                 LIBPATH = libpath,
                 CPPPATH = cpppath,
