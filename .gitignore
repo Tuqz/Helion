@@ -1,6 +1,9 @@
 # Linux executable
 helion
 
+# autosave files
+*.autosave
+
 # SCons files
 .sconsign.dblite
 

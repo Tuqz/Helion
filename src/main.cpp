@@ -23,6 +23,8 @@
 #include "heliocentric/ShaderProgram.hpp"
 #include "heliocentric/loaders.hpp"
 #include "heliocentric/Mesh.hpp"
+#include "heliocentric/SceneGraph/SceneGraph.hpp"
+#include "heliocentric/SceneGraph/MeshObject.hpp"
 
 using namespace std;
 
@@ -97,6 +99,7 @@ private:
 	GLuint vao, vbo, ibo;
 	ShaderProgram* program = nullptr;
 	Mesh* cube;
+	RenderObject* ro;
 public:
 
 	void setGame(Game3D* game) {
@@ -109,8 +112,8 @@ public:
 		program = new ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
 
 		// Load meshes;
-		cube = loaders::loadOBJ("data/meshes/test.obj");
-		cube->print();
+		cube = loaders::loadOBJ("data/meshes/cube.obj");
+//		cube->print();
 		
 		// Create vertex buffer
 		glGenBuffers(1, &vbo);
@@ -131,6 +134,15 @@ public:
 		// Create a VAO
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glBindVertexArray(0);
+		
+		// Add RenderObject
+		ro = new MeshObject(*cube, vao);
+		game->getScenegraph().addChild(ro);
 		
 		// Set camera-to-clip matrix
 		int w, h;
@@ -157,15 +169,8 @@ public:
 		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
 				1, GL_FALSE, value_ptr(base));
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		game->getScenegraph().render();
 
-//		glDrawArrays(GL_TRIANGLES, 0, cube->getVertices().size()/4);
-		glDrawElements(GL_TRIANGLES, cube->getIndices().size(), GL_UNSIGNED_SHORT, 0);
-
-		glDisableVertexAttribArray(0);
 		glUseProgram(0);
 	}
 
@@ -176,6 +181,7 @@ public:
 	void shutdown() {
 		delete program;
 		delete cube;
+		delete ro;
 	}
 
 	void update(double dt) {

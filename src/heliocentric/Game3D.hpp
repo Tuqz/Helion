@@ -10,6 +10,7 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
+#include "SceneGraph/SceneGraph.hpp"
 class GameInterface;
 
 /**
@@ -19,6 +20,7 @@ class Game3D : public Game {
 private:
 	GameInterface& game;
 	Camera camera;
+	SceneGraph scenegraph;
 public:
 	Game3D(GameInterface& gameInterface);
 	virtual ~Game3D();
@@ -30,6 +32,7 @@ public:
 	virtual bool shouldStop();
 	// Getters
 	Camera& getCamera();
+	SceneGraph& getScenegraph();
 private:
 
 };

@@ -16,6 +16,9 @@
   - [x] Camera
   - [x] Shaders
   - [ ] Scene Graph
+    - [x] Scene graph tree
+    - [ ] Base uniforms on game data
+    - [ ] 'Hide' VAO creation
 - [ ] OBJ Loader
   - [x] vertex positions (v, 3, 4, 6 and 7 values supported. W taken into account, but colors are ignored)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
@@ -26,7 +29,9 @@
   - [ ] Material references (needs MTL parser)
   - [ ] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
+- [ ] Lighting
 - [ ] Better error handling
   - [ ] Handle missing shader files
   - [ ] catch exception objects
 - [ ] Use const where useful
+- [ ] Add documentation

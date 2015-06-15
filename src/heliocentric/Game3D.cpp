@@ -67,3 +67,7 @@ bool Game3D::shouldStop() {
 Camera& Game3D::getCamera() {
 	return camera;
 }
+
+SceneGraph& Game3D::getScenegraph() {
+	return scenegraph;
+}
