@@ -4,15 +4,15 @@
 #include <cmath>
 
 void Orbiter::orbit_update(double time) {
-	double time_of_flight = time - orbit.time_of_periapsis;
+	double time_of_flight = time - orbit.time_of_periapsis; //time since (first) periapsis
 	double tolerance = 5e-13; //Arbitrary value, convergence tolerance
 	if(orbit.eccentricity < 1) {
-		time_of_flight = time_of_flight - (floor(time_of_flight/orbit.period())*orbit.period());
+		time_of_flight = time_of_flight - (floor(time_of_flight/orbit.period())*orbit.period()); //time since latest periapsis
 		double mean_anomaly = (2*M_PI*time_of_flight)/orbit.period();
 		double eccen_anomaly = mean_anomaly;
 		bool solved = false;
 		while(!solved) {
-			eccen_anomaly = (orbit.eccentricity*sin(eccen_anomaly) + mean_anomaly - orbit.eccentricity*eccen_anomaly*cos(eccen_anomaly))/(1 - orbit.eccentricity*cos(eccen_anomaly));
+			eccen_anomaly = (orbit.eccentricity*sin(eccen_anomaly) + mean_anomaly - orbit.eccentricity*eccen_anomaly*cos(eccen_anomaly))/(1 - orbit.eccentricity*cos(eccen_anomaly)); //Newton-Raphson for Kepler Equation
 			double upper = (eccen_anomaly + tolerance) - orbit.eccentricity*sin(eccen_anomaly + tolerance);
 			double lower = (eccen_anomaly - tolerance) - orbit.eccentricity*sin(eccen_anomaly - tolerance);
 			if((upper > mean_anomaly) != (lower > mean_anomaly)) { //if the sign changes within the tolerance
@@ -31,7 +31,7 @@ void Orbiter::orbit_update(double time) {
 			double eccen_anomaly = mean_anomaly;
 			bool solved = false;
 			while(!solved) {
-				eccen_anomaly = (orbit.eccentricity*eccen_anomaly*cosh(eccen_anomaly)-orbit.eccentricity*sinh(eccen_anomaly) + mean_anomaly)/(orbit.eccentricity*cosh(eccen_anomaly) - 1);
+				eccen_anomaly = (orbit.eccentricity*eccen_anomaly*cosh(eccen_anomaly)-orbit.eccentricity*sinh(eccen_anomaly) + mean_anomaly)/(orbit.eccentricity*cosh(eccen_anomaly) - 1); //Newton-Raphson for Kepler's hyperbolic equation
 				double upper = -((eccen_anomaly + tolerance) - orbit.eccentricity*sinh(eccen_anomaly + tolerance));
 				double lower = -((eccen_anomaly - tolerance) - orbit.eccentricity*sinh(eccen_anomaly - tolerance));
 				if((upper > mean_anomaly) != (lower > mean_anomaly)) { //if the sign changes within the tolerance

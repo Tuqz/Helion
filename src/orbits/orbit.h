@@ -7,6 +7,7 @@ class Orbit {
 public:
 	Orbit(double semimajor, double eccentricity, double inclination, double longitude, double argument, double time_of_periapsis, Orbitable *parent);
 	Orbit();
+	//semimajor is as normal for ellipses, the periapsis distance for parabolas, and half the spacing between branchs of a hyperbola
 	double semimajor, eccentricity, inclination, long_asc_node, arg_of_periapsis, time_of_periapsis;
 	double period();
 	Orbitable *parent;

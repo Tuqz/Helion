@@ -53,7 +53,7 @@ glm::vec3 Orbit::position(double theta) {
 }
 
 double Orbit::altitude(double theta) {
-	double l;
+	double l; //semi-latus rectum
 	if(eccentricity	< 1) {
 		l = semimajor*(1 - (eccentricity*eccentricity));
 	} else {
