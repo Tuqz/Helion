@@ -1,12 +1,8 @@
 #pragma once
-
 #include <glm/vec3.hpp>
 
-class Orbitable {
-public:
-	Orbitable();
-	Orbitable(double m);
-	double mu();
+struct Orbitable {
+	Orbitable(double mass);
 	glm::vec3 position;
-	const double mass;
+	const double mass, mu;
 };
