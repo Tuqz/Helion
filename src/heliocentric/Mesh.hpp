@@ -9,11 +9,13 @@
 #define	MESH_HPP
 
 #include <vector>
+#include <GL/glew.h>
 
 class Mesh {
 private:
 	std::vector<float> vertices;
 	std::vector<unsigned short> indices;
+	GLuint vbo, ibo;
 public:
 	Mesh(std::vector<float>& vertices, std::vector<unsigned short>& indices);
 	Mesh(const Mesh& orig);
@@ -27,6 +29,14 @@ public:
 		return indices;
 	}
 	
+	GLuint getIBO() const {
+		return ibo;
+	}
+
+	GLuint getVBO() const {
+		return vbo;
+	}
+
 	void print();
 };
 

@@ -8,16 +8,16 @@
 #ifndef SCENEGRAPH_HPP
 #define	SCENEGRAPH_HPP
 
-#include "RenderObject.hpp"
+#include "Node.hpp"
 
 
-class SceneGraph : public RenderObject {
+class SceneGraph : public Node {
 public:
 	SceneGraph();
 	SceneGraph(const SceneGraph& orig);
 	virtual ~SceneGraph();
-	void render();
-	void renderAll();
+	void render(glm::mat4 base);
+	void renderAll(glm::mat4 base);
 private:
 
 };

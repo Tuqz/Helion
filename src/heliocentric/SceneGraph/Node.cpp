@@ -5,26 +5,27 @@
  * Created on June 13, 2015, 5:42 PM
  */
 
+#include "Node.hpp"
 #include <list>
-#include "RenderObject.hpp"
+#include <glm/mat4x4.hpp>
 
 using namespace std;
-typedef list<RenderObject*>::iterator iter; 
+typedef list<Node*>::iterator iter; 
 
-RenderObject::RenderObject() {
+Node::Node() {
 }
 
-RenderObject::~RenderObject() {
+Node::~Node() {
 }
 
-void RenderObject::renderAll() {
-	render();
+void Node::renderAll(glm::mat4 base) {
+	render(base);
 	for (iter it = children.begin(); it != children.end(); ++it) {
-		(*it)->renderAll();
+		(*it)->renderAll(base);
 	}
 }
 
-void RenderObject::setParent(RenderObject* parent) {
+void Node::setParent(Node* parent) {
 	if (this->parent != nullptr) {
 		removeFromTree();
 	}
@@ -34,13 +35,13 @@ void RenderObject::setParent(RenderObject* parent) {
 	}
 }
 
-void RenderObject::removeFromTree() {
-	RenderObject* oldParent = parent;
+void Node::removeFromTree() {
+	Node* oldParent = parent;
 	parent = nullptr;
 	oldParent->removeChild(this);
 }
 
-void RenderObject::addChild(RenderObject* child) {
+void Node::addChild(Node* child) {
 	if (child->parent == this) {
 		children.push_back(child);
 	} else {
@@ -48,7 +49,7 @@ void RenderObject::addChild(RenderObject* child) {
 	}
 }
 
-void RenderObject::removeChild(RenderObject* child) {
+void Node::removeChild(Node* child) {
 	if (child->getParent() != nullptr) {
 		child->removeFromTree();
 	} else {
@@ -56,13 +57,10 @@ void RenderObject::removeChild(RenderObject* child) {
 	}
 }
 
-RenderObject* RenderObject::getParent() const {
+Node* Node::getParent() const {
 	return parent;
 }
 
-std::list<RenderObject*>& RenderObject::getChildren() {
+std::list<Node*>& Node::getChildren() {
 	return children;
 }
-
-
-

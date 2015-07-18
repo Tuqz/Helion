@@ -4,14 +4,32 @@
  * 
  * Created on June 13, 2015, 2:18 PM
  */
+#include "Mesh.hpp"
 
 #include <iostream>
-#include "Mesh.hpp"
+
+#include <GL/glew.h>
 
 using namespace std;
 
 Mesh::Mesh(vector<float>& vertices, vector<unsigned short>& indices)
 : vertices(vertices), indices(indices) {
+
+	// Create vertex buffer
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER,
+			vertices.size() * sizeof (float),
+			vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Create index buffer
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			indices.size() * sizeof (unsigned short),
+			indices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 Mesh::~Mesh() {

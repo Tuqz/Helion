@@ -23,8 +23,9 @@
 #include "heliocentric/ShaderProgram.hpp"
 #include "heliocentric/loaders.hpp"
 #include "heliocentric/Mesh.hpp"
+#include "heliocentric/DefaultRenderer.hpp"
 #include "heliocentric/SceneGraph/SceneGraph.hpp"
-#include "heliocentric/SceneGraph/MeshObject.hpp"
+#include "heliocentric/SceneGraph/AbstractMeshNode.hpp"
 
 using namespace std;
 
@@ -95,11 +96,11 @@ public:
 
 class Helion : public GameInterface {
 private:
-	Game3D* game;
-	GLuint vao, vbo, ibo;
+	Game3D* game = nullptr;
 	ShaderProgram* program = nullptr;
-	Mesh* cube;
-	RenderObject* ro;
+	Mesh* cube = nullptr;
+	Node* ro = nullptr;
+	DefaultRenderer renderer;
 public:
 
 	void setGame(Game3D* game) {
@@ -115,33 +116,8 @@ public:
 		cube = loaders::loadOBJ("data/meshes/cube.obj");
 //		cube->print();
 		
-		// Create vertex buffer
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 
-				cube->getVertices().size()*sizeof(float), 
-				cube->getVertices().data(), GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
-		// Create index buffer
-		glGenBuffers(1, &ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-				cube->getIndices().size()*sizeof(unsigned short), 
-				cube->getIndices().data(), GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		// Create a VAO
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glBindVertexArray(0);
-		
-		// Add RenderObject
-		ro = new MeshObject(*cube, vao);
+		// Add Node to SceneGraph
+		ro = new AbstractMeshNode(renderer, *cube);
 		game->getScenegraph().addChild(ro);
 		
 		// Set camera-to-clip matrix
@@ -169,7 +145,7 @@ public:
 		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
 				1, GL_FALSE, value_ptr(base));
 
-		game->getScenegraph().render();
+		game->getScenegraph().render(base);
 
 		glUseProgram(0);
 	}
