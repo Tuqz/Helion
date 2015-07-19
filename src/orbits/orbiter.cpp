@@ -3,6 +3,11 @@
 #include <cmath>
 #include "constants.h"
 
+using namespace helion;
+
+Orbiter::Orbiter(const Orbit &o) : orbit(o) {
+}
+
 void Orbiter::update_orbit(double time) {
 	double time_of_flight = time - orbit.time_of_periapsis; //time since (first) periapsis
 	double tolerance = 5e-13; //Arbitrary value, convergence tolerance
@@ -20,7 +25,7 @@ void Orbiter::update_orbit(double time) {
 		double tan_true_by_two = sqrt((1 + orbit.eccentricity)/(1 - orbit.eccentricity))*tan(eccen_anomaly/2); //tan(theta/2)
 		anomaly = atan(tan_true_by_two)*2;
 	} else { //if we encounter issues we need to support e exactly equals 1 (unlikely due to floats)
-		double mean_anomaly = (2*pi*time_of_flight)/orbit.period();
+		double mean_anomaly = (2*pi*time_of_flight)/orbit.period;
 		double eccen_anomaly = mean_anomaly, upper, lower;
 		bool solved = false;
 		while(!solved) {

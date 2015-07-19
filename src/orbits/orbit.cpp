@@ -3,6 +3,8 @@
 #include <cmath>
 #include "constants.h"
 
+using namespace helion;
+
 glm::vec3 Orbit::get_position(double r, double theta) const {
 			double angle_from_asc_node = theta + arg_of_periapsis;
 			double x_tick = r * cos(angle_from_asc_node); //x_tick axis is parallel to line of asc. node
@@ -14,12 +16,8 @@ glm::vec3 Orbit::get_position(double r, double theta) const {
 			return glm::vec3(x, y, z);
 }
 
-Orbit::Orbit() : semimajor(0), eccentricity(0), inclination(0), long_asc_node(0), arg_of_periapsis(0), time_of_periapsis(0), period(0) {
-	parent = nullptr;
-}
-
-Orbit::Orbit(double a, double e, double inc, double lan, double aop, double top, Orbitable *p) : semimajor(a), eccentricity(e), inclination(inc), long_asc_node(lan), arg_of_periapsis(aop), time_of_periapsis(top), period(2*pi*sqrt(pow(std::abs(semimajor), 3)/p->mu)) {
-	parent = p;
+Orbit::Orbit(const Orbitable &p, double a, double e, double inc, double lan, double aop, double top)
+	: parent(p), semimajor(a), eccentricity(e), inclination(inc), long_asc_node(lan), arg_of_periapsis(aop), time_of_periapsis(top), period(2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu)) {
 	int points = 100;
 	if(e < 1) { //Ellipse
 		for(int i = 0; i < points; ++i) {
