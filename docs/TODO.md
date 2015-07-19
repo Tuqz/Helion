@@ -17,9 +17,9 @@
   - [x] Game3D layer
   - [x] Camera
   - [x] Shaders
-  - [ ] Scene Graph
+  - [x] Scene Graph
     - [x] Scene graph tree
-    - [ ] Base uniforms on game data
+    - [x] Base uniforms on game data
     - [x] 'Hide' VAO creation
     - [x] 'Hide' shader programs
 - [ ] OBJ Loader
