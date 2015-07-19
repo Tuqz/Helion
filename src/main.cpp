@@ -15,6 +15,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "heliocentric/Game3D.hpp"
@@ -24,8 +25,9 @@
 #include "heliocentric/loaders.hpp"
 #include "heliocentric/Mesh.hpp"
 #include "heliocentric/DefaultRenderer.hpp"
+#include "heliocentric/GameObject.hpp"
 #include "heliocentric/SceneGraph/SceneGraph.hpp"
-#include "heliocentric/SceneGraph/AbstractMeshNode.hpp"
+#include "heliocentric/SceneGraph/Spatial.hpp"
 
 using namespace std;
 
@@ -94,15 +96,31 @@ public:
 	}
 };
 
+class TestObject : public GameObject {
+private:
+	glm::vec3 pos;
+public:
+	TestObject(glm::vec3 pos) :	pos(pos) {
+	}
+	
+	virtual glm::vec3 getPosition() {
+		return pos;
+	}
+	
+	virtual glm::quat getOrientation() {
+		return glm::quat();
+	}
+};
+
 class Helion : public GameInterface {
 private:
 	Game3D* game = nullptr;
 	ShaderProgram* program = nullptr;
 	Mesh* cube = nullptr;
-	Node* ro = nullptr;
+	Node* node = nullptr, * node2 = nullptr, * node3 = nullptr;
+	TestObject* obj = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	DefaultRenderer renderer;
 public:
-
 	void setGame(Game3D* game) {
 		this->game = game;
 	}
@@ -123,12 +141,21 @@ public:
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
 
-		// Load meshes;
+		// Load meshes
 		cube = loaders::loadOBJ("data/meshes/cube.obj");
 
 		// Add meshes to SceneGraph
-		ro = new AbstractMeshNode(renderer, *cube, *program);
-		game->getScenegraph().addChild(ro);
+		obj = new TestObject(glm::vec3(1,0,0));
+		node = new Spatial(renderer, *cube, *program, *obj);
+		game->getScenegraph().addChild(node);
+		
+		obj2 = new TestObject(glm::vec3(-1,0.5f,-2));
+		node2 = new Spatial(renderer, *cube, *program, *obj2);
+		game->getScenegraph().addChild(node2);
+		
+		obj3 = new TestObject(glm::vec3(-0.5f,-1,-1));
+		node3 = new Spatial(renderer, *cube, *program, *obj3);
+		game->getScenegraph().addChild(node3);
 
 		// Set initial camera location
 		game->getCamera().setPosition(vec3(0, 0, 2));
@@ -152,7 +179,8 @@ public:
 	void shutdown() {
 		delete program;
 		delete cube;
-		delete ro;
+		delete node;
+		delete obj;
 	}
 
 	void update(double dt) {
