@@ -105,11 +105,8 @@ void Game::run() {
 			glfwPollEvents();
 
 			// Wait until framelimit has been satisfied (for when vsync is disabled)
-			int nCycles = 0;
 			while (frameTimeLimit - (getTime() - frameStartTime) > 0) {
-				nCycles++;
 			}
-			cout << "spinned " << to_string(nCycles) << " cycles" << endl;
 		}
 		//	} catch (exception& e) {
 		//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
