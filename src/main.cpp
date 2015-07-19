@@ -108,19 +108,12 @@ public:
 	}
 
 	void init() {
+		// Prepare shaders
 		vector<string> attributes;
 		attributes.push_back("position");
-		program = new ShaderProgram("data/shaders/solid.vert", 
+		program = new ShaderProgram("data/shaders/solid.vert",
 				"data/shaders/solid.frag", &attributes);
 
-		// Load meshes;
-		cube = loaders::loadOBJ("data/meshes/cube.obj");
-//		cube->print();
-		
-		// Add Node to SceneGraph
-		ro = new AbstractMeshNode(renderer, *cube);
-		game->getScenegraph().addChild(ro);
-		
 		// Set camera-to-clip matrix
 		int w, h;
 		game->getWindow().getWindowSize(w, h);
@@ -129,7 +122,14 @@ public:
 		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
-		
+
+		// Load meshes;
+		cube = loaders::loadOBJ("data/meshes/cube.obj");
+
+		// Add meshes to SceneGraph
+		ro = new AbstractMeshNode(renderer, *cube, *program);
+		game->getScenegraph().addChild(ro);
+
 		// Set initial camera location
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
@@ -138,17 +138,13 @@ public:
 	}
 
 	void renderHUD(glm::mat4 base) {
-		game->getWindow().setTitle("Helion   -   "	+ to_string(game->getFPS()) + "fps");
+		game->getWindow().setTitle("Helion   -   " + to_string(game->getFPS()) + "fps");
 	}
 
 	void renderWorld(glm::mat4 base) {
-		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
 				1, GL_FALSE, value_ptr(base));
-
 		game->getScenegraph().render(base);
-
-		glUseProgram(0);
 	}
 
 	bool shouldstop() {

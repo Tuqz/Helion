@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <exception>
+#include <string>
 
 
 class ShaderProgram {

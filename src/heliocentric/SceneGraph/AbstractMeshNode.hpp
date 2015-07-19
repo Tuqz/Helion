@@ -11,7 +11,9 @@
 #include <GL/glew.h>
 
 #include "Node.hpp"
-#include "../MeshRenderer.hpp"
+class Mesh;
+class MeshRenderer;
+class ShaderProgram;
 
 
 class Mesh;
@@ -21,14 +23,19 @@ private:
 	GLuint vao;
 	MeshRenderer& renderer;
 	Mesh& mesh;
+	ShaderProgram& program;
 public:
-	AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh);
+	AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program);
 	AbstractMeshNode(const AbstractMeshNode& orig);
 	virtual ~AbstractMeshNode();
 	virtual void render(glm::mat4 base);
 	
 	GLuint getVAO() const {
 		return vao;
+	}
+	
+	ShaderProgram& getProgram() const {
+		return program;
 	}
 };
 

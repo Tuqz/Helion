@@ -1,17 +1,18 @@
 # TODO
 
+## General
 - [ ] Move build output (and maybe SConstruct file) to build directory
+
+## Engine
 - [ ] Finish framework design
 - [ ] Input handling
   - [x] Keyboard event handling
   - [ ] Keyboard polling
   - [ ] Mouse input handling
-- [x] Initially window invisible
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
   - [ ] resizable window
-- [ ] Add a fallback for when VSync does not work
 - [ ] 3D rendering tools:
   - [x] Game3D layer
   - [x] Camera
@@ -20,7 +21,7 @@
     - [x] Scene graph tree
     - [ ] Base uniforms on game data
     - [x] 'Hide' VAO creation
-    - [ ] 'Hide' shader programs
+    - [x] 'Hide' shader programs
 - [ ] OBJ Loader
   - [x] vertex positions (v, 3, 4, 6 and 7 values supported. W taken into account, but colors are ignored)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
@@ -39,3 +40,5 @@
 - [ ] Implement copy constructors
 - [ ] Add documentation
 - [ ] Can we reduce the amount of boilerplate code?
+
+## Physics

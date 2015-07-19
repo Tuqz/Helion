@@ -9,6 +9,7 @@
 
 #include "DefaultRenderer.hpp"
 #include "Mesh.hpp"
+#include "ShaderProgram.hpp"
 
 DefaultRenderer::DefaultRenderer() {
 }
@@ -19,10 +20,12 @@ DefaultRenderer::DefaultRenderer(const DefaultRenderer& orig) {
 DefaultRenderer::~DefaultRenderer() {
 }
 
-void DefaultRenderer::render(Mesh* mesh, GLuint vao, glm::mat4 modelToCamera) {
+void DefaultRenderer::render(Mesh& mesh, ShaderProgram& program, GLuint vao, glm::mat4 modelToCamera) {
+	glUseProgram(program.getProgram());
 	glBindVertexArray(vao);
-	glDrawElements(GL_TRIANGLES, mesh->getIndices().size(), GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, mesh.getIndices().size(), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
+	glUseProgram(0);
 }
 
 void DefaultRenderer::setVertexAttribs() {

@@ -13,12 +13,14 @@
 #include <glm/mat4x4.hpp>
 
 #include "../Mesh.hpp"
+#include "../MeshRenderer.hpp"
+#include "../ShaderProgram.hpp"
 
 using namespace std;
 
-AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh) : renderer(renderer), mesh(mesh) {
-
-	// Create a VAO
+AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program)
+: renderer(renderer), mesh(mesh), program(program) {
+	// Create the VAO
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.getVBO());
@@ -27,12 +29,13 @@ AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh) : rendere
 	glBindVertexArray(0);
 }
 
-AbstractMeshNode::AbstractMeshNode(const AbstractMeshNode& orig) : AbstractMeshNode(orig.renderer, orig.mesh) {
+AbstractMeshNode::AbstractMeshNode(const AbstractMeshNode& orig) 
+: AbstractMeshNode(orig.renderer, orig.mesh, orig.program) {
 }
 
 AbstractMeshNode::~AbstractMeshNode() {
 }
 
 void AbstractMeshNode::render(glm::mat4 base) {
-	renderer.render(&mesh, vao, base);
+	renderer.render(mesh, program, vao, base);
 }
