@@ -142,8 +142,6 @@ public:
 	}
 
 	void renderWorld(glm::mat4 base) {
-		glUniformMatrix4fv(program->getUniformLocation("modelToCameraMatrix"),
-				1, GL_FALSE, value_ptr(base));
 		game->getScenegraph().render(base);
 	}
 
