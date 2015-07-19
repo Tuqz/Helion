@@ -17,6 +17,7 @@ public:
 	DefaultRenderer(const DefaultRenderer& orig);
 	virtual ~DefaultRenderer();
 	virtual void render(Mesh* mesh, GLuint vao, glm::mat4 modelToCamera);
+	virtual void setVertexAttribs();
 };
 
 #endif	/* DEFAULTRENDERER_HPP */

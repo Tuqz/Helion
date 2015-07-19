@@ -25,3 +25,7 @@ void DefaultRenderer::render(Mesh* mesh, GLuint vao, glm::mat4 modelToCamera) {
 	glBindVertexArray(0);
 }
 
+void DefaultRenderer::setVertexAttribs() {
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+}

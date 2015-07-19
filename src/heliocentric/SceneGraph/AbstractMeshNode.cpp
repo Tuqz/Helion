@@ -23,8 +23,7 @@ AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh) : rendere
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.getVBO());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIBO());
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	renderer.setVertexAttribs();
 	glBindVertexArray(0);
 }
 
