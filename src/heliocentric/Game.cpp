@@ -46,7 +46,7 @@ Game::Game() {
 		cerr << "Unable to create GLFW window..." << endl;
 		throw ERROR_GLFW_WINDOW;
 	}
-	
+
 	// Initialize glew for the current context
 	GLenum res = glewInit();
 	if (res != GLEW_OK) {
@@ -56,7 +56,7 @@ Game::Game() {
 
 	// Print OpenGL version
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
-	
+
 	// Set up input handling
 	glfwSetWindowUserPointer(window.getWindow(), this);
 	glfwSetKeyCallback(window.getWindow(), keyCallback);
@@ -69,8 +69,8 @@ Game::~Game() {
 void Game::run() {
 	try {
 		// Initialize FPS counter
-		getDelta();
-		prevCalcTime = getTime();
+		double frameStartTime = getTime();
+		prevFrameRateCalcTime = frameStartTime;
 
 		// Allow user to initialize the game
 		init();
@@ -80,19 +80,19 @@ void Game::run() {
 
 		// Enter the game loop
 		while (!shouldStop()) {
-			// Handle window resizing
-			int w,h;
+			// Time management
+			double time = getTime();
+			double dt = time - frameStartTime;
+			frameStartTime = time;
+
+			// Update the game state
+			update(dt);
+
+			// Handle window resizing and draw the next frame
+			int w, h;
 			window.getWindowSize(w, h);
 			glViewport(0, 0, (GLsizei) w, (GLsizei) h);
 			//resized();
-
-			// Update the game state
-			update(getDelta());
-			//		getMousePosition(&prev_x, &prev_y);
-			//		scroll_dx = 0;
-			//		scroll_dy = 0;
-
-			// Draw the next frame
 			render();
 
 			// Switch draw buffers
@@ -100,10 +100,19 @@ void Game::run() {
 
 			// Update the FPS calculation
 			updateFPS();
+
+			// Wait for vsync and get input for next cycle.
 			glfwPollEvents();
+
+			// Wait until framelimit has been satisfied (for when vsync is disabled)
+			int nCycles = 0;
+			while (frameTimeLimit - (getTime() - frameStartTime) > 0) {
+				nCycles++;
+			}
+			cout << "spinned " << to_string(nCycles) << " cycles" << endl;
 		}
-//	} catch (exception& e) {
-//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
+		//	} catch (exception& e) {
+		//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
 	} catch (...) {
 		cerr << "Stopping execution due to unidentified exception in game loop." << endl;
 	}
@@ -148,20 +157,12 @@ double Game::getTime() {
 	return glfwGetTime();
 }
 
-double Game::getDelta() {
-	double time = getTime();
-	double delta = time - prevTime;
-	prevTime = time;
-
-	return delta;
-}
-
 void Game::updateFPS() {
-	if (getTime() - prevCalcTime > 1) {
+	if (getTime() - prevFrameRateCalcTime > 1) {
 		//glfwSetWindowTitle(window, (title + " (" + to_string(fps) + "FPS)").c_str());
 		fps = fpsCounter;
 		fpsCounter = 0;
-		prevCalcTime += 1;
+		prevFrameRateCalcTime += 1;
 	}
 	fpsCounter++;
 }

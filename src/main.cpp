@@ -110,7 +110,8 @@ public:
 	void init() {
 		vector<string> attributes;
 		attributes.push_back("position");
-		program = new ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
+		program = new ShaderProgram("data/shaders/solid.vert", 
+				"data/shaders/solid.frag", &attributes);
 
 		// Load meshes;
 		cube = loaders::loadOBJ("data/meshes/cube.obj");

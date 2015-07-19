@@ -24,8 +24,9 @@ class Game {
 private:
 	Window window;
 	InputListener* inputListener = nullptr;
-	double prevTime, prevCalcTime;
+	double prevFrameRateCalcTime;
 	int fpsCounter = 0, fps = 0;
+	double frameTimeLimit = 1.0/120.0;
 public:
 	Game();
 	virtual ~Game();
@@ -45,7 +46,6 @@ public:
 private:
 	// Timing
 	double getTime();
-	double getDelta();
 	void updateFPS();
 };
 
