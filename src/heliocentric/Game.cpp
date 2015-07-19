@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <exception>
+#include <chrono>
+#include <thread>
 
 #include "Game.hpp"
 #include "Window.hpp"
@@ -85,6 +87,9 @@ void Game::run() {
 			double dt = time - frameStartTime;
 			frameStartTime = time;
 
+			// Get input events
+			glfwPollEvents();
+			
 			// Update the game state
 			update(dt);
 
@@ -101,10 +106,11 @@ void Game::run() {
 			// Update the FPS calculation
 			updateFPS();
 
-			// Wait for vsync and get input for next cycle.
-			glfwPollEvents();
-
 			// Wait until framelimit has been satisfied (for when vsync is disabled)
+			if (frameTimeLimit - (getTime() - frameStartTime) > sleepLimit) {
+				this_thread::sleep_for(chrono::microseconds(
+						int(1000000 * (frameTimeLimit - (getTime() - frameStartTime) - sleepLimit))));
+			}
 			while (frameTimeLimit - (getTime() - frameStartTime) > 0) {
 			}
 		}

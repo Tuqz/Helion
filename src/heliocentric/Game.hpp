@@ -26,7 +26,7 @@ private:
 	InputListener* inputListener = nullptr;
 	double prevFrameRateCalcTime;
 	int fpsCounter = 0, fps = 0;
-	double frameTimeLimit = 1.0/120.0;
+	double frameTimeLimit = 1.0/120.0, sleepLimit = 0.001;
 public:
 	Game();
 	virtual ~Game();
