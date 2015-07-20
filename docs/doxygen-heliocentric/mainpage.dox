@@ -1,0 +1,113 @@
+/**
+\mainpage
+
+Heliocentric is a 3D game engine written in C++, based OpenGL 3.0. This page 
+will show how to get started.
+
+Heliocentric provides a number of things:
+
+- a game loop
+- window management
+- a scenegraph
+
+# Getting started
+
+To make a 3D game with Heliocentric, all that needs to be done is to implement a number of hooks. 
+These hooks are provided by the interfaces `GameInterface` and `InputListener`. 
+Additionally it can take care of rendering objects if its scenegraph is populated.
+
+*Note that Heliocentric is not yet finished. 
+Various things will be made more convenient in the near future and the amount of 
+boilerplate code required will be reduced.*
+
+## 1. %GameInterface
+The first step is to implement a subclass of `GameInterface`. This interface
+provides the hooks in the game loop:
+
+- `init`
+- `update`
+- `renderWorld`
+- `renderHUD`
+- `shutdown`
+- `shouldStop`
+
+## 2. %InputListener
+Event-based input processing can be done by implementing a subclass of 
+`InputListener`. This listener must be registered by calling `Game3D`'s 
+`setInputListener` method.
+
+## 3. Running your game
+
+An instance of `Game3D`, the core class of the engine, must be created. This 
+class provides a method `run` that starts the game-loop.
+
+The code-fragment below starts a game based on Heliocentric, where it is assumed
+the subclass of `GameInterface` is called `MyGame` and the subclass of 
+`InputListener` is called `MyInputListener`.
+
+
+\code
+
+    int main(int argc, char** argv) {
+	    MyGame myGame;
+	    MyInputListener myListener;
+    
+        Game3D game(myGame);
+        game.setInputListener(&myListener);
+        game.run();
+    
+        return 0;
+    }
+\endcode
+
+## 4. The scene graph
+
+All objects in the scene graph will automatically be rendered when 
+`game->getScenegraph().render(base)` is called, which must be done in the
+`renderWorld` method of the `GameInterface` implementation.
+
+To allow an object to be rendered by the scene graph, a number of things must be 
+done:
+
+1. the object must be a subtype of `GameObject`,
+2. a renderer must be provided,
+3. a shader-program must be provided for the renderer,
+4. a mesh must be loaded,
+5. a node must be registered to the scene graph.
+
+All of your game-objects should be a subtype of `GameObject`, such that the 
+scene-graph can poll the object's position and orientation to draw the graphical 
+representation of the object correctly.
+
+Heliocentric provides a renderer called `DefaultRenderer`. All you need to do is
+to instantiate it once: all spatials in the scene graph can use the same renderer.
+If this renderer does not suit your needs, you can create your own by implementing
+a subclass of `MeshRenderer`.
+
+The graphical representation of your game-object is defined by a mesh (and in 
+later versions of heliocentric additionally by textures). Heliocentric provides 
+a mesh-loader for meshes defined by a Wavefront .obj file.
+
+Finally you need to create the node for the scene graph and register it. 
+Most often you will use a node of the type `Spatial`. The code fragment below 
+shows an example of how all of this is done.
+This code example uses shaders provided by Heliocentric and assumes the `Game3D`
+instance is available as the variable `game`.
+
+\code
+
+	// Only once
+	DefaultRenderer renderer;
+	vector<string> attributes;
+	attributes.push_back("posit*ion");
+	ShaderProgram program("data/shaders/solid.vert",
+			"data/shaders/solid.frag", &attributes);
+
+    // For each object
+	MyObject obj; // MyObject is a subclass of GameObject
+	Mesh* mesh = loaders::loadOBJ("path/to/mesh.obj");
+	Spatial node(renderer, *mesh, *program, &obj);
+	game->getScenegraph().addChild(node);
+\endcode
+
+*/

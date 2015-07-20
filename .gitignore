@@ -7,6 +7,11 @@ helion
 # SCons files
 .sconsign.dblite
 
+# Doxygen output
+docs/docs-heliocentric.html
+docs/doxygen-heliocentric/doxygen_sqlite3.db
+docs/doxygen-heliocentric/html
+
 # Compiled Object files
 *.slo
 *.lo
