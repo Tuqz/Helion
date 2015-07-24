@@ -89,7 +89,7 @@ void Game::run() {
 
 			// Get input events
 			glfwPollEvents();
-			
+
 			// Update the game state
 			update(dt);
 
@@ -114,8 +114,9 @@ void Game::run() {
 			while (frameTimeLimit - (getTime() - frameStartTime) > 0) {
 			}
 		}
-		//	} catch (exception& e) {
-		//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
+	} catch (const exception& e) {
+		cerr << "Stopping execution due to exception in game loop:" << endl;
+		cerr << e.what() << endl;
 	} catch (...) {
 		cerr << "Stopping execution due to unidentified exception in game loop." << endl;
 	}

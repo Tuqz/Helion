@@ -30,13 +30,12 @@ public:
 	GLuint getUniformBlockIndex(std::string name);
 };
 
-class ShaderException {
+class ShaderException : public std::exception {
 private:
 	std::string msg;
 public:
 	ShaderException(std::string message);
-//	virtual const char* what();
-	virtual std::string what();
+	virtual const char* what() const throw();
 };
 
 #endif	/* SHADERPROGRAM_HPP */

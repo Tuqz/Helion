@@ -158,10 +158,6 @@ ShaderException::ShaderException(std::string message)
 	: msg(message) {
 }
 
-//const char* ShaderException::what() {
-//	return msg.c_str();
-//}
-
-string ShaderException::what() {
-	return msg;
+const char* ShaderException::what() const throw() {
+	return msg.c_str();
 }
