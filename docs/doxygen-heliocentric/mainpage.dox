@@ -16,9 +16,7 @@ To make a 3D game with Heliocentric, all that needs to be done is to implement a
 These hooks are provided by the interfaces `GameInterface` and `InputListener`. 
 Additionally it can take care of rendering objects if its scenegraph is populated.
 
-*Note that Heliocentric is not yet finished. 
-Various things will be made more convenient in the near future and the amount of 
-boilerplate code required will be reduced.*
+Note: *Heliocentric is not yet finished. Various things will be made more convenient in the near future and the amount of boilerplate code required will be reduced.*
 
 ## 1. %GameInterface
 The first step is to implement a subclass of `GameInterface`. This interface
@@ -103,11 +101,14 @@ instance is available as the variable `game`.
 	ShaderProgram program("data/shaders/solid.vert",
 			"data/shaders/solid.frag", &attributes);
 
-    // For each object
+	// For each object
 	MyObject obj; // MyObject is a subclass of GameObject
 	Mesh* mesh = loaders::loadOBJ("path/to/mesh.obj");
 	Spatial node(renderer, *mesh, *program, &obj);
 	game->getScenegraph().addChild(node);
 \endcode
+
+# Class diagram
+\image html "heliocentric class diagram.png"
 
 */

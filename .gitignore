@@ -40,3 +40,7 @@ docs/doxygen-heliocentric/html
 *.exe
 *.out
 *.app
+
+# Other
+log/*
+upload
