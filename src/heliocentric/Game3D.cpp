@@ -35,7 +35,7 @@ void Game3D::init() {
     }
 	
 	// Give user access to this object
-	gameInterface.setGame(this);
+	game.setGame(this);
 	
 	// Allow user to initialize the game
 	game.init();
