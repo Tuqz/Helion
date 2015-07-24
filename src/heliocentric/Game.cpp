@@ -115,10 +115,10 @@ void Game::run() {
 			}
 		}
 	} catch (const exception& e) {
-		cerr << "Stopping execution due to exception in game loop:" << endl;
+		cerr << endl << "Stopping execution due to exception ("<< typeid(e).name() << ") in game loop:" << endl;
 		cerr << e.what() << endl;
 	} catch (...) {
-		cerr << "Stopping execution due to unidentified exception in game loop." << endl;
+		cerr << endl << "Stopping execution due to unidentified exception in game loop." << endl;
 	}
 
 	// Allow user to clean up

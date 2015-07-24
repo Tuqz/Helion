@@ -35,7 +35,7 @@ private:
 	std::string msg;
 public:
 	ShaderException(std::string message);
-	virtual const char* what() const throw();
+	virtual const char* what() const noexcept;
 };
 
 #endif	/* SHADERPROGRAM_HPP */
