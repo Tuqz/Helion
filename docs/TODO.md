@@ -23,6 +23,7 @@
   - [ ] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
 - [ ] Lighting
+- [ ] Fix handling of window close and `exit()` in `Game`
 
 - [ ] Better error handling
   - [ ] Handle missing shader files
