@@ -21,6 +21,7 @@ namespace helion {
 		if(datafile.is_open()) {
 			std::string data;
 			while(getline(datafile, data)) {
+				//File structure is NAME,MASS,PARENT,A,E,I,OMEGA,ARG,T
 				std::stringstream line(data);
 				std::string name;
 				getline(line, name, ',');
