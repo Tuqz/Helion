@@ -9,7 +9,6 @@
 #define	SHADERPROGRAM_HPP
 
 #include <vector>
-#include <exception>
 #include <string>
 
 
@@ -28,14 +27,6 @@ public:
 	GLuint getProgram();
 	GLint getUniformLocation(std::string name);
 	GLuint getUniformBlockIndex(std::string name);
-};
-
-class ShaderException : public std::exception {
-private:
-	std::string msg;
-public:
-	ShaderException(std::string message);
-	virtual const char* what() const noexcept;
 };
 
 #endif	/* SHADERPROGRAM_HPP */

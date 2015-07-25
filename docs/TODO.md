@@ -25,10 +25,11 @@
 - [ ] Lighting
 - [ ] Fix handling of window close and `exit()` in `Game`
 
-- [ ] Better error handling
-  - [ ] Handle missing shader files
-  - [ ] catch exception objects
-- [ ] Use const where useful
+- [x] Better error handling
+  - [x] Handle missing shader files
+  - [x] catch exception objects
+- [ ] Use const keyword where useful
+- [ ] namespaces
 - [ ] Implement copy constructors
 - [ ] Add documentation
 

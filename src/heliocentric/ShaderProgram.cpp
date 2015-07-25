@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 
 #include "ShaderProgram.hpp"
+#include "exceptions.hpp"
 
 using namespace std;
 
@@ -152,12 +153,4 @@ GLint ShaderProgram::getUniformLocation(string name) {
 
 GLuint ShaderProgram::getUniformBlockIndex(string name) {
 	return glGetUniformBlockIndex(program, name.c_str());
-}
-
-ShaderException::ShaderException(std::string message)
-: msg(message) {
-}
-
-const char* ShaderException::what() const noexcept {
-	return msg.c_str();
 }
