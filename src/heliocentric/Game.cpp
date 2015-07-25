@@ -15,11 +15,13 @@
 #include "Game.hpp"
 #include "Window.hpp"
 #include "InputListener.hpp"
+#include "exceptions.hpp"
 
 using namespace std;
 
 void glfwErrorCallback(int error, const char* description) {
-	cerr << "Error: " /*<< error << " - "*/ << description << endl;
+	//cerr << "Error: " /*<< error << " - "*/ << description << endl;
+	throw GLFWException(description);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -39,21 +41,18 @@ Game::Game() {
 	// Initialize GLFW
 	glfwSetErrorCallback(glfwErrorCallback);
 	if (!glfwInit()) {
-		cerr << "Unable to initialize GLFW..." << endl;
-		throw ERROR_GLFW_INIT;
+		throw GLFWException("Unable to initialize GLFW.");
 	}
 
 	// Create a window
 	if (!window.create()) {
-		cerr << "Unable to create GLFW window..." << endl;
-		throw ERROR_GLFW_WINDOW;
+		throw GLFWException("Unable to create GLFW window.");
 	}
 
 	// Initialize glew for the current context
 	GLenum res = glewInit();
 	if (res != GLEW_OK) {
-		cerr << "Unable to initialize GLEW..." << endl;
-		throw ERROR_GLEW_INIT;
+		throw GLFWException("Unable to initialize GLEW...");
 	}
 
 	// Print OpenGL version
@@ -89,7 +88,7 @@ void Game::run() {
 
 			// Get input events
 			glfwPollEvents();
-			
+
 			// Update the game state
 			update(dt);
 
@@ -114,10 +113,11 @@ void Game::run() {
 			while (frameTimeLimit - (getTime() - frameStartTime) > 0) {
 			}
 		}
-		//	} catch (exception& e) {
-		//		cerr << "Stopping execution due to exception in game loop:" << endl << e.what() << endl;
+	} catch (const exception& e) {
+		cerr << endl << "Stopping execution due to exception (" << typeid (e).name() << ") in game loop:" << endl;
+		cerr << e.what() << endl;
 	} catch (...) {
-		cerr << "Stopping execution due to unidentified exception in game loop." << endl;
+		cerr << endl << "Stopping execution due to unidentified exception in game loop." << endl;
 	}
 
 	// Allow user to clean up

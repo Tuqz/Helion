@@ -7,13 +7,14 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "ShaderProgram.hpp"
+#include "exceptions.hpp"
 
 using namespace std;
 
@@ -31,16 +32,18 @@ string getName(int shaderType) {
 }
 
 string loadShader(string fname) {
-	ifstream t(fname, ifstream::in);
-	string str;
+	try {
+		ifstream file;
+		file.exceptions(ifstream::failbit | ifstream::badbit);
+		file.open(fname);
 
-	t.seekg(0, ios::end);
-	str.reserve(t.tellg());
-	t.seekg(0, ios::beg);
+		stringstream buffer;
+		buffer << file.rdbuf();
 
-	str.assign((istreambuf_iterator<char>(t)),
-			istreambuf_iterator<char>());
-	return str;
+		return buffer.str();
+	} catch (ios_base::failure) {
+		throw ShaderException("Cannot read file \"" + fname + "\".");
+	}
 }
 
 int createShader(int shaderType, string filename) {
@@ -59,9 +62,8 @@ int createShader(int shaderType, string filename) {
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char log[logLength];
 		glGetShaderInfoLog(shader, logLength, &logLength, log);
-		string msg = string("Failure in compiling ") 
-				+ getName(shaderType) + " shader. "	+ "Error log:\n" + log;
-		cerr << msg << endl;
+		string msg = string("Failure in compiling ")
+				+ getName(shaderType) + " shader. " + "Error log:\n" + log;
 		throw ShaderException(msg);
 	}
 
@@ -70,15 +72,15 @@ int createShader(int shaderType, string filename) {
 }
 
 ShaderProgram::ShaderProgram(string vertexShader, string fragmentShader)
-		: ShaderProgram(vertexShader, "", fragmentShader) {
+: ShaderProgram(vertexShader, "", fragmentShader) {
 }
 
 ShaderProgram::ShaderProgram(string vertexShader, string fragmentShader, vector<string>* attributes)
-		: ShaderProgram(vertexShader, "", fragmentShader, attributes) {
+: ShaderProgram(vertexShader, "", fragmentShader, attributes) {
 }
 
 ShaderProgram::ShaderProgram(string vertexShader, string geometryShader, string fragmentShader)
-		: ShaderProgram(vertexShader, geometryShader, fragmentShader, nullptr) {
+: ShaderProgram(vertexShader, geometryShader, fragmentShader, nullptr) {
 }
 
 ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
@@ -120,7 +122,6 @@ ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
 		char log[logLength];
 		glGetProgramInfoLog(program, logLength, &logLength, log);
 		string msg = string("Failure in linking program. Error log:\n") + log;
-		cerr << msg << endl;
 		throw ShaderException(msg);
 	}
 
@@ -152,16 +153,4 @@ GLint ShaderProgram::getUniformLocation(string name) {
 
 GLuint ShaderProgram::getUniformBlockIndex(string name) {
 	return glGetUniformBlockIndex(program, name.c_str());
-}
-
-ShaderException::ShaderException(std::string message) 
-	: msg(message) {
-}
-
-//const char* ShaderException::what() {
-//	return msg.c_str();
-//}
-
-string ShaderException::what() {
-	return msg;
 }
