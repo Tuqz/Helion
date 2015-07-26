@@ -26,7 +26,7 @@
   - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Lighting
   - [x] normals
-  - [ ] diffuse lighting from point source
+  - [x] diffuse lighting from point source
   - [ ] specular lighting
   - [ ] multiple sources
   - [ ] dynamic range

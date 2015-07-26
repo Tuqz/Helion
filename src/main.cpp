@@ -130,9 +130,13 @@ class Helion : public GameInterface {
 private:
 	Game3D* game = nullptr;
 	ShaderProgram* program = nullptr;
+	ShaderProgram* program2 = nullptr;
 	Mesh* cube = nullptr;
+	Mesh* sphere = nullptr;
 	Node* node = nullptr, * node2 = nullptr, * node3 = nullptr;
 	TestObject* obj = nullptr, * obj2 = nullptr, * obj3 = nullptr;
+	TestObject* sun = nullptr;
+	Node* sunnode = nullptr;
 	DefaultRenderer renderer;
 public:
 
@@ -148,20 +152,34 @@ public:
 		attributes.push_back("normal");
 		program = new ShaderProgram("data/shaders/default.vert",
 				"data/shaders/default.frag", &attributes);
-//				"data/shaders/white.frag", &attributes);
+//				"data/shaders/normals.frag", &attributes);
+		program2 = new ShaderProgram("data/shaders/default.vert",
+				"data/shaders/white.frag", &attributes);
 
-		// Set camera-to-clip matrix
+		// Set camera aspect ratio
 		int w, h;
 		game->getWindow().getWindowSize(w, h);
 		game->getCamera().updateAspect(w, h);
+		
+		// Upload uniforms
+		float Isun = 0.95f;
+		float Iamb = 1-Isun;
 		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
+				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
+		glUniform4f(program->getUniformLocation("sunIntensity"), Isun, Isun, Isun, 1);
+		glUniform4f(program->getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
+		glUniform4f(program->getUniformLocation("diffuseColor"), 1, 1, 1, 1);
+		glUniform1f(program->getUniformLocation("attenuationFactor"), 1);
+		glUseProgram(program2->getProgram());
+		glUniformMatrix4fv(program2->getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
 
 		// Load meshes
 		ObjLoader loader;
 		cube = loader.load("data/meshes/cube.obj");
+		sphere = loader.load("data/meshes/sphere.obj");
 
 		// Add meshes to SceneGraph
 		obj = new TestObject(glm::vec3(1, 0, 0));
@@ -178,6 +196,10 @@ public:
 		node3 = new Spatial(renderer, *cube, *program, *obj3);
 		game->getScenegraph().addChild(node3);
 
+		sun = new TestObject(glm::vec3(-1, 0, 1));
+		sunnode = new Spatial(renderer, *sphere, *program2, *sun);
+		game->getScenegraph().addChild(sunnode);
+		
 		// Set initial camera location
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
@@ -190,6 +212,11 @@ public:
 	}
 
 	void renderWorld(glm::mat4 base) {
+		glUseProgram(program->getProgram());
+        vec4 sunCameraPosition = base * vec4(-1, 0, 1, 1);
+		glUniform3f(program->getUniformLocation("sunPosition"), sunCameraPosition.x, sunCameraPosition.y, sunCameraPosition.z);
+		glUseProgram(0);
+		
 		game->getScenegraph().render(base);
 	}
 
@@ -199,9 +226,17 @@ public:
 
 	void shutdown() {
 		delete program;
+		delete program2;
 		delete cube;
+		delete sphere;
 		delete node;
+		delete node2;
+		delete node3;
+		delete sunnode;
 		delete obj;
+		delete obj2;
+		delete obj3;
+		delete sun;
 	}
 
 	void update(double dt) {

@@ -50,9 +50,15 @@ vector<string> ObjLoader::tokenize(string line, char separator, bool allowEmptyT
 }
 
 Mesh* ObjLoader::load(string filename) {
+	// Set globals
+	vertexData.clear();
+	indices.clear();
+	vertices.clear();
+	normals.clear();
 	currentFile = filename;
 	lineNumber = 0;
 	string line;
+	
 
 	// Open the file
 	ifstream file(filename);

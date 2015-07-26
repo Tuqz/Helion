@@ -1,11 +1,33 @@
 #version 130
 
+in vec3 cameraSpacePosition;
 in vec3 vertexNormal;
 
-smooth in vec4 fragColor;
+// Lighting parameters
+uniform vec3 sunPosition;
+uniform vec4 sunIntensity;
+uniform vec4 ambientIntensity;
+uniform vec4 diffuseColor;
+uniform float attenuationFactor;
 
 out vec4 outputColor;
 
-void main() {
-    outputColor = vec4((vertexNormal+1)/2, 1.0f);
+vec4 applyLightIntensity(in vec3 cameraSpacePosition, out vec3 dirToLightSource)
+{
+    vec3 lightDifference =  sunPosition - cameraSpacePosition;
+    float lightDistanceSqr = dot(lightDifference, lightDifference);
+    dirToLightSource = lightDifference * inversesqrt(lightDistanceSqr);
+    
+    return sunIntensity / ( 1.0 + attenuationFactor * lightDistanceSqr);
+}
+
+void main()
+{
+    vec3 dirToSun = vec3(0.0);
+    vec4 attenIntensity = applyLightIntensity(cameraSpacePosition, dirToSun);
+    float cosAI_sun = clamp(dot(vertexNormal, dirToSun), 0, 1);
+
+    // Output including ambient and diffuse lighting
+    outputColor = diffuseColor * ambientIntensity
+            + diffuseColor * attenIntensity * cosAI_sun;
 }
