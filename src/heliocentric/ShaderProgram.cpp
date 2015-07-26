@@ -32,18 +32,21 @@ string getName(int shaderType) {
 }
 
 string loadShader(string fname) {
-	try {
-		ifstream file;
-		file.exceptions(ifstream::failbit | ifstream::badbit);
-		file.open(fname);
-
-		stringstream buffer;
-		buffer << file.rdbuf();
-
-		return buffer.str();
-	} catch (ios_base::failure) {
-		throw ShaderException("Cannot read file \"" + fname + "\".");
+	// Open the file
+	ifstream file(filename);
+	if (!file.is_open()) {
+		throw IOException("Cannot read file \"" + filename + "\": " + strerror(errno) + ".");
 	}
+
+	// Load file into buffer
+	stringstream buffer;
+	buffer << file.rdbuf();
+	if (file.bad()) {
+		throw IOException("Error while reading file \"" + filename + "\": " + strerror(errno) + ".");
+	}
+
+	// Return buffer contents
+	return buffer.str();
 }
 
 int createShader(int shaderType, string filename) {
