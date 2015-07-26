@@ -25,7 +25,7 @@
   - [ ] ~~parameter space vertices~~ (not planned)
   - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Lighting
-  - [ ] normals
+  - [x] normals
   - [ ] diffuse lighting from point source
   - [ ] specular lighting
   - [ ] multiple sources

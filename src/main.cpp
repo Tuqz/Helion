@@ -145,8 +145,10 @@ public:
 		// Prepare shaders
 		vector<string> attributes;
 		attributes.push_back("position");
-		program = new ShaderProgram("data/shaders/solid.vert",
-				"data/shaders/solid.frag", &attributes);
+		attributes.push_back("normal");
+		program = new ShaderProgram("data/shaders/default.vert",
+				"data/shaders/default.frag", &attributes);
+//				"data/shaders/white.frag", &attributes);
 
 		// Set camera-to-clip matrix
 		int w, h;
@@ -158,7 +160,7 @@ public:
 		glUseProgram(0);
 
 		// Load meshes
-		ObjLoader loader(false);
+		ObjLoader loader;
 		cube = loader.load("data/meshes/cube.obj");
 
 		// Add meshes to SceneGraph

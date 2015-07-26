@@ -35,6 +35,10 @@ void DefaultRenderer::render(Mesh& mesh, ShaderProgram& program, GLuint vao, glm
 }
 
 void DefaultRenderer::setVertexAttribs() {
+	// Vertex coordinates
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
+	// Vertex normals
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*) (3*sizeof(float)));
 }
