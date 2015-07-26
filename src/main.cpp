@@ -158,7 +158,7 @@ public:
 		glUseProgram(0);
 
 		// Load meshes
-		ObjLoader loader;
+		ObjLoader loader(false);
 		cube = loader.load("data/meshes/cube.obj");
 
 		// Add meshes to SceneGraph

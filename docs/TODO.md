@@ -16,13 +16,14 @@
 - [ ] OBJ Loader
   - [x] vertex positions (v, 3, 4, 6 and 7 values supported.)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
-  - [ ] normals (vn)
+  - [x] normals (vn)
   - [ ] normal indices (extension of f)
   - [ ] texture coordinates (vt)
   - [ ] texture indices (extension of f)
   - [ ] Material references (needs MTL parser)
   - [x] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
+  - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Lighting
   - [ ] normals
   - [ ] diffuse lighting from point source

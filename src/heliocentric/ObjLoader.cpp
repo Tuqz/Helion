@@ -16,13 +16,11 @@
 
 using namespace std;
 
-ObjLoader::ObjLoader() : ObjLoader(false) {
+ObjLoader::ObjLoader(bool inlining, bool loadColorData) 
+: inlining(inlining), loadColorData(loadColorData) {
 }
 
-ObjLoader::ObjLoader(bool loadColorData) : loadColorData(loadColorData) {
-}
-
-ObjLoader::ObjLoader(const ObjLoader& orig) : ObjLoader(orig.loadColorData) {
+ObjLoader::ObjLoader(const ObjLoader& orig) : ObjLoader(orig.inlining, orig.loadColorData) {
 }
 
 ObjLoader::~ObjLoader() {
@@ -73,11 +71,30 @@ Mesh* ObjLoader::load(string filename) {
 	if (file.bad()) {
 		throw IOException("Error while reading file \"" + filename + "\": " + strerror(errno) + ".");
 	}
-	
+
 	// Close the file
 	file.close();
 
-	return new Mesh(vertices, indices);
+	// Populate vertexData
+	if (inlining) {
+		if (vertices.size() != normals.size()) {
+			throw ObjParseException("Mismatch between number of vertices and normals.");
+		}
+		for (vector<vector<float>>::size_type i = 0; i < vertices.size(); i++) {
+			vertexData.insert(vertexData.end(), vertices[i].begin(), vertices[i].end());
+			vertexData.insert(vertexData.end(), normals[i].begin(), normals[i].end());
+		}
+	} else {
+		for (vector<vector<float>>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+			vertexData.insert(vertexData.end(), it->begin(), it->end());
+		}
+		for (vector<vector<float>>::iterator it = normals.begin(); it != normals.end(); ++it) {
+			vertexData.insert(vertexData.end(), it->begin(), it->end());
+		}
+	}
+
+
+	return new Mesh(vertexData, indices);
 }
 
 void ObjLoader::parseLine(std::string& line) {
@@ -89,6 +106,8 @@ void ObjLoader::parseLine(std::string& line) {
 	// Send string to the correct parser
 	if (linetype.compare("v") == 0) {
 		parseVEntry(N, tokens);
+	} else if (linetype.compare("vn") == 0) {
+		parseVNEntry(N, tokens);
 	} else if (linetype.compare("f") == 0) {
 		parseFEntry(N, tokens);
 	}
@@ -100,26 +119,47 @@ void ObjLoader::parseVEntry(int N, const std::vector<string>& tokens) {
 		throw error("Expected three (xyz), four (xyzw), six (xyzrgb) or seven (xyzwrgb) values in v-entry.");
 	}
 
+	vector<float> vertex;
 	int i;
+
 	// Push vertex coordinates XYZ
 	for (i = 1; i <= 3; i++) {
-		vertices.push_back(toFloat(tokens[i]));
+		vertex.push_back(toFloat(tokens[i]));
 	}
 
 	// Push W
 	if (N == 3 || N == 6) {
-		vertices.push_back(1);
+		vertex.push_back(1);
 	} else {
-		vertices.push_back(toFloat(tokens[i]));
+		vertex.push_back(toFloat(tokens[i]));
 		i++;
 	}
 
 	// Push color values
 	if (loadColorData) {
 		for (; i < N + 1; i++) {
-			vertices.push_back(toFloat(tokens[i]));
+			vertex.push_back(toFloat(tokens[i]));
 		}
 	}
+
+	// Add vertex to list of vertices
+	vertices.push_back(vertex);
+}
+
+void ObjLoader::parseVNEntry(int N, const std::vector<std::string>& tokens) {
+	// Check number of element correctness
+	if (N != 3) {
+		throw error("Expected three values in vn-entry.");
+	}
+
+	// Push normal values
+	vector<float> normal;
+	for (int i = 1; i <= N; i++) {
+		normal.push_back(toFloat(tokens[i]));
+	}
+
+	// Add normal to list of normals
+	normals.push_back(normal);
 }
 
 void ObjLoader::parseFEntry(int N, const std::vector<std::string>& tokens) {
