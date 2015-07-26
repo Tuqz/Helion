@@ -9,6 +9,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <errno.h>
+#include <cstring>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -31,7 +33,7 @@ string getName(int shaderType) {
 	return "<unknown type>";
 }
 
-string loadShader(string fname) {
+string loadShader(string filename) {
 	// Open the file
 	ifstream file(filename);
 	if (!file.is_open()) {
