@@ -16,7 +16,7 @@ docs/doxygen-heliocentric/html
 *.slo
 *.lo
 *.o
-*.obj
+#*.obj
 
 # Precompiled Headers
 *.gch
