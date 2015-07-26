@@ -24,7 +24,7 @@
 #include "heliocentric/InputListener.hpp"
 #include "heliocentric/GameInterface.hpp"
 #include "heliocentric/ShaderProgram.hpp"
-#include "heliocentric/loaders.hpp"
+#include "heliocentric/ObjLoader.hpp"
 #include "heliocentric/Mesh.hpp"
 #include "heliocentric/DefaultRenderer.hpp"
 #include "heliocentric/GameObject.hpp"
@@ -158,7 +158,8 @@ public:
 		glUseProgram(0);
 
 		// Load meshes
-		cube = loaders::loadOBJ("data/meshes/cube.obj");
+		ObjLoader loader;
+		cube = loader.load("data/meshes/cube.obj");
 
 		// Add meshes to SceneGraph
 		obj = new TestObject(glm::vec3(1, 0, 0));
