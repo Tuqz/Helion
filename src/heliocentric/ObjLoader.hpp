@@ -40,6 +40,9 @@ private:
 	std::vector<unsigned short> indices;
 	std::vector<std::vector<float>> vertices;
 	std::vector<std::vector<float>> normals;
+	std::vector<unsigned short> vIndices;
+//	std::vector<unsigned short> tIndices;
+	std::vector<unsigned short> nIndices;
 	// For error handling
 	std::string currentFile;
 	int lineNumber;
@@ -72,9 +75,12 @@ private:
 	void parseVEntry(int N, const std::vector<std::string>& tokens);
 	void parseVNEntry(int N, const std::vector<std::string>& tokens);
 	void parseFEntry(int N, const std::vector<std::string>& tokens);
+	void parseIndices(const std::string& token);
+	
+	void reorderVertexData();
 	
 	float toFloat(std::string str);
-	float toInt(std::string str);
+	int toInt(std::string str);
 	
 	ObjParseException error(std::string message);
 };

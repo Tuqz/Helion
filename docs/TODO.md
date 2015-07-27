@@ -17,7 +17,7 @@
   - [x] vertex positions (v, 3, 4, 6 and 7 values supported.)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
   - [x] normals (vn)
-  - [ ] normal indices (extension of f)
+  - [x] normal indices (extension of f)
   - [ ] texture coordinates (vt)
   - [ ] texture indices (extension of f)
   - [ ] Material references (needs MTL parser)
@@ -30,6 +30,7 @@
   - [ ] specular lighting
   - [ ] multiple sources
   - [ ] dynamic range
+  - [ ] gamma
 - [ ] Textures
 - [ ] Fix handling of window close and `exit()` in `Game`
 

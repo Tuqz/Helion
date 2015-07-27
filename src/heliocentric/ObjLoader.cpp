@@ -16,7 +16,13 @@
 
 using namespace std;
 
-ObjLoader::ObjLoader(bool inlining, bool loadColorData) 
+struct Index {
+	unsigned short v;
+	unsigned short n;
+	unsigned short i;
+};
+
+ObjLoader::ObjLoader(bool inlining, bool loadColorData)
 : inlining(inlining), loadColorData(loadColorData) {
 }
 
@@ -55,10 +61,14 @@ Mesh* ObjLoader::load(string filename) {
 	indices.clear();
 	vertices.clear();
 	normals.clear();
+	vIndices.clear();
+    //tIndices.clear();
+	nIndices.clear();
+	
 	currentFile = filename;
 	lineNumber = 0;
 	string line;
-	
+
 
 	// Open the file
 	ifstream file(filename);
@@ -81,24 +91,8 @@ Mesh* ObjLoader::load(string filename) {
 	// Close the file
 	file.close();
 
-	// Populate vertexData
-	if (inlining) {
-		if (vertices.size() != normals.size()) {
-			throw ObjParseException("Mismatch between number of vertices and normals.");
-		}
-		for (vector<vector<float>>::size_type i = 0; i < vertices.size(); i++) {
-			vertexData.insert(vertexData.end(), vertices[i].begin(), vertices[i].end());
-			vertexData.insert(vertexData.end(), normals[i].begin(), normals[i].end());
-		}
-	} else {
-		for (vector<vector<float>>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
-			vertexData.insert(vertexData.end(), it->begin(), it->end());
-		}
-		for (vector<vector<float>>::iterator it = normals.begin(); it != normals.end(); ++it) {
-			vertexData.insert(vertexData.end(), it->begin(), it->end());
-		}
-	}
-
+	// Convert to singular indices and populate vertexData
+	reorderVertexData();
 
 	return new Mesh(vertexData, indices);
 }
@@ -176,7 +170,78 @@ void ObjLoader::parseFEntry(int N, const std::vector<std::string>& tokens) {
 
 	// Push vertex indices
 	for (int i = 1; i <= N; i++) {
-		indices.push_back(toInt(tokens[i]) - 1);
+		parseIndices(tokens[i]);
+	}
+}
+
+void ObjLoader::parseIndices(const std::string& token) {
+	vector<string> tokens = tokenize(token, '/', true);
+
+	if (tokens.size() == 3) {
+		vIndices.push_back(toInt(tokens[0]) - 1);
+		//if (tokens[1].empty()) {
+		//	tIndices.push_back(toInt(tokens[0]) - 1);
+		//} else {
+		//	tIndices.push_back(toInt(tokens[1]) - 1);
+		//}
+		nIndices.push_back(toInt(tokens[2]) - 1);
+	} else if (tokens.size() == 2) {
+		vIndices.push_back(toInt(tokens[0]) - 1);
+		//tIndices.push_back(toInt(tokens[1]) - 1);
+		nIndices.push_back(toInt(tokens[0]) - 1);
+	} else if (tokens.size() == 1) {
+		vIndices.push_back(toInt(tokens[0]) - 1);
+		//tIndices.push_back(toInt(tokens[0]) - 1);
+		nIndices.push_back(toInt(tokens[0]) - 1);
+	} else {
+		throw error("Incorrect face specification.");
+	}
+}
+
+void ObjLoader::reorderVertexData() {
+	vector< vector<Index> > lookup(vertices.size());
+	vector<Index> reverseLookup;
+	Index entry;
+
+	// Convert to singular indices
+	entry.i = 0;
+	for (int i = 0; i < vIndices.size(); i++) {
+		bool found = false;
+
+		// Look if this index pair already exists
+		int j;
+		for (j = 0; j < lookup[vIndices[i]].size()
+				&& !(found = lookup[vIndices[i]][j].n == nIndices[i]); j++);
+
+		// If not, add a new entry to the lookup tables
+		if (!found) {
+			entry.v = vIndices[i];
+			entry.n = nIndices[i];
+
+			lookup[vIndices[i]].push_back(entry);
+			reverseLookup.push_back(entry);
+
+			entry.i++;
+		}
+
+		// Finally, add the index to the index list
+		indices.push_back(lookup[vIndices[i]][j].i);
+	}
+
+	// Populate vertexData
+	vector<float> actualNormalData;
+	vector<float>* normalData = &actualNormalData;
+	if (inlining) {
+		normalData = &vertexData;
+	}
+	for (int i = 0; i < entry.i; i++) {
+		int iv = reverseLookup[i].v;
+		int in = reverseLookup[i].n;
+		vertexData.insert(vertexData.end(), vertices[iv].begin(), vertices[iv].end());
+		normalData->insert(normalData->end(), normals[in].begin(), normals[in].end());
+	}
+	if (!inlining) {
+		vertexData.insert(vertexData.end(), normalData->begin(), normalData->end());
 	}
 }
 
@@ -191,7 +256,7 @@ float ObjLoader::toFloat(std::string str) {
 	}
 }
 
-float ObjLoader::toInt(std::string str) {
+int ObjLoader::toInt(std::string str) {
 	try {
 		return stoi(str);
 	} catch (invalid_argument& ex) {
