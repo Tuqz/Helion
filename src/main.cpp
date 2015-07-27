@@ -162,7 +162,7 @@ public:
 		game->getCamera().updateAspect(w, h);
 		
 		// Upload uniforms
-		float Isun = 0.95f;
+		float Isun = 0.995f;
 		float Iamb = 1-Isun;
 		glUseProgram(program->getProgram());
 		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
@@ -171,6 +171,7 @@ public:
 		glUniform4f(program->getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
 		glUniform4f(program->getUniformLocation("diffuseColor"), 1, 1, 1, 1);
 		glUniform1f(program->getUniformLocation("attenuationFactor"), 1);
+		glUniform1f(program->getUniformLocation("invgamma"), 1.0f/2.2f);
 		glUseProgram(program2->getProgram());
 		glUniformMatrix4fv(program2->getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
@@ -214,7 +215,7 @@ public:
 
 	void renderWorld(glm::mat4 base) {
 		glUseProgram(program->getProgram());
-        vec4 sunCameraPosition = base * vec4(-1, 0, 1, 1);
+        vec4 sunCameraPosition = base * vec4(sun->getPosition(), 1);
 		glUniform3f(program->getUniformLocation("sunPosition"), sunCameraPosition.x, sunCameraPosition.y, sunCameraPosition.z);
 		glUseProgram(0);
 		
