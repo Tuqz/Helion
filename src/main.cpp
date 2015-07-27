@@ -133,10 +133,10 @@ private:
 	ShaderProgram* program2 = nullptr;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
-	Node* node = nullptr, * node2 = nullptr, * node3 = nullptr;
+	Spatial* node = nullptr, * node2 = nullptr, * node3 = nullptr;
 	TestObject* obj = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
-	Node* sunnode = nullptr;
+	Spatial* sunnode = nullptr;
 	DefaultRenderer renderer;
 public:
 
@@ -198,6 +198,7 @@ public:
 
 		sun = new TestObject(glm::vec3(-1, 0, 1));
 		sunnode = new Spatial(renderer, *sphere, *program2, *sun);
+		sunnode->setScale(0.2f);
 		game->getScenegraph().addChild(sunnode);
 		
 		// Set initial camera location
