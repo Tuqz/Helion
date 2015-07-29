@@ -16,7 +16,7 @@
 #include <GLFW/glfw3.h>
 
 #include "ShaderProgram.hpp"
-#include "exceptions.hpp"
+#include "../exceptions.hpp"
 
 using namespace std;
 

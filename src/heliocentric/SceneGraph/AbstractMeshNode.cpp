@@ -12,9 +12,9 @@
 #include <GL/glew.h>
 #include <glm/mat4x4.hpp>
 
-#include "../Mesh.hpp"
-#include "../MeshRenderer.hpp"
-#include "../ShaderProgram.hpp"
+#include "../Renderer/Mesh.hpp"
+#include "../Renderer/MeshRenderer.hpp"
+#include "../Renderer/ShaderProgram.hpp"
 
 using namespace std;
 
