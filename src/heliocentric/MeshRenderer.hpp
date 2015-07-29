@@ -16,7 +16,7 @@ class ShaderProgram;
 class MeshRenderer {
 public:
 	virtual ~MeshRenderer() {};
-	virtual void render(Mesh& mesh, ShaderProgram& program, GLuint vao, glm::mat4 modelToCamera) = 0;
+	virtual void render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera) = 0;
 	virtual void setVertexAttribs() = 0;
 };
 

@@ -18,8 +18,8 @@
 
 using namespace std;
 
-AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program)
-: renderer(renderer), mesh(mesh), program(program) {
+AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh)
+: renderer(renderer), mesh(mesh) {
 	// Create the VAO
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -30,12 +30,12 @@ AbstractMeshNode::AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh, ShaderPro
 }
 
 AbstractMeshNode::AbstractMeshNode(const AbstractMeshNode& orig) 
-: AbstractMeshNode(orig.renderer, orig.mesh, orig.program) {
+: AbstractMeshNode(orig.renderer, orig.mesh) {
 }
 
 AbstractMeshNode::~AbstractMeshNode() {
 }
 
 void AbstractMeshNode::render(glm::mat4 base) {
-	renderer.render(mesh, program, vao, base);
+	renderer.render(mesh, vao, base);
 }

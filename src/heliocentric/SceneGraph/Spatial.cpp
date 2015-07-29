@@ -13,8 +13,8 @@
 #include "Spatial.hpp"
 #include "../GameObject.hpp"
 
-Spatial::Spatial(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program, GameObject& obj)
-: AbstractMeshNode(renderer, mesh, program), obj(obj) {
+Spatial::Spatial(MeshRenderer& renderer, Mesh& mesh, GameObject& obj)
+: AbstractMeshNode(renderer, mesh), obj(obj) {
 
 }
 

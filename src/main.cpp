@@ -133,11 +133,12 @@ private:
 	ShaderProgram* program2 = nullptr;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
-	Spatial* node = nullptr, * node2 = nullptr, * node3 = nullptr;
-	TestObject* obj = nullptr, * obj2 = nullptr, * obj3 = nullptr;
+	Spatial* node1 = nullptr, * node2 = nullptr, * node3 = nullptr;
+	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	Spatial* sunnode = nullptr;
-	DefaultRenderer renderer;
+	DefaultRenderer* defaultRenderer;
+	DefaultRenderer* whiteRenderer;
 public:
 
 	void setGame(Game3D* game) {
@@ -155,6 +156,10 @@ public:
 //				"data/shaders/normals.frag", &attributes);
 		program2 = new ShaderProgram("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
+		
+		// Prepare renderers
+		defaultRenderer = new DefaultRenderer(*program);
+		whiteRenderer = new DefaultRenderer(*program2);
 
 		// Set camera aspect ratio
 		int w, h;
@@ -183,22 +188,22 @@ public:
 		sphere = loader.load("data/meshes/sphere.obj");
 
 		// Add meshes to SceneGraph
-		obj = new TestObject(glm::vec3(1, 0, 0));
-		node = new Spatial(renderer, *cube, *program, *obj);
-		game->getScenegraph().addChild(node);
+		obj1 = new TestObject(glm::vec3(1, 0, 0));
+		node1 = new Spatial(*defaultRenderer, *cube, *obj1);
+		game->getScenegraph().addChild(node1);
 
 		obj2 = new TestObject(glm::vec3(-1, 0.5f, -2));
 		obj2->rotate(PI / 8, 0, 1, 0);
-		node2 = new Spatial(renderer, *cube, *program, *obj2);
+		node2 = new Spatial(*defaultRenderer, *cube, *obj2);
 		game->getScenegraph().addChild(node2);
 
 		obj3 = new TestObject(glm::vec3(-0.5f, -1, -1));
 		obj3->rotate(PI / 4, 1, 0, 0);
-		node3 = new Spatial(renderer, *cube, *program, *obj3);
+		node3 = new Spatial(*defaultRenderer, *cube, *obj3);
 		game->getScenegraph().addChild(node3);
 
 		sun = new TestObject(glm::vec3(-1, 0, 1));
-		sunnode = new Spatial(renderer, *sphere, *program2, *sun);
+		sunnode = new Spatial(*whiteRenderer, *sphere, *sun);
 		sunnode->setScale(0.2f);
 		game->getScenegraph().addChild(sunnode);
 		
@@ -231,14 +236,16 @@ public:
 		delete program2;
 		delete cube;
 		delete sphere;
-		delete node;
+		delete node1;
 		delete node2;
 		delete node3;
-		delete sunnode;
-		delete obj;
+		delete obj1;
 		delete obj2;
 		delete obj3;
 		delete sun;
+		delete sunnode;
+		delete defaultRenderer;
+		delete whiteRenderer;
 	}
 
 	void update(double dt) {

@@ -30,7 +30,7 @@
   - [ ] specular lighting
   - [ ] multiple sources
   - [ ] dynamic range
-  - [ ] gamma
+  - [x] gamma
 - [ ] Textures
 - [ ] Fix handling of window close and `exit()` in `Game`
 

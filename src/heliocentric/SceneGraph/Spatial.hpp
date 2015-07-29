@@ -16,7 +16,7 @@ private:
 	GameObject& obj;
 	float scale = 1;
 public:
-	Spatial(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program, GameObject& obj);
+	Spatial(MeshRenderer& renderer, Mesh& mesh, GameObject& obj);
 	Spatial(const Spatial& orig);
 	virtual ~Spatial();
 	virtual void render(glm::mat4 base);
