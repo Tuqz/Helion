@@ -15,7 +15,7 @@ namespace helion {
 		}
 	}
 
-	SolarSystem loadSystem(const Orbitable &sun, std::string filename) {
+	SolarSystem loadSystem(Orbitable &sun, std::string filename) {
 		std::ifstream datafile(filename);
 		SolarSystem system;
 		if(datafile.is_open()) {

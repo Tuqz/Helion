@@ -11,7 +11,7 @@
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
-  - [ ] resizable window
+  - [ ] Resizable window
 - [ ] OBJ Loader
   - [x] vertex positions (v, 3, 4, 6 and 7 values supported. W taken into account, but colors are ignored)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
@@ -25,10 +25,8 @@
 - [ ] Lighting
 - [ ] Fix handling of window close and `exit()` in `Game`
 
-- [ ] Better error handling
-  - [ ] Handle missing shader files
-  - [ ] catch exception objects
-- [ ] Use const where useful
+- [ ] Use const keyword where useful
+- [ ] Namespaces
 - [ ] Implement copy constructors
 - [ ] Add documentation
 

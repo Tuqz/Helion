@@ -108,7 +108,7 @@ public:
 	: orientation(orientation), position(position) {
 	}
 
-	TestObject(glm::vec3 position) : TestObject(glm::quat(), position){
+	TestObject(glm::vec3 position) : TestObject(glm::quat(), position) {
 	}
 
 	virtual glm::vec3 getPosition() {
@@ -118,7 +118,7 @@ public:
 	virtual glm::quat getOrientation() {
 		return orientation;
 	}
-	
+
 	void rotate(float angle, float x, float y, float z) {
 		float f = sinf(angle / 2.0f);
 		glm::quat q = quat(cosf(angle / 2.0f), x*f, y*f, z * f);
@@ -141,7 +141,7 @@ public:
 	}
 
 	void init() {
-		
+
 		// Prepare shaders
 		vector<string> attributes;
 		attributes.push_back("position");
@@ -166,12 +166,12 @@ public:
 		game->getScenegraph().addChild(node);
 
 		obj2 = new TestObject(glm::vec3(-1, 0.5f, -2));
-		obj2->rotate(PI/8, 0, 1, 0);
+		obj2->rotate(PI / 8, 0, 1, 0);
 		node2 = new Spatial(renderer, *cube, *program, *obj2);
 		game->getScenegraph().addChild(node2);
 
 		obj3 = new TestObject(glm::vec3(-0.5f, -1, -1));
-		obj3->rotate(PI/4, 1, 0, 0);
+		obj3->rotate(PI / 4, 1, 0, 0);
 		node3 = new Spatial(renderer, *cube, *program, *obj3);
 		game->getScenegraph().addChild(node3);
 
