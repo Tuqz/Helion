@@ -16,9 +16,20 @@ glm::vec3 Orbit::getPosition(double r, double theta) const {
 			return glm::vec3(x, y, z);
 }
 
-Orbit::Orbit(Orbitable &p, double a, double e, double inc, double lan, double aop, double top)
+Orbit::Orbit() {
+	parent = NULL;
+	semimajor = 0;
+	eccentricity = 0;
+	inclination = 0;
+	long_asc_node = 0;
+	arg_of_periapsis = 0;
+	time_of_periapsis = 0;
+	period = 0;
+}
+
+Orbit::Orbit(Orbitable *p, double a, double e, double inc, double lan, double aop, double top)
 	: parent(p), semimajor(a), eccentricity(e), inclination(inc), long_asc_node(lan), arg_of_periapsis(aop), time_of_periapsis(top) {
-		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu);
+		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p->getMu());
 		calculatePoints();
 }
 
@@ -93,5 +104,5 @@ double Orbit::getPeriod() {
 }
 
 Orbitable& Orbit::getParent() {
-	return parent;
+	return *parent;
 }

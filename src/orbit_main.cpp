@@ -12,6 +12,7 @@
 #include "heliocentric/Mesh.hpp"
 #include "heliocentric/loaders.hpp"
 #include "heliocentric/SceneGraph/Spatial.hpp"
+#include "heliocentric/ShaderProgram.hpp"
 #include "orbits/bodyloader.h"
 #include "orbits/celestialbody.h"
 
@@ -22,7 +23,7 @@ private:
 public:
 	helion::CelestialBody body;
 	Mesh *mesh;
-	Spatial node;
+	Spatial *node;
 	PlanetObject(helion::CelestialBody &b) {
 		body = b;
 		orientation = glm::quat();
@@ -30,38 +31,42 @@ public:
 	}
 
 	virtual glm::vec3 getPosition() {
-		return body.position/1e24; //Scale position down to a much more handlable scale
+		return body.position / 1e24f; //Scale position down to a much more handlable scale
 	}
 
 	virtual glm::quat getOrientation() {
 		return orientation;
+	}
+
+	~PlanetObject() {
+		delete node;
 	}
 };
 
 class OrbitTest : public GameInterface {
 private:
 	DefaultRenderer renderer;
-	ShaderProgram program;
+	ShaderProgram *program;
 	helion::Orbitable Sol;
 	std::vector<PlanetObject> system;
-	Game3D *game;
+	Game3D *game = NULL;
 	double t = 0;
 public:
 	void init() {
 		std::vector<std::string> attributes;
 		attributes.push_back("position");
-		program = ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
+		program = new ShaderProgram("data/shaders/solid.vert", "data/shaders/solid.frag", &attributes);
 		
 		Sol = helion::loadSun("data/physics/sol.dat");
-		helion::SolarSystem solar_system = helion::loadSystem(Sol, "data/physics/system.dat");
+		helion::SolarSystem solar_system = helion::loadSystem(&Sol, "data/physics/system.dat");
 		int i = 0;
 		for(auto keyvalue : solar_system) {
 			keyvalue.second.update(0); //Send them to the J2000 epoch
 			PlanetObject obj(keyvalue.second);
 			system.push_back(obj);
-			Spatial node(renderer, *(system[i].mesh), program, &system[i]);
+			Spatial *node = new Spatial(renderer, *(system[i].mesh), *program, system[i]);
 			system[i].node = node;
-			game->getScenegraph().addChild(&system[i].node);
+			game->getScenegraph().addChild(system[i].node);
 			++i;
 		}
 	}
@@ -90,6 +95,7 @@ public:
 	}
 
 	void shutdown() {
+		delete program;
 	}
 };
 

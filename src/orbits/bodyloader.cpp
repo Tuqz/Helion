@@ -15,7 +15,7 @@ namespace helion {
 		}
 	}
 
-	SolarSystem loadSystem(Orbitable &sun, std::string filename) {
+	SolarSystem loadSystem(Orbitable *sun, std::string filename) {
 		std::ifstream datafile(filename);
 		SolarSystem system;
 		if(datafile.is_open()) {
@@ -53,7 +53,7 @@ namespace helion {
 					CelestialBody body(mass, orbit);
 					system.insert({{name, body}});
 				} else {
-					Orbit orbit(system.at(parent), semimajor, eccen, inclin, longitude, argument, time);
+					Orbit orbit(&system.at(parent), semimajor, eccen, inclin, longitude, argument, time);
 					CelestialBody body(mass, orbit);
 					system.insert({{name, body}});
 				}

@@ -2,10 +2,14 @@
 #include <glm/vec3.hpp>
 
 namespace helion {
-	struct Orbitable {
+	class Orbitable {
+	public:
 		Orbitable();
 		Orbitable(double mass);
 		glm::vec3 position;
-		const double mass, mu;
+		double getMass();
+		double getMu();
+	private:
+		double mass, mu;
 	};
 }
