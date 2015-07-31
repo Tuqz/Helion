@@ -24,6 +24,11 @@ void glfwErrorCallback(int error, const char* description) {
 	throw GLFWException(description);
 }
 
+void cb_windowClosed(GLFWwindow* window) {
+	Game* wrapper = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	wrapper->windowClosed();
+}
+
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
 	if (game->getInputListener()) {
@@ -58,9 +63,10 @@ Game::Game() {
 	// Print OpenGL version
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 
-	// Set up input handling
+	// Set up callback functions
 	glfwSetWindowUserPointer(window.getWindow(), this);
 	glfwSetKeyCallback(window.getWindow(), keyCallback);
+	glfwSetWindowCloseCallback(window.getWindow(), cb_windowClosed);
 }
 
 Game::~Game() {
@@ -72,6 +78,9 @@ void Game::run() {
 		// Initialize FPS counter
 		double frameStartTime = getTime();
 		prevFrameRateCalcTime = frameStartTime;
+
+		// Prepare the framebuffer
+		resized();
 
 		// Allow user to initialize the game
 		init();
@@ -96,7 +105,7 @@ void Game::run() {
 			int w, h;
 			window.getWindowSize(w, h);
 			glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-			//resized();
+			resized();
 			render();
 
 			// Switch draw buffers
@@ -142,6 +151,19 @@ void Game::shutdown() {
 
 bool Game::shouldStop() {
 	return glfwWindowShouldClose(window.getWindow());
+}
+
+void Game::resized() {
+	int width, height;
+	glfwGetWindowSize(window.getWindow(), &width, &height);
+	windowResized(width, height);
+}
+
+void Game::windowResized(int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
+void Game::windowClosed() {
 }
 
 Window& Game::getWindow() {

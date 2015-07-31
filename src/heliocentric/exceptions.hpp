@@ -37,10 +37,5 @@ public:
 	ShaderException(std::string message) : Exception(message) {}
 };
 
-class LoaderException : public Exception {
-public:
-	LoaderException(std::string message) : Exception(message) {}
-};
-
 #endif	/* EXCEPTIONS_HPP */
 

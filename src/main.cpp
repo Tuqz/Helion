@@ -23,13 +23,14 @@
 #include "heliocentric/Game3D.hpp"
 #include "heliocentric/InputListener.hpp"
 #include "heliocentric/GameInterface.hpp"
-#include "heliocentric/ShaderProgram.hpp"
-#include "heliocentric/loaders.hpp"
-#include "heliocentric/Mesh.hpp"
-#include "heliocentric/DefaultRenderer.hpp"
+#include "heliocentric/ObjLoader.hpp"
+#include "heliocentric/Renderer/Mesh.hpp"
+#include "heliocentric/Renderer/DefaultRenderer.hpp"
+#include "heliocentric/Renderer/ShaderProgram.hpp"
 #include "heliocentric/GameObject.hpp"
 #include "heliocentric/SceneGraph/SceneGraph.hpp"
 #include "heliocentric/SceneGraph/Spatial.hpp"
+#include "heliocentric/RenderManager.hpp"
 
 using namespace std;
 
@@ -129,11 +130,11 @@ public:
 class Helion : public GameInterface {
 private:
 	Game3D* game = nullptr;
-	ShaderProgram* program = nullptr;
 	Mesh* cube = nullptr;
-	Node* node = nullptr, * node2 = nullptr, * node3 = nullptr;
-	TestObject* obj = nullptr, * obj2 = nullptr, * obj3 = nullptr;
-	DefaultRenderer renderer;
+	Mesh* sphere = nullptr;
+	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
+	TestObject* sun = nullptr;
+	RenderManager* manager = nullptr;
 public:
 
 	void setGame(Game3D* game) {
@@ -141,43 +142,41 @@ public:
 	}
 
 	void init() {
-
-		// Prepare shaders
+		manager = new RenderManager(*game);
+		
+		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
 		attributes.push_back("position");
-		program = new ShaderProgram("data/shaders/solid.vert",
-				"data/shaders/solid.frag", &attributes);
-
-		// Set camera-to-clip matrix
-		int w, h;
-		game->getWindow().getWindowSize(w, h);
-		game->getCamera().updateAspect(w, h);
-		glUseProgram(program->getProgram());
-		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
-				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
-		glUseProgram(0);
+		attributes.push_back("normal");
+		DefaultRenderer* whiteRenderer = (DefaultRenderer*) 
+				manager->createRenderer("data/shaders/default.vert",
+				"data/shaders/white.frag", &attributes);
 
 		// Load meshes
-		cube = loaders::loadOBJ("data/meshes/cube.obj");
+		ObjLoader loader;
+		cube = loader.load("data/meshes/cube.obj");
+		sphere = loader.load("data/meshes/sphere.obj");
 
-		// Add meshes to SceneGraph
-		obj = new TestObject(glm::vec3(1, 0, 0));
-		node = new Spatial(renderer, *cube, *program, *obj);
-		game->getScenegraph().addChild(node);
-
+		// Create game objects
+		obj1 = new TestObject(glm::vec3(1, 0, 0));
 		obj2 = new TestObject(glm::vec3(-1, 0.5f, -2));
 		obj2->rotate(PI / 8, 0, 1, 0);
-		node2 = new Spatial(renderer, *cube, *program, *obj2);
-		game->getScenegraph().addChild(node2);
-
 		obj3 = new TestObject(glm::vec3(-0.5f, -1, -1));
 		obj3->rotate(PI / 4, 1, 0, 0);
-		node3 = new Spatial(renderer, *cube, *program, *obj3);
-		game->getScenegraph().addChild(node3);
-
-		// Set initial camera location
+		sun = new TestObject(glm::vec3(-1, 0, 1));
+		
+		// Add game objects to SceneGraph
+		manager->addToSceneGraph(*obj1, *cube);
+		manager->addToSceneGraph(*obj2, *cube);
+		manager->addToSceneGraph(*obj3, *cube);
+		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
+		
+		// Set initial camera location (default is 0,0,0)
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
+		// Set source position of sunlight (default is 0,0,0)
+		manager->setSunPosition(sun->getPosition());
+		
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -187,18 +186,29 @@ public:
 	}
 
 	void renderWorld(glm::mat4 base) {
-		game->getScenegraph().render(base);
+		manager->render(base);
 	}
 
-	bool shouldstop() {
+	bool shouldStop() {
 		return false;
 	}
+	
+	void windowResized(int width, int height) {
+	}
+	
+	bool windowClosed() {
+		return false;
+	}
+	
 
 	void shutdown() {
-		delete program;
+		delete manager;
 		delete cube;
-		delete node;
-		delete obj;
+		delete sphere;
+		delete obj1;
+		delete obj2;
+		delete obj3;
+		delete sun;
 	}
 
 	void update(double dt) {

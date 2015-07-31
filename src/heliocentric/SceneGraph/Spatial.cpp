@@ -13,8 +13,8 @@
 #include "Spatial.hpp"
 #include "../GameObject.hpp"
 
-Spatial::Spatial(MeshRenderer& renderer, Mesh& mesh, ShaderProgram& program, GameObject& obj)
-: AbstractMeshNode(renderer, mesh, program), obj(obj) {
+Spatial::Spatial(MeshRenderer& renderer, Mesh& mesh, GameObject& obj)
+: AbstractMeshNode(renderer, mesh), obj(obj) {
 
 }
 
@@ -26,5 +26,6 @@ Spatial::~Spatial() {
 
 void Spatial::render(glm::mat4 base) {
 	AbstractMeshNode::render(
-			glm::translate(base, obj.getPosition()) * glm::mat4_cast(obj.getOrientation()));
+			glm::scale(glm::translate(base, obj.getPosition())
+			* glm::mat4_cast(obj.getOrientation()), glm::vec3(scale, scale, scale)));
 }

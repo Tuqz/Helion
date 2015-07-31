@@ -12,25 +12,34 @@
   - [ ] Full screen
   - [ ] Multi-monitor support
   - [ ] Resizable window
+  - [ ] Less hardcoded options: load from config file
 - [ ] OBJ Loader
-  - [x] vertex positions (v, 3, 4, 6 and 7 values supported. W taken into account, but colors are ignored)
+  - [x] vertex positions (v, 3, 4, 6 and 7 values supported.)
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
-  - [ ] normals (vn)
-  - [ ] normal indices (extension of f)
+  - [x] normals (vn)
+  - [x] normal indices (extension of f)
   - [ ] texture coordinates (vt)
   - [ ] texture indices (extension of f)
   - [ ] Material references (needs MTL parser)
-  - [ ] colors (extension of v)
+  - [x] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
+  - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Lighting
-- [ ] Fix handling of window close and `exit()` in `Game`
+  - [x] normals
+  - [x] diffuse lighting from point source
+  - [ ] specular lighting
+  - [ ] multiple sources
+  - [ ] dynamic range
+  - [x] gamma
+- [ ] Textures
 
 - [ ] Use const keyword where useful
+- [ ] Use smart pointers
 - [ ] Namespaces
 - [ ] Implement copy constructors
 - [ ] Add documentation
 
 - [ ] Can we reduce the amount of boilerplate code?
-- [ ] Improve ease-of-use
+- [x] Improve ease-of-use
 
 ## Physics

@@ -30,10 +30,10 @@ public:
 	std::string getTitle();
 	void setWindowSize(int width, int height);
 	void getWindowSize(int& width, int& height);
+	void close(bool close = true);
 private:
 	bool create();
 	void show();
-	void close();
 };
 
 #endif	/* WINDOW_HPP */

@@ -14,19 +14,21 @@
 
 class ShaderProgram {
 private:
-	int program;
+	GLuint program;
 public:
 	ShaderProgram(std::string vertexShader, std::string fragmentShader);
-	ShaderProgram(std::string vertexShader, std::string geometryShader,
+	ShaderProgram(std::string vertexShader, std::string fragmentShader,
 			std::vector<std::string>* attributes);
 	ShaderProgram(std::string vertexShader, std::string geometryShader,
 			std::string fragmentShader);
 	ShaderProgram(std::string vertexShader, std::string geometryShader,
 			std::string fragmentShader, std::vector<std::string>* attributes);
+	ShaderProgram(const ShaderProgram& orig) = delete;
+	ShaderProgram(ShaderProgram&& orig) = delete;
 	virtual ~ShaderProgram();
-	GLuint getProgram();
-	GLint getUniformLocation(std::string name);
-	GLuint getUniformBlockIndex(std::string name);
+	GLuint getProgram() const;
+	GLint getUniformLocation(std::string name) const;
+	GLuint getUniformBlockIndex(std::string name) const;
 };
 
 #endif	/* SHADERPROGRAM_HPP */

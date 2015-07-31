@@ -12,12 +12,17 @@
 #include "MeshRenderer.hpp"
 
 class DefaultRenderer : public MeshRenderer {
+private:
+	const ShaderProgram& program;
 public:
-	DefaultRenderer();
+	DefaultRenderer(const ShaderProgram& program);
 	DefaultRenderer(const DefaultRenderer& orig);
 	virtual ~DefaultRenderer();
-	virtual void render(Mesh& mesh, ShaderProgram& program, GLuint vao, glm::mat4 modelToCamera);
+	virtual void render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera);
 	virtual void setVertexAttribs();
+	const ShaderProgram& getProgram() const {
+		return program;
+	}
 };
 
 #endif	/* DEFAULTRENDERER_HPP */
