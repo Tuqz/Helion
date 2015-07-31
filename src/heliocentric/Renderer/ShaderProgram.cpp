@@ -71,7 +71,7 @@ int createShader(int shaderType, string filename) {
 				+ getName(shaderType) + " shader. " + "Error log:\n" + log;
 		throw ShaderException(msg);
 	}
-
+	
 	// Return the shader upon success
 	return shader;
 }
@@ -145,17 +145,17 @@ ShaderProgram::ShaderProgram(string vertexShader, string geometryShader,
 }
 
 ShaderProgram::~ShaderProgram() {
-	glDeleteProgram(program);
+		glDeleteProgram(program);
 }
 
-GLuint ShaderProgram::getProgram() {
+GLuint ShaderProgram::getProgram() const {
 	return program;
 }
 
-GLint ShaderProgram::getUniformLocation(string name) {
+GLint ShaderProgram::getUniformLocation(string name) const {
 	return glGetUniformLocation(program, name.c_str());
 }
 
-GLuint ShaderProgram::getUniformBlockIndex(string name) {
+GLuint ShaderProgram::getUniformBlockIndex(string name) const {
 	return glGetUniformBlockIndex(program, name.c_str());
 }

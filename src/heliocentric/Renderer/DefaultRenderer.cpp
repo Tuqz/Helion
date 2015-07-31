@@ -13,7 +13,7 @@
 #include "Mesh.hpp"
 #include "ShaderProgram.hpp"
 
-DefaultRenderer::DefaultRenderer(ShaderProgram& program) : program(program) {
+DefaultRenderer::DefaultRenderer(const ShaderProgram& program) : program(program) {
 }
 
 DefaultRenderer::DefaultRenderer(const DefaultRenderer& orig) : DefaultRenderer(orig.program) {

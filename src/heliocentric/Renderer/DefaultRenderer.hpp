@@ -13,13 +13,16 @@
 
 class DefaultRenderer : public MeshRenderer {
 private:
-	ShaderProgram& program;
+	const ShaderProgram& program;
 public:
-	DefaultRenderer(ShaderProgram& program);
+	DefaultRenderer(const ShaderProgram& program);
 	DefaultRenderer(const DefaultRenderer& orig);
 	virtual ~DefaultRenderer();
 	virtual void render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera);
 	virtual void setVertexAttribs();
+	const ShaderProgram& getProgram() const {
+		return program;
+	}
 };
 
 #endif	/* DEFAULTRENDERER_HPP */

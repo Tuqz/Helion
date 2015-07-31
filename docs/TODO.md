@@ -35,6 +35,7 @@
 - [ ] Fix handling of window close and `exit()` in `Game`
 
 - [ ] Use const keyword where useful
+- [ ] Use smart pointers
 - [ ] Namespaces
 - [ ] Implement copy constructors
 - [ ] Add documentation

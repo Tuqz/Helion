@@ -30,6 +30,7 @@
 #include "heliocentric/GameObject.hpp"
 #include "heliocentric/SceneGraph/SceneGraph.hpp"
 #include "heliocentric/SceneGraph/Spatial.hpp"
+#include "heliocentric/RenderManager.hpp"
 
 using namespace std;
 
@@ -129,16 +130,15 @@ public:
 class Helion : public GameInterface {
 private:
 	Game3D* game = nullptr;
-	ShaderProgram* program = nullptr;
-	ShaderProgram* program2 = nullptr;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
 	Spatial* node1 = nullptr, * node2 = nullptr, * node3 = nullptr;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	Spatial* sunnode = nullptr;
-	DefaultRenderer* defaultRenderer;
-	DefaultRenderer* whiteRenderer;
+	DefaultRenderer* defaultRenderer = nullptr;
+	DefaultRenderer* whiteRenderer = nullptr;
+	RenderManager manager;
 public:
 
 	void setGame(Game3D* game) {
@@ -146,20 +146,18 @@ public:
 	}
 
 	void init() {
-
-		// Prepare shaders
+		
+		// Prepare shaders and renderers
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("normal");
-		program = new ShaderProgram("data/shaders/default.vert",
+		defaultRenderer = (DefaultRenderer*) manager.createRenderer("data/shaders/default.vert",
 				"data/shaders/default.frag", &attributes);
 //				"data/shaders/normals.frag", &attributes);
-		program2 = new ShaderProgram("data/shaders/default.vert",
+		whiteRenderer = (DefaultRenderer*) manager.createRenderer("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
-		
-		// Prepare renderers
-		defaultRenderer = new DefaultRenderer(*program);
-		whiteRenderer = new DefaultRenderer(*program2);
+		const ShaderProgram& program = defaultRenderer->getProgram();
+		const ShaderProgram& program2 = whiteRenderer->getProgram();
 
 		// Set camera aspect ratio
 		int w, h;
@@ -167,18 +165,18 @@ public:
 		game->getCamera().updateAspect(w, h);
 		
 		// Upload uniforms
-		float Isun = 0.995f;
+		float Isun = 0.95f;
 		float Iamb = 1-Isun;
-		glUseProgram(program->getProgram());
-		glUniformMatrix4fv(program->getUniformLocation("cameraToClipMatrix"),
+		glUseProgram(program.getProgram());
+		glUniformMatrix4fv(program.getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
-		glUniform4f(program->getUniformLocation("sunIntensity"), Isun, Isun, Isun, 1);
-		glUniform4f(program->getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
-		glUniform4f(program->getUniformLocation("diffuseColor"), 1, 1, 1, 1);
-		glUniform1f(program->getUniformLocation("attenuationFactor"), 1);
-		glUniform1f(program->getUniformLocation("invgamma"), 1.0f/2.2f);
-		glUseProgram(program2->getProgram());
-		glUniformMatrix4fv(program2->getUniformLocation("cameraToClipMatrix"),
+		glUniform4f(program.getUniformLocation("sunIntensity"), Isun, Isun, Isun, 1);
+		glUniform4f(program.getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
+		glUniform4f(program.getUniformLocation("diffuseColor"), 1, 1, 1, 1);
+		glUniform1f(program.getUniformLocation("attenuationFactor"), 0.5);
+		glUniform1f(program.getUniformLocation("invgamma"), 1.0f);
+		glUseProgram(program2.getProgram());
+		glUniformMatrix4fv(program2.getUniformLocation("cameraToClipMatrix"),
 				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
 
@@ -219,9 +217,10 @@ public:
 	}
 
 	void renderWorld(glm::mat4 base) {
-		glUseProgram(program->getProgram());
+		const ShaderProgram& program = defaultRenderer->getProgram();
+		glUseProgram(program.getProgram());
         vec4 sunCameraPosition = base * vec4(sun->getPosition(), 1);
-		glUniform3f(program->getUniformLocation("sunPosition"), sunCameraPosition.x, sunCameraPosition.y, sunCameraPosition.z);
+		glUniform3f(program.getUniformLocation("sunPosition"), sunCameraPosition.x, sunCameraPosition.y, sunCameraPosition.z);
 		glUseProgram(0);
 		
 		game->getScenegraph().render(base);
@@ -232,8 +231,6 @@ public:
 	}
 
 	void shutdown() {
-		delete program;
-		delete program2;
 		delete cube;
 		delete sphere;
 		delete node1;
@@ -244,8 +241,6 @@ public:
 		delete obj3;
 		delete sun;
 		delete sunnode;
-		delete defaultRenderer;
-		delete whiteRenderer;
 	}
 
 	void update(double dt) {
