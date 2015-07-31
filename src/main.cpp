@@ -158,16 +158,6 @@ public:
 		whiteRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
 		const ShaderProgram& program = defaultRenderer->getProgram();
-		
-		// Upload uniforms
-		float Isun = 0.95f;
-		float Iamb = 1-Isun;
-		glUseProgram(program.getProgram());
-		glUniform4f(program.getUniformLocation("sunIntensity"), Isun, Isun, Isun, 1);
-		glUniform4f(program.getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
-		glUniform4f(program.getUniformLocation("diffuseColor"), 1, 1, 1, 1);
-		glUniform1f(program.getUniformLocation("attenuationFactor"), 0.5);
-		glUseProgram(0);
 
 		// Load meshes
 		ObjLoader loader;
@@ -193,6 +183,7 @@ public:
 		sunnode = new Spatial(*whiteRenderer, *sphere, *sun);
 		sunnode->setScale(0.2f);
 		game->getScenegraph().addChild(sunnode);
+		manager->setSunPosition(sun->getPosition());
 		
 		// Set initial camera location
 		game->getCamera().setPosition(vec3(0, 0, 2));
@@ -206,13 +197,7 @@ public:
 	}
 
 	void renderWorld(glm::mat4 base) {
-		const ShaderProgram& program = defaultRenderer->getProgram();
-		glUseProgram(program.getProgram());
-        vec4 sunCameraPosition = base * vec4(sun->getPosition(), 1);
-		glUniform3f(program.getUniformLocation("sunPosition"), sunCameraPosition.x, sunCameraPosition.y, sunCameraPosition.z);
-		glUseProgram(0);
-		
-		game->getScenegraph().render(base);
+		manager->render(base);
 	}
 
 	bool shouldStop() {

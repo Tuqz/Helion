@@ -11,8 +11,12 @@
 #include <vector>
 #include <string>
 
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 #include "Renderer/MeshRenderer.hpp"
 #include "Renderer/ShaderProgram.hpp"
+#include "GameObject.hpp"
 
 class Game3D;
 
@@ -22,6 +26,11 @@ private:
 	std::vector<MeshRenderer*> renderers;
 	std::vector<ShaderProgram*> programs;
 	float gamma = 1;
+	glm::vec3 sunLightColor = glm::vec3(1,1,1);
+	float ambientIntensity = 0.05f;
+	float halfIntensityDistance = 1;
+	glm::vec3 sunPosition;
+	glm::vec4 sunCameraPosition;
 public:
 	RenderManager(Game3D& game);
 	RenderManager(const RenderManager&) = delete;
@@ -32,14 +41,19 @@ public:
 	MeshRenderer* createRenderer(std::string vertexShader, std::string fragmentShader,
 			std::vector<std::string>* attributes = nullptr);
 	void initializeProgram(ShaderProgram& program);
+	void render(glm::mat4 base);
 	float getGamma() const {
 		return gamma;
 	}
 	void setGamma(float gamma);
+	void setLightingProperties(glm::vec3 sunLightColor, float ambientIntensity, float halfIntensityDistance);
+	void setSunPosition(glm::vec3 sunPosition);
 private:
 	void forall (void (RenderManager::*f)(ShaderProgram&));
 	void applyGamma(ShaderProgram& program);
 	void uploadCameraToClipMatrix(ShaderProgram& program);
+	void applyLightingProperties(ShaderProgram& program);
+	void uploadSunPosition(ShaderProgram& program);
 };
 
 #endif	/* RENDERMANAGER_HPP */
