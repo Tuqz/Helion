@@ -40,6 +40,6 @@
 - [ ] Add documentation
 
 - [ ] Can we reduce the amount of boilerplate code?
-- [ ] Improve ease-of-use
+- [x] Improve ease-of-use
 
 ## Physics

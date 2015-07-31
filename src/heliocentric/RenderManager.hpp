@@ -17,6 +17,7 @@
 #include "Renderer/MeshRenderer.hpp"
 #include "Renderer/ShaderProgram.hpp"
 #include "GameObject.hpp"
+#include "SceneGraph/Spatial.hpp"
 
 class Game3D;
 
@@ -25,6 +26,7 @@ private:
 	Game3D& game;
 	std::vector<MeshRenderer*> renderers;
 	std::vector<ShaderProgram*> programs;
+	std::vector<Spatial*> nodes;
 	float gamma = 1;
 	glm::vec3 sunLightColor = glm::vec3(1,1,1);
 	float ambientIntensity = 0.05f;
@@ -48,6 +50,8 @@ public:
 	void setGamma(float gamma);
 	void setLightingProperties(glm::vec3 sunLightColor, float ambientIntensity, float halfIntensityDistance);
 	void setSunPosition(glm::vec3 sunPosition);
+	Spatial* addToSceneGraph(GameObject& obj, Mesh& mesh);
+	Spatial* addToSceneGraph(GameObject& obj, Mesh& mesh, MeshRenderer& renderer);
 private:
 	void forall (void (RenderManager::*f)(ShaderProgram&));
 	void applyGamma(ShaderProgram& program);

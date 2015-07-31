@@ -132,10 +132,8 @@ private:
 	Game3D* game = nullptr;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
-	Spatial* node1 = nullptr, * node2 = nullptr, * node3 = nullptr;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
-	Spatial* sunnode = nullptr;
 	DefaultRenderer* defaultRenderer = nullptr;
 	DefaultRenderer* whiteRenderer = nullptr;
 	RenderManager* manager = nullptr;
@@ -157,37 +155,32 @@ public:
 //				"data/shaders/normals.frag", &attributes);
 		whiteRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
-		const ShaderProgram& program = defaultRenderer->getProgram();
 
 		// Load meshes
 		ObjLoader loader;
 		cube = loader.load("data/meshes/cube.obj");
 		sphere = loader.load("data/meshes/sphere.obj");
 
-		// Add meshes to SceneGraph
+		// Create game objects
 		obj1 = new TestObject(glm::vec3(1, 0, 0));
-		node1 = new Spatial(*defaultRenderer, *cube, *obj1);
-		game->getScenegraph().addChild(node1);
-
 		obj2 = new TestObject(glm::vec3(-1, 0.5f, -2));
 		obj2->rotate(PI / 8, 0, 1, 0);
-		node2 = new Spatial(*defaultRenderer, *cube, *obj2);
-		game->getScenegraph().addChild(node2);
-
 		obj3 = new TestObject(glm::vec3(-0.5f, -1, -1));
 		obj3->rotate(PI / 4, 1, 0, 0);
-		node3 = new Spatial(*defaultRenderer, *cube, *obj3);
-		game->getScenegraph().addChild(node3);
-
 		sun = new TestObject(glm::vec3(-1, 0, 1));
-		sunnode = new Spatial(*whiteRenderer, *sphere, *sun);
-		sunnode->setScale(0.2f);
-		game->getScenegraph().addChild(sunnode);
-		manager->setSunPosition(sun->getPosition());
 		
-		// Set initial camera location
+		// Add game objects to SceneGraph
+		manager->addToSceneGraph(*obj1, *cube);
+		manager->addToSceneGraph(*obj2, *cube);
+		manager->addToSceneGraph(*obj3, *cube);
+		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
+		
+		// Set initial camera location (default is 0,0,0)
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
+		// Set source position of sunlight (default is 0,0,0)
+		manager->setSunPosition(sun->getPosition());
+		
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -216,14 +209,10 @@ public:
 		delete manager;
 		delete cube;
 		delete sphere;
-		delete node1;
-		delete node2;
-		delete node3;
 		delete obj1;
 		delete obj2;
 		delete obj3;
 		delete sun;
-		delete sunnode;
 	}
 
 	void update(double dt) {

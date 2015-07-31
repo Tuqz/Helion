@@ -9,6 +9,7 @@
 #include "Renderer/DefaultRenderer.hpp"
 #include "exceptions.hpp"
 #include "Game3D.hpp"
+#include "SceneGraph/Spatial.hpp"
 
 #define GLM_FORCE_RADIANS
 #include <glm/mat4x4.hpp>
@@ -24,6 +25,9 @@ RenderManager::~RenderManager() {
 		delete *it;
 	}
 	for (vector<ShaderProgram*>::iterator it = programs.begin(); it != programs.end(); ++it) {
+		delete *it;
+	}
+	for (vector<Spatial*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		delete *it;
 	}
 }
@@ -87,6 +91,19 @@ void RenderManager::setLightingProperties(glm::vec3 sunLightColor,
 
 void RenderManager::setSunPosition(vec3 sunPosition) {
 	this->sunPosition = sunPosition;
+}
+
+Spatial* RenderManager::addToSceneGraph(GameObject& obj, Mesh& mesh) {
+	if (renderers.empty()) {
+		throw Exception("No default renderer set.");
+	}
+	return addToSceneGraph(obj, mesh, *renderers[0]);
+}
+
+Spatial* RenderManager::addToSceneGraph(GameObject& obj, Mesh& mesh, MeshRenderer& renderer) {
+	nodes.push_back(new Spatial(renderer, mesh, obj));
+	game.getScenegraph().addChild(nodes.back());
+	return nodes.back();
 }
 
 void RenderManager::applyGamma(ShaderProgram& program) {
