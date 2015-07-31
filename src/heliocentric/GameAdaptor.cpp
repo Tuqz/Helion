@@ -7,7 +7,7 @@
 
 #include "GameAdaptor.hpp"
 
-GameAdaptor::GameAdapter() {
+GameAdaptor::GameAdaptor() {
 }
 
 GameAdaptor::~GameAdaptor() {
