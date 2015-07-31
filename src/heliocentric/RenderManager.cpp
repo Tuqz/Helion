@@ -17,7 +17,10 @@
 
 using namespace std;
 
-RenderManager::RenderManager(Game3D& game) : game(game) {
+RenderManager::RenderManager(Game3D& game, bool generateDefaultRenderer) : game(game) {
+	if (generateDefaultRenderer) {
+		createDefaultRenderer();
+	}
 }
 
 RenderManager::~RenderManager() {

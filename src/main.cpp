@@ -134,8 +134,6 @@ private:
 	Mesh* sphere = nullptr;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
-	DefaultRenderer* defaultRenderer = nullptr;
-	DefaultRenderer* whiteRenderer = nullptr;
 	RenderManager* manager = nullptr;
 public:
 
@@ -146,14 +144,12 @@ public:
 	void init() {
 		manager = new RenderManager(*game);
 		
-		// Prepare shaders and renderers
+		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("normal");
-		defaultRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
-				"data/shaders/default.frag", &attributes);
-//				"data/shaders/normals.frag", &attributes);
-		whiteRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
+		DefaultRenderer* whiteRenderer = (DefaultRenderer*) 
+				manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
 
 		// Load meshes

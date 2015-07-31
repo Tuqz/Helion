@@ -34,7 +34,7 @@ private:
 	glm::vec3 sunPosition;
 	glm::vec4 sunCameraPosition;
 public:
-	RenderManager(Game3D& game);
+	RenderManager(Game3D& game, bool createDefaultRenderer = true);
 	RenderManager(const RenderManager&) = delete;
 	virtual ~RenderManager();
 	MeshRenderer* createDefaultRenderer();
