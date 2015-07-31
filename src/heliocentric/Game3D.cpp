@@ -63,7 +63,16 @@ void Game3D::shutdown() {
 }
 
 bool Game3D::shouldStop() {
-	return Game::shouldStop() || game.shouldstop();
+	return Game::shouldStop() || game.shouldStop();
+}
+
+void Game3D::windowResized(int width, int height) {
+	getCamera().updateAspect(width, height);
+	game.windowResized(width, height);
+}
+
+void Game3D::windowClosed() {
+	getWindow().close(game.windowClosed());
 }
 
 Camera& Game3D::getCamera() {

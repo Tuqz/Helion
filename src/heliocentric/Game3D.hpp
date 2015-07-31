@@ -30,6 +30,8 @@ public:
 	virtual void render();
 	virtual void shutdown();
 	virtual bool shouldStop();
+	virtual void windowResized(int width, int height);
+	virtual void windowClosed();
 	// Getters
 	Camera& getCamera();
 	SceneGraph& getScenegraph();

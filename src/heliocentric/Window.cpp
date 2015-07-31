@@ -48,8 +48,8 @@ void Window::show() {
 	glfwShowWindow(window);
 }
 
-void Window::close() {
-	glfwSetWindowShouldClose(window, true);
+void Window::close(bool close) {
+	glfwSetWindowShouldClose(window, close);
 }
 
 bool Window::create() {

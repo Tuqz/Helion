@@ -77,7 +77,28 @@ public:
 	 * running. This is checked before each iteration of the game loop.
      * @return `true` if the program should stop
      */
-	virtual bool shouldstop() = 0;
+	virtual bool shouldStop() = 0;
+	/**
+	 * Every iteration, just before rendering this function is called to account
+	 * for effects of a window resize.
+	 * Most likely this can be left empty, because the engine handles resizing.
+	 * One exception is when extra cameras are defined. In that case you need to
+	 * call `yourCamera.updateAspect(width, height)` here.
+	 * 
+     * @param width
+     * @param height
+     */
+	virtual void windowResized(int width, int height) = 0;
+	/**
+	 * @brief This function is called whenever the user tries to close the 
+	 * window. The window will only actually close if this function returns true.
+	 * 
+	 * Note that this is not called when the window closes because shouldStop
+	 * returns true.
+	 * 
+     * @return 
+     */
+	virtual bool windowClosed() = 0;
 };
 
 #endif	/* GAMEINTERFACE_HPP */

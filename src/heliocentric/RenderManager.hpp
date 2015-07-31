@@ -39,6 +39,7 @@ public:
 private:
 	void forall (void (RenderManager::*f)(ShaderProgram&));
 	void applyGamma(ShaderProgram& program);
+	void uploadCameraToClipMatrix(ShaderProgram& program);
 };
 
 #endif	/* RENDERMANAGER_HPP */

@@ -148,11 +148,6 @@ public:
 	void init() {
 		manager = new RenderManager(*game);
 		
-		// Set camera aspect ratio
-		int w, h;
-		game->getWindow().getWindowSize(w, h);
-		game->getCamera().updateAspect(w, h);
-		
 		// Prepare shaders and renderers
 		vector<string> attributes;
 		attributes.push_back("position");
@@ -220,9 +215,17 @@ public:
 		game->getScenegraph().render(base);
 	}
 
-	bool shouldstop() {
+	bool shouldStop() {
 		return false;
 	}
+	
+	void windowResized(int width, int height) {
+	}
+	
+	bool windowClosed() {
+		return false;
+	}
+	
 
 	void shutdown() {
 		delete manager;

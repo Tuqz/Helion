@@ -32,7 +32,7 @@
   - [ ] dynamic range
   - [x] gamma
 - [ ] Textures
-- [ ] Fix handling of window close and `exit()` in `Game`
+- [x] Fix handling of window close and `exit()` in `Game`
 
 - [ ] Use const keyword where useful
 - [ ] Use smart pointers

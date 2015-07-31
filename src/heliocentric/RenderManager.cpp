@@ -51,8 +51,7 @@ MeshRenderer* RenderManager::createRenderer(string vertexShader,
 
 void RenderManager::initializeProgram(ShaderProgram& program) {
 	glUseProgram(program.getProgram());
-	glUniformMatrix4fv(program.getUniformLocation("cameraToClipMatrix"),
-			1, GL_FALSE, value_ptr(game.getCamera().getCameraToClipMatrix()));
+	uploadCameraToClipMatrix(program);
 	applyGamma(program);
 	glUseProgram(0);
 }
@@ -72,4 +71,9 @@ void RenderManager::setGamma(float gamma) {
 
 void RenderManager::applyGamma(ShaderProgram& program) {
 	glUniform1f(program.getUniformLocation("invgamma"), 1.0f/gamma);
+}
+
+void RenderManager::uploadCameraToClipMatrix(ShaderProgram& program) {
+	glUniformMatrix4fv(program.getUniformLocation("cameraToClipMatrix"),
+			1, GL_FALSE, value_ptr(game.getCamera().getCameraToClipMatrix()));
 }
