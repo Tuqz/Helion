@@ -138,7 +138,7 @@ private:
 	Spatial* sunnode = nullptr;
 	DefaultRenderer* defaultRenderer = nullptr;
 	DefaultRenderer* whiteRenderer = nullptr;
-	RenderManager manager;
+	RenderManager* manager = nullptr;
 public:
 
 	void setGame(Game3D* game) {
@@ -146,38 +146,32 @@ public:
 	}
 
 	void init() {
+		manager = new RenderManager(*game);
 		
-		// Prepare shaders and renderers
-		vector<string> attributes;
-		attributes.push_back("position");
-		attributes.push_back("normal");
-		defaultRenderer = (DefaultRenderer*) manager.createRenderer("data/shaders/default.vert",
-				"data/shaders/default.frag", &attributes);
-//				"data/shaders/normals.frag", &attributes);
-		whiteRenderer = (DefaultRenderer*) manager.createRenderer("data/shaders/default.vert",
-				"data/shaders/white.frag", &attributes);
-		const ShaderProgram& program = defaultRenderer->getProgram();
-		const ShaderProgram& program2 = whiteRenderer->getProgram();
-
 		// Set camera aspect ratio
 		int w, h;
 		game->getWindow().getWindowSize(w, h);
 		game->getCamera().updateAspect(w, h);
 		
+		// Prepare shaders and renderers
+		vector<string> attributes;
+		attributes.push_back("position");
+		attributes.push_back("normal");
+		defaultRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
+				"data/shaders/default.frag", &attributes);
+//				"data/shaders/normals.frag", &attributes);
+		whiteRenderer = (DefaultRenderer*) manager->createRenderer("data/shaders/default.vert",
+				"data/shaders/white.frag", &attributes);
+		const ShaderProgram& program = defaultRenderer->getProgram();
+		
 		// Upload uniforms
 		float Isun = 0.95f;
 		float Iamb = 1-Isun;
 		glUseProgram(program.getProgram());
-		glUniformMatrix4fv(program.getUniformLocation("cameraToClipMatrix"),
-				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUniform4f(program.getUniformLocation("sunIntensity"), Isun, Isun, Isun, 1);
 		glUniform4f(program.getUniformLocation("ambientIntensity"), Iamb, Iamb, Iamb, 1);
 		glUniform4f(program.getUniformLocation("diffuseColor"), 1, 1, 1, 1);
 		glUniform1f(program.getUniformLocation("attenuationFactor"), 0.5);
-		glUniform1f(program.getUniformLocation("invgamma"), 1.0f);
-		glUseProgram(program2.getProgram());
-		glUniformMatrix4fv(program2.getUniformLocation("cameraToClipMatrix"),
-				1, GL_FALSE, value_ptr(game->getCamera().getCameraToClipMatrix()));
 		glUseProgram(0);
 
 		// Load meshes
@@ -231,6 +225,7 @@ public:
 	}
 
 	void shutdown() {
+		delete manager;
 		delete cube;
 		delete sphere;
 		delete node1;

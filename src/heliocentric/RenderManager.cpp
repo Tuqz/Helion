@@ -8,11 +8,15 @@
 #include "RenderManager.hpp"
 #include "Renderer/DefaultRenderer.hpp"
 #include "exceptions.hpp"
+#include "Game3D.hpp"
+
+#define GLM_FORCE_RADIANS
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
-RenderManager::RenderManager() {
-	
+RenderManager::RenderManager(Game3D& game) : game(game) {
 }
 
 RenderManager::~RenderManager() {
@@ -46,5 +50,26 @@ MeshRenderer* RenderManager::createRenderer(string vertexShader,
 }
 
 void RenderManager::initializeProgram(ShaderProgram& program) {
+	glUseProgram(program.getProgram());
+	glUniformMatrix4fv(program.getUniformLocation("cameraToClipMatrix"),
+			1, GL_FALSE, value_ptr(game.getCamera().getCameraToClipMatrix()));
+	applyGamma(program);
+	glUseProgram(0);
+}
 
+void RenderManager::forall(void (RenderManager::*f)(ShaderProgram&)) {
+	for (vector<ShaderProgram*>::iterator it = programs.begin(); it != programs.end(); ++it) {
+		glUseProgram((*it)->getProgram());
+		(this->*f)(**it);
+		glUseProgram(0);
+	}
+}
+
+void RenderManager::setGamma(float gamma) {
+	this->gamma = gamma;
+	forall(&RenderManager::applyGamma);
+}
+
+void RenderManager::applyGamma(ShaderProgram& program) {
+	glUniform1f(program.getUniformLocation("invgamma"), 1.0f/gamma);
 }
