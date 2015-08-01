@@ -8,6 +8,7 @@
   - [x] Keyboard event handling
   - [ ] Keyboard polling
   - [ ] Mouse input handling
+  - [ ] Rebindable keys
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
@@ -34,12 +35,12 @@
 - [ ] Textures
 
 - [ ] Use const keyword where useful
+- [ ] Reduce unneccesary includes
 - [ ] Use smart pointers
 - [ ] Namespaces
 - [ ] Implement copy constructors
 - [ ] Add documentation
 
 - [ ] Can we reduce the amount of boilerplate code?
-- [x] Improve ease-of-use
 
 ## Physics

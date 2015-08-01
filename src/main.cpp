@@ -22,7 +22,7 @@
 
 #include "heliocentric/Game3D.hpp"
 #include "heliocentric/InputListener.hpp"
-#include "heliocentric/GameInterface.hpp"
+#include "heliocentric/GameAdaptor.hpp"
 #include "heliocentric/ObjLoader.hpp"
 #include "heliocentric/Renderer/Mesh.hpp"
 #include "heliocentric/Renderer/DefaultRenderer.hpp"
@@ -127,7 +127,7 @@ public:
 	}
 };
 
-class Helion : public GameInterface {
+class Helion : public GameAdaptor {
 private:
 	Game3D* game = nullptr;
 	Mesh* cube = nullptr;
@@ -189,18 +189,6 @@ public:
 		manager->render(base);
 	}
 
-	bool shouldStop() {
-		return false;
-	}
-	
-	void windowResized(int width, int height) {
-	}
-	
-	bool windowClosed() {
-		return false;
-	}
-	
-
 	void shutdown() {
 		delete manager;
 		delete cube;
@@ -209,9 +197,6 @@ public:
 		delete obj2;
 		delete obj3;
 		delete sun;
-	}
-
-	void update(double dt) {
 	}
 };
 

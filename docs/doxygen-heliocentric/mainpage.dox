@@ -31,7 +31,7 @@ Added `GameAdaptor` as a convenient alternative to `GameInterface`, see section
 # Getting started
 
 To make a 3D game with Heliocentric, all that needs to be done is to implement a number of hooks. 
-These hooks are provided by the interfaces `GameInterface` ~~and `InputListener`~~. 
+These hooks are provided by the interfaces `GameInterface` <span style='text-decoration:line-through'>and `InputListener`</span>. 
 Additionally it can take care of rendering objects if its scenegraph is populated.
 
 ## 1. %GameInterface

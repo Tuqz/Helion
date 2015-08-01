@@ -16,7 +16,7 @@
  * `true`. Additionally a pointer to a `Game3D`-type is provided as a member 
  * variable, including a getter and setter, the latter of which is required.
  */
-class GameAdaptor : GameInterface {
+class GameAdaptor : public GameInterface {
 protected:
 	Game3D* game;
 public:
