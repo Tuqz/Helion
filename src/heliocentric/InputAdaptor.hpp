@@ -28,10 +28,6 @@ public:
 		return false;
 	};
 
-	virtual bool keyTypedModified(int codepoint, int mods) {
-		return false;
-	};
-
 	virtual bool mouseButtonPressed(int button, int mods) {
 		return false;
 	};

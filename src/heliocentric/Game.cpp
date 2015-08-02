@@ -47,6 +47,53 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	}
 }
 
+void charCallback(GLFWwindow* window, unsigned int codepoint) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+			it != game->getInputListeners().end()
+			&& !(*it)->keyTyped(codepoint); ++it);
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS) {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->mouseButtonPressed(button, mods); ++it);
+	} else {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->mouseButtonReleased(button, mods); ++it);
+	}
+}
+
+void cursorPosCallback(GLFWwindow* window, double x, double y) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+			it != game->getInputListeners().end()
+			&& !(*it)->mouseMoved(x, y); ++it);
+}
+
+void cursorEnterCallback(GLFWwindow* window, int entered) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	if (entered) {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->mouseEnteredWindow(); ++it);
+	} else {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->mouseExitedWindow(); ++it);
+	}
+}
+
+void scrollCallback(GLFWwindow* window, double x, double y) {
+	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
+	for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+			it != game->getInputListeners().end()
+			&& !(*it)->mouseWheelScrolled(x, y); ++it);
+}
+
 Game::Game() {
 	// Initialize GLFW
 	glfwSetErrorCallback(glfwErrorCallback);
@@ -71,6 +118,11 @@ Game::Game() {
 	// Set up callback functions (for input handling)
 	glfwSetWindowUserPointer(window.getWindow(), this);
 	glfwSetKeyCallback(window.getWindow(), keyCallback);
+	glfwSetCharCallback(window.getWindow(), charCallback);
+	glfwSetMouseButtonCallback(window.getWindow(), mouseButtonCallback);
+	glfwSetCursorPosCallback(window.getWindow(), cursorPosCallback);
+	glfwSetCursorEnterCallback(window.getWindow(), cursorEnterCallback);
+	glfwSetScrollCallback(window.getWindow(), scrollCallback);
 	glfwSetWindowCloseCallback(window.getWindow(), cb_windowClosed);
 }
 

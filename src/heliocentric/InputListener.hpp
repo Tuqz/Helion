@@ -14,7 +14,6 @@ public:
 	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) = 0;
 	virtual bool keyReleased(int key, int scancode, int mods) = 0;
 	virtual bool keyTyped(int codepoint) = 0;
-	virtual bool keyTypedModified(int codepoint, int mods) = 0;
 	virtual bool mouseButtonPressed(int button, int mods) = 0;
 	virtual bool mouseButtonReleased(int button, int mods) = 0;
 	virtual bool mouseWheelScrolled(double x, double y) = 0;

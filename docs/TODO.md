@@ -8,6 +8,7 @@
   - [x] Keyboard event handling
   - [x] Keyboard polling
   - [x] Mouse input handling
+  - [ ] Default camera controls
   - [ ] Rebindable keys
   - [ ] Joystick support
 - [ ] More options for window handling
@@ -34,6 +35,7 @@
   - [ ] dynamic range
   - [x] gamma
 - [ ] Textures
+- [ ] GUI
 
 - [ ] Use const keyword where useful
 - [ ] Reduce unneccesary includes

@@ -92,6 +92,45 @@ public:
 		}
 		return false;
 	}
+	
+	virtual bool keyTyped(int codepoint) {
+		cout << "Unicode value: " << hex << codepoint << dec << endl;
+		return true;
+	}
+
+
+	virtual bool keyReleased(int key, int scancode, int mods) {
+		cout << "key released" << endl;
+		return true;
+	}
+
+	virtual bool mouseButtonPressed(int button, int mods) {
+		double x,y;
+		game.getMousePosition(x, y);
+		cout << "Clicked at " << x << ", " << y << endl;
+		return true;
+	}
+
+	virtual bool mouseButtonReleased(int button, int mods) {
+		cout << "button released" << endl;
+		return true;
+	}
+	
+	virtual bool mouseEnteredWindow() {
+		cout << "Phew, the mouse is back." << endl;
+	}
+
+	virtual bool mouseExitedWindow() {
+		cout << "The mouse is gone!" << endl;
+	}
+
+	virtual bool mouseWheelScrolled(double x, double y) {
+		cout << "Scrollin'" << x << ", " << y << endl;
+	}
+
+	virtual bool mouseMoved(double x, double y) {
+		cout << "Mouse: \"Hey, I am at " << x << ", " << y << " now!\"" << endl;
+	}
 };
 
 
