@@ -13,6 +13,7 @@
 #define ERROR_GLEW_INIT 3
 
 #include "Window.hpp"
+#include <list>
 
 class InputListener;
 
@@ -23,7 +24,7 @@ class InputListener;
 class Game {
 private:
 	Window window;
-	InputListener* inputListener = nullptr;
+	std::list<InputListener*> listeners;
 	double prevFrameRateCalcTime;
 	int fpsCounter = 0, fps = 0;
 	double frameTimeLimit = 1.0/120.0, sleepLimit = 0.001;
@@ -50,9 +51,14 @@ public:
 	virtual void windowClosed();
 	// Getters and setters
 	Window& getWindow();
-	InputListener* getInputListener();
-	void setInputListener(InputListener* inputListener);
 	int getFPS();
+	std::list<InputListener*>& getInputListeners();
+	void addInputListener(InputListener* inputListener);
+	// Input handling
+	bool isKeyPressed(int key);
+	bool isMouseButtonPressed(int button);
+	void getMousePosition(double &x, double &y);
+	void setMousePosition(double x, double y);
 private:
 	void resized();
 	// Timing

@@ -11,6 +11,7 @@
 #include <exception>
 #include <chrono>
 #include <thread>
+#include <list>
 
 #include "Game.hpp"
 #include "Window.hpp"
@@ -31,14 +32,18 @@ void cb_windowClosed(GLFWwindow* window) {
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	Game* game = static_cast<Game*> (glfwGetWindowUserPointer(window));
-	if (game->getInputListener()) {
-		if (action == GLFW_PRESS) {
-			game->getInputListener()->keyPressed(key, scancode, mods);
-		} else if (action == GLFW_RELEASE) {
-			game->getInputListener()->keyReleased(key, scancode, mods);
-		} else {
-			game->getInputListener()->keyRepeat(key, scancode, mods);
-		}
+	if (action == GLFW_PRESS) {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->keyPressed(key, scancode, mods, false); ++it);
+	} else if (action == GLFW_RELEASE) {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->keyReleased(key, scancode, mods); ++it);
+	} else {
+		for (list<InputListener*>::iterator it = game->getInputListeners().begin();
+				it != game->getInputListeners().end()
+				&& !(*it)->keyPressed(key, scancode, mods, true); ++it);
 	}
 }
 
@@ -63,7 +68,7 @@ Game::Game() {
 	// Print OpenGL version
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 
-	// Set up callback functions
+	// Set up callback functions (for input handling)
 	glfwSetWindowUserPointer(window.getWindow(), this);
 	glfwSetKeyCallback(window.getWindow(), keyCallback);
 	glfwSetWindowCloseCallback(window.getWindow(), cb_windowClosed);
@@ -170,14 +175,6 @@ Window& Game::getWindow() {
 	return window;
 }
 
-InputListener* Game::getInputListener() {
-	return inputListener;
-}
-
-void Game::setInputListener(InputListener* inputListener) {
-	this->inputListener = inputListener;
-}
-
 double Game::getTime() {
 	return glfwGetTime();
 }
@@ -194,4 +191,28 @@ void Game::updateFPS() {
 
 int Game::getFPS() {
 	return fps;
+}
+
+void Game::addInputListener(InputListener* inputListener) {
+	listeners.push_front(inputListener);
+}
+
+std::list<InputListener*>& Game::getInputListeners() {
+	return listeners;
+}
+
+void Game::getMousePosition(double& x, double& y) {
+	glfwGetCursorPos(window.getWindow(), &x, &y);
+}
+
+void Game::setMousePosition(double x, double y) {
+	glfwSetCursorPos(window.getWindow(), x, y);
+}
+
+bool Game::isKeyPressed(int key) {
+	return glfwGetKey(window.getWindow(), key) == GLFW_PRESS;
+}
+
+bool Game::isMouseButtonPressed(int button) {
+	return glfwGetMouseButton(window.getWindow(), button) == GLFW_PRESS;
 }

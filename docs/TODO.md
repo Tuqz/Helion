@@ -6,9 +6,10 @@
 ## Engine
 - [ ] Input handling
   - [x] Keyboard event handling
-  - [ ] Keyboard polling
-  - [ ] Mouse input handling
+  - [x] Keyboard polling
+  - [x] Mouse input handling
   - [ ] Rebindable keys
+  - [ ] Joystick support
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support

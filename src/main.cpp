@@ -21,7 +21,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "heliocentric/Game3D.hpp"
-#include "heliocentric/InputListener.hpp"
+#include "heliocentric/InputAdaptor.hpp"
 #include "heliocentric/GameAdaptor.hpp"
 #include "heliocentric/ObjLoader.hpp"
 #include "heliocentric/Renderer/Mesh.hpp"
@@ -34,68 +34,72 @@
 
 using namespace std;
 
-class Input : public InputListener {
+class Input : public InputAdaptor {
 private:
 	Game3D& game;
-	float movementSpeed = 1;
-	float turnSpeed = 0.25;
+	float movementSpeed = 0.1;
+	float turnSpeed = 0.025;
 public:
 
 	Input(Game3D& game) : game(game) {
 	};
 
-	virtual void keyPressed(int key, int scancode, int mods) {
+	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) {
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				game.exit();
-				break;
+				return true;
 			case GLFW_KEY_W:
 				game.getCamera().moveRelative(0, 0, -movementSpeed);
-				break;
+				return true;
 			case GLFW_KEY_S:
 				game.getCamera().moveRelative(0, 0, movementSpeed);
-				break;
+				return true;
 			case GLFW_KEY_A:
 				game.getCamera().moveRelative(-movementSpeed, 0, 0);
-				break;
+				return true;
 			case GLFW_KEY_D:
 				game.getCamera().moveRelative(movementSpeed, 0, 0);
-				break;
+				return true;
 			case GLFW_KEY_SPACE:
 				game.getCamera().moveRelative(0, movementSpeed, 0);
-				break;
+				return true;
 			case GLFW_KEY_X:
 				game.getCamera().moveRelative(0, -movementSpeed, 0);
-				break;
+				return true;
 			case GLFW_KEY_KP_8:
 				game.getCamera().tilt(turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_5:
 				game.getCamera().tilt(-turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_4:
 				game.getCamera().pan(-turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_6:
 				game.getCamera().pan(turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_7:
 				game.getCamera().roll(-turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_9:
 				game.getCamera().roll(turnSpeed);
-				break;
+				return true;
 			case GLFW_KEY_KP_0:
 				game.getCamera().setPosition(vec3(0, 0, 2));
 				game.getCamera().resetOrientation();
-				break;
+				return true;
 		}
+		return false;
 	}
+};
 
-	virtual void keyReleased(int key, int scancode, int mods) {
-	}
 
-	virtual void keyRepeat(int key, int scancode, int mods) {
+class Input2 : public InputAdaptor {
+public:
+	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) {
+		cout << "Unprocessed key event!" << endl;
+		return true;
 	}
 };
 
@@ -143,12 +147,12 @@ public:
 
 	void init() {
 		manager = new RenderManager(*game);
-		
+
 		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("normal");
-		DefaultRenderer* whiteRenderer = (DefaultRenderer*) 
+		DefaultRenderer* whiteRenderer = (DefaultRenderer*)
 				manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/white.frag", &attributes);
 
@@ -164,19 +168,19 @@ public:
 		obj3 = new TestObject(glm::vec3(-0.5f, -1, -1));
 		obj3->rotate(PI / 4, 1, 0, 0);
 		sun = new TestObject(glm::vec3(-1, 0, 1));
-		
+
 		// Add game objects to SceneGraph
 		manager->addToSceneGraph(*obj1, *cube);
 		manager->addToSceneGraph(*obj2, *cube);
 		manager->addToSceneGraph(*obj3, *cube);
 		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
-		
+
 		// Set initial camera location (default is 0,0,0)
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
 		// Set source position of sunlight (default is 0,0,0)
 		manager->setSunPosition(sun->getPosition());
-		
+
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -207,7 +211,9 @@ int main(int argc, char** argv) {
 	Helion helion;
 	Game3D game(helion);
 	Input listener(game);
-	game.setInputListener(&listener);
+	Input2 listener2;
+	game.addInputListener(&listener2);
+	game.addInputListener(&listener);
 	game.run();
 	return 0;
 }

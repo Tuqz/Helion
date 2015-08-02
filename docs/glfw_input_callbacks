@@ -1,0 +1,34 @@
+key press/release		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+key typed			void character_callback(GLFWwindow* window, unsigned int codepoint)
+key typed (non-UTF8 modified)	void charmods_callback(GLFWwindow* window, unsigned int codepoint, int mods)
+mouse moved 			static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+mouse enter/leave		void cursor_enter_callback(GLFWwindow* window, int entered)
+mouse button press/release	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+mousewheel scroll		void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+
+Fields:
+window		-	all
+key		-	key press/release
+scancode	-	key press/release
+action		-	key press/release, mouse button press/release
+mods		-	key press/release, key typed (non-UTF8 modified), mouse button press/release
+codepoint	-	key typed, key typed (non-UTF8 modified)
+xpos		-	mouse moved
+ypos		-	mouse moved
+entered		-	mouse enter/leave
+button		-	mouse button press/release
+xoffset		-	mousewheel scroll
+yoffset		-	mousewheel scroll
+
+Combinable:
+key+button, xpos+xoffset, ypos+yoffset, action+entered, 
+
+Remaining fields:
+window
+key/button
+scancode
+action
+mods
+codepoint
+x
+y
