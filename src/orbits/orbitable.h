@@ -5,7 +5,7 @@ namespace helion {
 	struct Orbitable {
 		Orbitable();
 		Orbitable(double mass);
-		glm::vec3 position;
 		const double mass, mu;
+		glm::vec3 position;
 	};
 }

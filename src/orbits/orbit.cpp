@@ -18,7 +18,7 @@ glm::vec3 Orbit::getPosition(double r, double theta) const {
 
 Orbit::Orbit(Orbitable &p, double a, double e, double inc, double lan, double aop, double top)
 	: parent(p), semimajor(a), eccentricity(e), inclination(inc), long_asc_node(lan), arg_of_periapsis(aop), time_of_periapsis(top) {
-		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu);
+		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu); //Reasonable only for ellipses, but the value is useful for other types
 		calculatePoints();
 }
 
