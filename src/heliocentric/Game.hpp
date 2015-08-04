@@ -55,7 +55,23 @@ public:
 	std::list<InputListener*>& getInputListeners();
 	void addInputListener(InputListener* inputListener);
 	// Input handling
+	/**
+	 * Checks if a key is pressed. 
+	 * See [this GLFW page](http://www.glfw.org/docs/latest/group__keys.html) 
+	 * for the possible values of key.
+	 * 
+     * @param key the key code to check
+     * @return true if the key is pressed.
+     */
 	bool isKeyPressed(int key);
+	/**
+	 * Checks if a mouse button is pressed. 
+	 * See [this GLFW page](http://www.glfw.org/docs/latest/group__buttons.html) 
+	 * for the possible values of button.
+	 * 
+     * @param button the mouse button to check
+     * @return true if the key is pressed.
+     */
 	bool isMouseButtonPressed(int button);
 	void getMousePosition(double &x, double &y);
 	void setMousePosition(double x, double y);

@@ -10,6 +10,10 @@
 
 #include "InputListener.hpp"
 
+/**
+ * Provides an empty implementation of `InputListener` for convenience. 
+ * All functions return `false` without doing anything.
+ */
 class InputAdaptor : public InputListener {
 public:
 

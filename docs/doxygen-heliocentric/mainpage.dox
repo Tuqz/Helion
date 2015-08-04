@@ -61,7 +61,54 @@ implementation of `GameInterface`. This may be more convenient if many
 functions are left empty.
 
 ## 2. Input handling
-_This will be completely overhauled in the next update, so just don't bother yet._
+There are three ways of handling input in Heliocentric: polling, event-based or 
+using an event queue. These methods can also be combined.
+
+### Polling
+Using `Game::isKeyPressed`, `Game::isMouseButtonPressed` and 
+`Game::getMousePosition`, the state of the keyboard and mouse can be polled. The
+following input events cannot be checked in this way:
+
+- text input
+- mouse wheel scrolling
+- the mouse cursor entering and leaving the window
+
+Also, it is possible to miss keypresses due if they are pressed and released 
+between update calls. Because of this both types of event-based processing is 
+preferred. 
+Key and mouse button polling can be useful for actions where the keys are being 
+held down though, and mouse position polling is always useful, for example to 
+find the position of a mouse pressed event.
+
+### Event handling
+You can implement a subclass of `InputListener` or `InputAdaptor`, which provide
+methods that are called whenever an input event occurs. All calls to these 
+functions are done just before the update call. See the `InputListener` page for
+more details.
+
+Input listeners are registered by calling `Game::addInputListener`. 
+Multiple listeners can be registered, and they are called sequentially in 
+inverse order of how they were added. 
+The functions defined by `InputListener` return a boolean value. If this value
+is true, the event is considered handled, and subsequent listeners are not 
+being called anymore for that event.
+The list of listeners can also be acquired by calling `Game::getInputListeners` 
+to have more control over the management of input listeners.
+
+### Event queue
+A special input listener is provided, called `InputEventQueue`. 
+It adds events to a queue which can later be processed. See the example below.
+`InputEventQueue` handles all events, so it should be the last handler, because
+later handlers are never called. In other words, it must be added first.
+
+\code
+
+    InputEvent* event;
+	while (event = eventQueue->nextEvent()) {
+		// Process event
+	}
+\endcode
+
 
 ## 3. Running your game
 
@@ -70,17 +117,23 @@ class provides a method `run` that starts the game-loop.
 
 The code-fragment below starts a game based on Heliocentric, where it is assumed
 the subclass of `GameInterface` is called `MyGame` and the subclass of 
-`InputListener` is called `MyInputListener`.
+`InputListener` is called `MyInputListener`. 
 
+This example also demonstrates the use of `InputEventQueue`. Note that it is 
+passed to the `GameInterface` implementation such that the queue can be 
+processed in its `update` function.
 
 \code
 
     int main(int argc, char** argv) {
-	    MyGame myGame;
+		InputEventQueue eventQueue;
 	    MyInputListener myListener;
+
+	    MyGame myGame(eventQueue);
     
         Game3D game(myGame);
-        game.setInputListener(&myListener);
+        game.addInputListener(&eventQueue);
+        game.addInputListener(&myListener);
         game.run();
     
         return 0;

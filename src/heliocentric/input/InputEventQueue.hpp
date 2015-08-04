@@ -12,6 +12,11 @@
 #include "InputListener.hpp"
 class InputEvent;
 
+/**
+ * An input listener that puts all events into a queue to be processed later.
+ * All listener functions return true, so this should be the last listener in 
+ * the chain.
+ */
 class InputEventQueue : public InputListener {
 private:
 	std::queue<InputEvent*> events;
@@ -29,7 +34,20 @@ public:
 	virtual bool mouseExitedWindow();
 	virtual bool mouseMoved(double x, double y);
 	virtual bool mouseWheelScrolled(double x, double y);
+	/**
+	 * Return a pointer to the next event in the queue. 
+	 * The pointer is valid until the next call to nextEvent.
+	 * If the queue is empty, `nullptr` is returned.
+	 * 
+     * @return a pointer to the event at the front of the queue, or `nullptr` if
+	 * the queue is empty
+     */
 	InputEvent* nextEvent();
+	/**
+	 * Removes all events from the queue. Consider calling this at the end of 
+	 * each frame if your code does not process all events, to prevent the 
+	 * memory taken up by these events to grow continually.
+     */
 	void clear();
 };
 
