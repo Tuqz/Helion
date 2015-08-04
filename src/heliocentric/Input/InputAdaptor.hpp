@@ -24,7 +24,7 @@ public:
 		return false;
 	};
 
-	virtual bool keyTyped(int codepoint) {
+	virtual bool keyTyped(unsigned int codepoint) {
 		return false;
 	};
 

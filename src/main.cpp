@@ -21,7 +21,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "heliocentric/Game3D.hpp"
-#include "heliocentric/InputAdaptor.hpp"
+#include "heliocentric/Input/InputAdaptor.hpp"
 #include "heliocentric/GameAdaptor.hpp"
 #include "heliocentric/ObjLoader.hpp"
 #include "heliocentric/Renderer/Mesh.hpp"
@@ -31,6 +31,8 @@
 #include "heliocentric/SceneGraph/SceneGraph.hpp"
 #include "heliocentric/SceneGraph/Spatial.hpp"
 #include "heliocentric/RenderManager.hpp"
+#include "heliocentric/Input/InputEventQueue.hpp"
+#include "heliocentric/Input/InputEvent.hpp"
 
 using namespace std;
 
@@ -93,43 +95,47 @@ public:
 		return false;
 	}
 	
-	virtual bool keyTyped(int codepoint) {
+	virtual bool keyTyped(unsigned int codepoint) {
 		cout << "Unicode value: " << hex << codepoint << dec << endl;
-		return true;
+		return false;
 	}
 
 
 	virtual bool keyReleased(int key, int scancode, int mods) {
 		cout << "key released" << endl;
-		return true;
+		return false;
 	}
 
 	virtual bool mouseButtonPressed(int button, int mods) {
 		double x,y;
 		game.getMousePosition(x, y);
 		cout << "Clicked at " << x << ", " << y << endl;
-		return true;
+		return false;
 	}
 
 	virtual bool mouseButtonReleased(int button, int mods) {
 		cout << "button released" << endl;
-		return true;
+		return false;
 	}
 	
 	virtual bool mouseEnteredWindow() {
 		cout << "Phew, the mouse is back." << endl;
+		return false;
 	}
 
 	virtual bool mouseExitedWindow() {
 		cout << "The mouse is gone!" << endl;
+		return false;
 	}
 
 	virtual bool mouseWheelScrolled(double x, double y) {
 		cout << "Scrollin'" << x << ", " << y << endl;
+		return false;
 	}
 
 	virtual bool mouseMoved(double x, double y) {
 		cout << "Mouse: \"Hey, I am at " << x << ", " << y << " now!\"" << endl;
+		return false;
 	}
 };
 
@@ -173,12 +179,16 @@ public:
 class Helion : public GameAdaptor {
 private:
 	Game3D* game = nullptr;
+	InputEventQueue* eventQueue;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	RenderManager* manager = nullptr;
 public:
+
+	Helion(InputEventQueue* eventQueue) : GameAdaptor(), eventQueue(eventQueue) {
+	}
 
 	void setGame(Game3D* game) {
 		this->game = game;
@@ -224,6 +234,15 @@ public:
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
+	virtual void update(double dt) {
+		InputEvent* event;
+		while (event = eventQueue->nextEvent()) {
+			if (event->getType() == InputEventType::MOUSE_BUTTON_PRESSED) {
+				cout << "Boop!" << endl;
+			}
+		}
+	}
+
 	void renderHUD(glm::mat4 base) {
 		game->getWindow().setTitle("Helion   -   " + to_string(game->getFPS()) + "fps");
 	}
@@ -247,10 +266,12 @@ public:
  * Boots Helion
  */
 int main(int argc, char** argv) {
-	Helion helion;
+	InputEventQueue eventQueue;
+	Helion helion(&eventQueue);
 	Game3D game(helion);
 	Input listener(game);
 	Input2 listener2;
+	game.addInputListener(&eventQueue);
 	game.addInputListener(&listener2);
 	game.addInputListener(&listener);
 	game.run();
