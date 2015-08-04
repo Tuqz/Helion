@@ -21,18 +21,18 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "heliocentric/Game3D.hpp"
-#include "heliocentric/Input/InputAdaptor.hpp"
+#include "heliocentric/input/InputAdaptor.hpp"
 #include "heliocentric/GameAdaptor.hpp"
 #include "heliocentric/ObjLoader.hpp"
-#include "heliocentric/Renderer/Mesh.hpp"
-#include "heliocentric/Renderer/DefaultRenderer.hpp"
-#include "heliocentric/Renderer/ShaderProgram.hpp"
+#include "heliocentric/renderer/Mesh.hpp"
+#include "heliocentric/renderer/DefaultRenderer.hpp"
+#include "heliocentric/renderer/ShaderProgram.hpp"
 #include "heliocentric/GameObject.hpp"
-#include "heliocentric/SceneGraph/SceneGraph.hpp"
-#include "heliocentric/SceneGraph/Spatial.hpp"
+#include "heliocentric/scenegraph/SceneGraph.hpp"
+#include "heliocentric/scenegraph/Spatial.hpp"
 #include "heliocentric/RenderManager.hpp"
-#include "heliocentric/Input/InputEventQueue.hpp"
-#include "heliocentric/Input/InputEvent.hpp"
+#include "heliocentric/input/InputEventQueue.hpp"
+#include "heliocentric/input/InputEvent.hpp"
 
 using namespace std;
 

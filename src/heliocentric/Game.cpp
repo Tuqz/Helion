@@ -15,7 +15,7 @@
 
 #include "Game.hpp"
 #include "Window.hpp"
-#include "Input/InputListener.hpp"
+#include "input/InputListener.hpp"
 #include "exceptions.hpp"
 
 using namespace std;

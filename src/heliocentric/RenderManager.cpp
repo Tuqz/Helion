@@ -6,10 +6,10 @@
  */
 
 #include "RenderManager.hpp"
-#include "Renderer/DefaultRenderer.hpp"
+#include "renderer/DefaultRenderer.hpp"
 #include "exceptions.hpp"
 #include "Game3D.hpp"
-#include "SceneGraph/Spatial.hpp"
+#include "scenegraph/Spatial.hpp"
 
 #define GLM_FORCE_RADIANS
 #include <glm/mat4x4.hpp>

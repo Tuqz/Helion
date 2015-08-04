@@ -10,7 +10,7 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
-#include "SceneGraph/SceneGraph.hpp"
+#include "scenegraph/SceneGraph.hpp"
 class GameInterface;
 
 /**

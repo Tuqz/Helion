@@ -14,10 +14,10 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "Renderer/MeshRenderer.hpp"
-#include "Renderer/ShaderProgram.hpp"
+#include "renderer/MeshRenderer.hpp"
+#include "renderer/ShaderProgram.hpp"
 #include "GameObject.hpp"
-#include "SceneGraph/Spatial.hpp"
+#include "scenegraph/Spatial.hpp"
 
 class Game3D;
 
