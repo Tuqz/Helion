@@ -268,3 +268,23 @@ bool Game::isKeyPressed(int key) {
 bool Game::isMouseButtonPressed(int button) {
 	return glfwGetMouseButton(window.getWindow(), button) == GLFW_PRESS;
 }
+
+void Game::grabMouse() {
+	glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Game::releaseMouse() {
+	glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void Game::setMouseGrabbed(bool grab) {
+	if (grab) {
+		grabMouse();
+	} else {
+		releaseMouse();
+	}
+}
+
+bool Game::isMouseGrabbed() {
+	return glfwGetInputMode(window.getWindow(), GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+}

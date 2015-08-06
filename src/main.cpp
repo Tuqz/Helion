@@ -33,6 +33,7 @@
 #include "heliocentric/RenderManager.hpp"
 #include "heliocentric/input/InputEventQueue.hpp"
 #include "heliocentric/input/InputEvent.hpp"
+#include "heliocentric/camera/CameraManager.hpp"
 
 using namespace std;
 
@@ -50,24 +51,6 @@ public:
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				game.exit();
-				return true;
-			case GLFW_KEY_W:
-				game.getCamera().moveRelative(0, 0, -movementSpeed);
-				return true;
-			case GLFW_KEY_S:
-				game.getCamera().moveRelative(0, 0, movementSpeed);
-				return true;
-			case GLFW_KEY_A:
-				game.getCamera().moveRelative(-movementSpeed, 0, 0);
-				return true;
-			case GLFW_KEY_D:
-				game.getCamera().moveRelative(movementSpeed, 0, 0);
-				return true;
-			case GLFW_KEY_SPACE:
-				game.getCamera().moveRelative(0, movementSpeed, 0);
-				return true;
-			case GLFW_KEY_X:
-				game.getCamera().moveRelative(0, -movementSpeed, 0);
 				return true;
 			case GLFW_KEY_KP_8:
 				game.getCamera().tilt(turnSpeed);
@@ -92,49 +75,6 @@ public:
 				game.getCamera().resetOrientation();
 				return true;
 		}
-		return false;
-	}
-	
-	virtual bool keyTyped(unsigned int codepoint) {
-		cout << "Unicode value: " << hex << codepoint << dec << endl;
-		return false;
-	}
-
-
-	virtual bool keyReleased(int key, int scancode, int mods) {
-		cout << "key released" << endl;
-		return false;
-	}
-
-	virtual bool mouseButtonPressed(int button, int mods) {
-		double x,y;
-		game.getMousePosition(x, y);
-		cout << "Clicked at " << x << ", " << y << endl;
-		return false;
-	}
-
-	virtual bool mouseButtonReleased(int button, int mods) {
-		cout << "button released" << endl;
-		return false;
-	}
-	
-	virtual bool mouseEnteredWindow() {
-		cout << "Phew, the mouse is back." << endl;
-		return false;
-	}
-
-	virtual bool mouseExitedWindow() {
-		cout << "The mouse is gone!" << endl;
-		return false;
-	}
-
-	virtual bool mouseWheelScrolled(double x, double y) {
-		cout << "Scrollin'" << x << ", " << y << endl;
-		return false;
-	}
-
-	virtual bool mouseMoved(double x, double y) {
-		cout << "Mouse: \"Hey, I am at " << x << ", " << y << " now!\"" << endl;
 		return false;
 	}
 };
@@ -185,6 +125,7 @@ private:
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	RenderManager* manager = nullptr;
+	CameraManager* cams = nullptr;
 public:
 
 	Helion(InputEventQueue* eventQueue) : GameAdaptor(), eventQueue(eventQueue) {
@@ -195,7 +136,10 @@ public:
 	}
 
 	void init() {
+		// Set up managers
 		manager = new RenderManager(*game);
+		cams = new CameraManager(*game, game->getCamera());
+		game->addInputListener(cams);
 
 		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
@@ -241,6 +185,7 @@ public:
 				cout << "Boop!" << endl;
 			}
 		}
+		cams->update(dt);
 	}
 
 	void renderHUD(glm::mat4 base) {
@@ -253,6 +198,7 @@ public:
 
 	void shutdown() {
 		delete manager;
+		delete cams;
 		delete cube;
 		delete sphere;
 		delete obj1;

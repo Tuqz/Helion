@@ -75,6 +75,10 @@ public:
 	bool isMouseButtonPressed(int button);
 	void getMousePosition(double &x, double &y);
 	void setMousePosition(double x, double y);
+	void grabMouse();
+	void releaseMouse();
+	void setMouseGrabbed(bool grab);
+	bool isMouseGrabbed();
 private:
 	void resized();
 	// Timing

@@ -12,6 +12,9 @@ Heliocentric provides a number of things:
 
 # Major changes
 
+__ NOTICE: some paths have been changed in the input update, this will break 
+you build! __
+
 A simple lighting model was added. It seems that some things are not correct yet,
 but it is hard to verify this without a proper scene to test it on. Perhaps it
 is just a case of tweaking parameters. However, it does seem like the gamma 

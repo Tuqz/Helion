@@ -8,7 +8,7 @@
   - [x] Keyboard event handling
   - [x] Keyboard polling
   - [x] Mouse input handling
-  - [ ] Default camera controls
+  - [x] Default camera controls
   - [ ] Rebindable keys
   - [ ] Joystick support
 - [ ] More options for window handling
@@ -27,12 +27,9 @@
   - [x] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
   - [ ] What should happen when some v-entries use color and others don't?
-- [ ] Lighting
+- [x] Basic lighting
   - [x] normals
   - [x] diffuse lighting from point source
-  - [ ] specular lighting
-  - [ ] multiple sources
-  - [ ] dynamic range
   - [x] gamma
 - [ ] Textures
 - [ ] GUI
@@ -45,5 +42,14 @@
 - [ ] Add documentation
 
 - [ ] Can we reduce the amount of boilerplate code?
+
+## Improved graphics
+- [ ] FSAA/MSAA
+- [ ] multiple light sources
+- [ ] high dynamic range (HDR)
+- [ ] specular lighting 
+  - [ ] specular maps
+- [ ] bump maps
+- [ ] transparency
 
 ## Physics
