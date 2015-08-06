@@ -113,7 +113,7 @@ void Camera::resetOrientation() {
 
 
 void Camera::pan(float angle) {
-	orientation = normalize(orient(angle, 0, 1, 0) * orientation);
+	orientation = normalize(orientation * orient(angle, 0, 1, 0));
 	dirChanged = true;
 }
 
