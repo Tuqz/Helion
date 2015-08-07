@@ -17,15 +17,14 @@ using namespace std;
 CameraManager::CameraManager(Game3D& game) : CameraManager(game, game.getCamera()) {
 }
 
-CameraManager::CameraManager(Game3D& game, Camera& camera) : game(game), camera(camera) {
-	CameraModel* freecam = new FreeCameraModel();
-	if (!addModel("free", freecam)) {
+CameraManager::CameraManager(Game3D& game, Camera& camera) : game(game), camera(camera), currentIterator(models.end()) {
+	if (!addModel("free", &fcm)) {
 		throw Exception("Unable to initialize camera manager: failed to add free camera model.");
 	}
 	if (!setModel("free")) {
 		throw Exception("Unable to initialize camera manager: failed to select free camera model.");
 	}
-	if (currentModel == nullptr) {
+	if (currentIterator == models.end()) {
 		throw Exception("Unable to initialize camera manager.");
 	}
 }
@@ -34,9 +33,6 @@ CameraManager::CameraManager(const CameraManager& orig) : CameraManager(orig.gam
 }
 
 CameraManager::~CameraManager() {
-	for (map<string, CameraModel*>::iterator it = models.begin(); it != models.end(); ++it) {
-		delete it->second;
-	}
 }
 
 bool CameraManager::addModel(std::string label, CameraModel* model) {
@@ -48,9 +44,20 @@ bool CameraManager::addModel(std::string label, CameraModel* model) {
 }
 
 bool CameraManager::setModel(std::string label) {
-	map<string, CameraModel*>::iterator it = models.find(label);
+	return set(models.find(label));
+}
+
+bool CameraManager::nextModel() {
+	std::map<std::string, CameraModel*>::iterator it = next(currentIterator);
+	if (it == models.end()) {
+		it = models.begin();
+	}
+	return set(it);
+}
+
+bool CameraManager::set(std::map<std::string, CameraModel*>::iterator it) {
 	if (it != models.end() && it->second->set()) {
-		currentModel = it->second;
+		currentIterator = it;
 		return true;
 	} else {
 		return false;
@@ -58,41 +65,41 @@ bool CameraManager::setModel(std::string label) {
 }
 
 void CameraManager::update(double dt) {
-	return currentModel->update(dt);
+	return getCurrentModel()->update(dt);
 }
 
 bool CameraManager::keyPressed(int key, int scancode, int mods, bool repeat) {
-	return currentModel->keyPressed(key, scancode, mods, repeat);
+	return getCurrentModel()->keyPressed(key, scancode, mods, repeat);
 }
 
 bool CameraManager::keyReleased(int key, int scancode, int mods) {
-	return currentModel->keyReleased(key, scancode, mods);
+	return getCurrentModel()->keyReleased(key, scancode, mods);
 }
 
 bool CameraManager::keyTyped(unsigned int codepoint) {
-	return currentModel->keyTyped(codepoint);
+	return getCurrentModel()->keyTyped(codepoint);
 }
 
 bool CameraManager::mouseButtonPressed(int button, int mods) {
-	return currentModel->mouseButtonPressed(button, mods);
+	return getCurrentModel()->mouseButtonPressed(button, mods);
 }
 
 bool CameraManager::mouseButtonReleased(int button, int mods) {
-	return currentModel->mouseButtonReleased(button, mods);
+	return getCurrentModel()->mouseButtonReleased(button, mods);
 }
 
 bool CameraManager::mouseWheelScrolled(double x, double y) {
-	return currentModel->mouseWheelScrolled(x, y);
+	return getCurrentModel()->mouseWheelScrolled(x, y);
 }
 
 bool CameraManager::mouseMoved(double x, double y) {
-	return currentModel->mouseMoved(x, y);
+	return getCurrentModel()->mouseMoved(x, y);
 }
 
 bool CameraManager::mouseEnteredWindow() {
-	return currentModel->mouseEnteredWindow();
+	return getCurrentModel()->mouseEnteredWindow();
 }
 
 bool CameraManager::mouseExitedWindow() {
-	return currentModel->mouseExitedWindow();
+	return getCurrentModel()->mouseExitedWindow();
 }

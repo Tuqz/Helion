@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include "../input/InputListener.hpp"
+#include "FreeCameraModel.hpp"
 class Game3D;
 class Camera;
 class CameraModel;
@@ -28,8 +29,9 @@ class CameraManager : public InputListener {
 private:
 	Game3D& game;
 	Camera& camera;
+	FreeCameraModel fcm;
 	std::map<std::string, CameraModel*> models;
-	CameraModel* currentModel;
+	std::map<std::string, CameraModel*>::iterator currentIterator;
 public:
 	/**
 	 * Creates a new `CameraManager` that controls the default camera.
@@ -53,7 +55,7 @@ public:
 	CameraManager(const CameraManager& orig);
 	virtual ~CameraManager();
 	/**
-	 * Add the given model. When successful, the model can be selected using the
+	 * Adds the given model. When successful, the model can be selected using the
 	 * given label. If adding the model fails, `false` is returned.
 	 * 
      * @param label the label under which to add the model
@@ -70,6 +72,16 @@ public:
      * @return true if successful
      */
 	bool setModel(std::string label);
+	/**
+	 * Selects the next camera model. 
+	 * Note that the only guarantee about the order of the models is that the 
+	 * order remains constant as long as no models are added.
+	 * If setting the next model fails, `false` is returned and the current 
+	 * model remains set, as in `setModel`.
+	 * 
+	 * @return true if successful
+     */
+	bool nextModel();
 	/**
 	 * This method calls the update method of the currently set model, and 
 	 * should therefore be called in the update method of your GameInterface
@@ -93,6 +105,14 @@ public:
 	Camera& getCamera() const {
 		return camera;
 	}
+	std::string getCurrentModelLabel() {
+		return currentIterator->first;
+	}
+	CameraModel* getCurrentModel() {
+		return currentIterator->second;
+	}
+private:
+	bool set(std::map<std::string, CameraModel*>::iterator it);
 };
 
 #endif	/* CAMERAMANAGER_HPP */

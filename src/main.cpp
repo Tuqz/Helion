@@ -34,50 +34,9 @@
 #include "heliocentric/input/InputEventQueue.hpp"
 #include "heliocentric/input/InputEvent.hpp"
 #include "heliocentric/camera/CameraManager.hpp"
+#include "heliocentric/camera/OrbitingCameraModel.hpp"
 
 using namespace std;
-
-class Input : public InputAdaptor {
-private:
-	Game3D& game;
-	float movementSpeed = 0.1;
-	float turnSpeed = 0.025;
-public:
-
-	Input(Game3D& game) : game(game) {
-	};
-
-	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) {
-		switch (key) {
-			case GLFW_KEY_ESCAPE:
-				game.exit();
-				return true;
-			case GLFW_KEY_KP_8:
-				game.getCamera().tilt(turnSpeed);
-				return true;
-			case GLFW_KEY_KP_5:
-				game.getCamera().tilt(-turnSpeed);
-				return true;
-			case GLFW_KEY_KP_4:
-				game.getCamera().pan(-turnSpeed);
-				return true;
-			case GLFW_KEY_KP_6:
-				game.getCamera().pan(turnSpeed);
-				return true;
-			case GLFW_KEY_KP_7:
-				game.getCamera().roll(-turnSpeed);
-				return true;
-			case GLFW_KEY_KP_9:
-				game.getCamera().roll(turnSpeed);
-				return true;
-			case GLFW_KEY_KP_0:
-				game.getCamera().setPosition(vec3(0, 0, 2));
-				game.getCamera().resetOrientation();
-				return true;
-		}
-		return false;
-	}
-};
 
 class TestObject : public GameObject {
 private:
@@ -117,6 +76,7 @@ private:
 	TestObject* sun = nullptr;
 	RenderManager* manager = nullptr;
 	CameraManager* cams = nullptr;
+	OrbitingCameraModel ocm;
 public:
 
 	Helion(InputEventQueue* eventQueue) : GameAdaptor(), eventQueue(eventQueue) {
@@ -131,6 +91,7 @@ public:
 		manager = new RenderManager(*game);
 		cams = new CameraManager(*game);
 		game->addInputListener(cams);
+		cams->addModel("orbiting", &ocm);
 
 		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
@@ -197,6 +158,57 @@ public:
 		delete obj3;
 		delete sun;
 	}
+	
+	CameraManager* getCameraManager() const {
+		return cams;
+	}
+
+};
+
+class Input : public InputAdaptor {
+private:
+	Game3D& game;
+	Helion& helion;
+	float movementSpeed = 0.1;
+	float turnSpeed = 0.025;
+public:
+
+	Input(Game3D& game, Helion& helion) : game(game), helion(helion) {
+	};
+
+	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) {
+		switch (key) {
+			case GLFW_KEY_ESCAPE:
+				game.exit();
+				return true;
+			case GLFW_KEY_C:
+				helion.getCameraManager()->nextModel();
+				return true;
+			case GLFW_KEY_KP_8:
+				game.getCamera().tilt(turnSpeed);
+				return true;
+			case GLFW_KEY_KP_5:
+				game.getCamera().tilt(-turnSpeed);
+				return true;
+			case GLFW_KEY_KP_4:
+				game.getCamera().pan(-turnSpeed);
+				return true;
+			case GLFW_KEY_KP_6:
+				game.getCamera().pan(turnSpeed);
+				return true;
+			case GLFW_KEY_KP_7:
+				game.getCamera().roll(-turnSpeed);
+				return true;
+			case GLFW_KEY_KP_9:
+				game.getCamera().roll(turnSpeed);
+				return true;
+			case GLFW_KEY_KP_0:
+				game.getCamera().setPosition(vec3(0, 0, 2));
+				game.getCamera().resetOrientation();
+				return true;
+		}
+		return false;
+	}
 };
 
 /*
@@ -208,7 +220,7 @@ int main(int argc, char** argv) {
 	Helion helion(&eventQueue);
 	Game3D game(helion);
 	
-	Input listener(game);
+	Input listener(game, helion);
 	game.addInputListener(&eventQueue);
 	game.addInputListener(&listener);
 	
