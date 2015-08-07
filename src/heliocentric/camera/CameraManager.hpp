@@ -25,6 +25,10 @@ class CameraModel;
  * After creation, the camera manager has to be added as an input listener.
  * It should most likely process events before the game's main input handler and 
  * after the GUI.
+ * 
+ * Additionally, `CameraManager::update` needs to be called each frame. Most
+ * likely it is the last call in the `update` function of your `GameInterface` 
+ * implementation.
  */
 class CameraManager : public InputListener {
 private:

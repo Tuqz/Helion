@@ -97,7 +97,7 @@ public:
 		manager = new RenderManager(*game);
 		cams = new CameraManager(*game);
 		game->addInputListener(cams);
-		cams->addModel("orbiting", &ocm);
+		cams->addModel("orbit", &ocm);
 
 		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
