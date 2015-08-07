@@ -9,8 +9,8 @@
 #define	GAME3D_HPP
 
 #include "Game.hpp"
-#include "Camera.hpp"
-#include "SceneGraph/SceneGraph.hpp"
+#include "camera/Camera.hpp"
+#include "scenegraph/SceneGraph.hpp"
 class GameInterface;
 
 /**
@@ -35,8 +35,6 @@ public:
 	// Getters
 	Camera& getCamera();
 	SceneGraph& getScenegraph();
-private:
-
 };
 
 #endif	/* GAME3D_HPP */

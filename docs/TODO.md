@@ -6,9 +6,11 @@
 ## Engine
 - [ ] Input handling
   - [x] Keyboard event handling
-  - [ ] Keyboard polling
-  - [ ] Mouse input handling
+  - [x] Keyboard polling
+  - [x] Mouse input handling
+  - [x] Default camera controls
   - [ ] Rebindable keys
+  - [ ] Joystick support
 - [ ] More options for window handling
   - [ ] Full screen
   - [ ] Multi-monitor support
@@ -25,14 +27,12 @@
   - [x] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
   - [ ] What should happen when some v-entries use color and others don't?
-- [ ] Lighting
+- [x] Basic lighting
   - [x] normals
   - [x] diffuse lighting from point source
-  - [ ] specular lighting
-  - [ ] multiple sources
-  - [ ] dynamic range
   - [x] gamma
 - [ ] Textures
+- [ ] GUI
 
 - [ ] Use const keyword where useful
 - [ ] Reduce unneccesary includes
@@ -42,5 +42,15 @@
 - [ ] Add documentation
 
 - [ ] Can we reduce the amount of boilerplate code?
+
+## Improved graphics
+- [ ] FSAA/MSAA
+- [ ] multiple light sources
+- [ ] high dynamic range (HDR)
+- [ ] specular lighting 
+  - [ ] specular maps
+- [ ] bump maps
+- [ ] transparency
+- [ ] camera transitions
 
 ## Physics

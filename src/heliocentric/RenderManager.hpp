@@ -14,13 +14,23 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "Renderer/MeshRenderer.hpp"
-#include "Renderer/ShaderProgram.hpp"
+#include "renderer/MeshRenderer.hpp"
+#include "renderer/ShaderProgram.hpp"
 #include "GameObject.hpp"
-#include "SceneGraph/Spatial.hpp"
+#include "scenegraph/Spatial.hpp"
 
 class Game3D;
 
+/**
+ * This class provides a more convenient interface to some of the 
+ * rendering-related features of the Heliocentric game engine.
+ * In particular, it performs interactions with the shaders, such that the end
+ * user does not have to work with low level OpenGL functions.
+ * 
+ * Note that this class is subject to change, as some of the provided functions
+ * are workarounds that will be replaced if more of the required infrastructure
+ * is present.
+ */
 class RenderManager {
 private:
 	Game3D& game;

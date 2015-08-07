@@ -20,23 +20,27 @@ class GameAdaptor : public GameInterface {
 protected:
 	Game3D* game;
 public:
-	GameAdaptor();
+	GameAdaptor() {};
 	GameAdaptor(const GameAdaptor& orig) = delete;
-	virtual ~GameAdaptor();
-	virtual void init();
-	virtual void update(double dt);
-	virtual void renderHUD(glm::mat4 base);
-	virtual void renderWorld(glm::mat4 base);
-	virtual void shutdown();
-	virtual bool shouldStop();
-	virtual void windowResized(int width, int height);
-	virtual bool windowClosed();
+	virtual ~GameAdaptor() {};
+	virtual void init() {};
+	virtual void update(double dt) {};
+	virtual void renderHUD(glm::mat4 base) {};
+	virtual void renderWorld(glm::mat4 base) {};
+	virtual void shutdown() {};
+	virtual bool shouldStop() {
+		return false;
+	};
+	virtual void windowResized(int width, int height) {};
+	virtual bool windowClosed() {
+		return true;
+	};
 	virtual Game3D* getGame() const {
 		return game;
-	}
+	};
 	virtual void setGame(Game3D* game) {
 		this->game = game;
-	}
+	};
 };
 
 #endif	/* GAMEADAPTOR_HPP */

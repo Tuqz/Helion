@@ -11,7 +11,7 @@
 #include <cstring>
 
 #include "ObjLoader.hpp"
-#include "Renderer/Mesh.hpp"
+#include "renderer/Mesh.hpp"
 #include "exceptions.hpp"
 
 using namespace std;

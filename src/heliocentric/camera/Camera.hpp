@@ -32,7 +32,6 @@ class Camera {
 	float frustumScale, zNear, zFar;
 	// Orientation data
 	vec3 position;
-	float fPan, fTilt, fRoll;
 	quat orientation;
 	bool dirChanged, posChanged;
 public:
