@@ -51,5 +51,6 @@
   - [ ] specular maps
 - [ ] bump maps
 - [ ] transparency
+- [ ] camera transitions
 
 ## Physics

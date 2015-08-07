@@ -12,6 +12,7 @@
 #include <string>
 #include "../input/InputListener.hpp"
 #include "FreeCameraModel.hpp"
+class GameObject;
 class Game3D;
 class Camera;
 class CameraModel;
@@ -32,6 +33,7 @@ private:
 	FreeCameraModel fcm;
 	std::map<std::string, CameraModel*> models;
 	std::map<std::string, CameraModel*>::iterator currentIterator;
+	GameObject* focus = nullptr;
 public:
 	/**
 	 * Creates a new `CameraManager` that controls the default camera.
@@ -90,6 +92,14 @@ public:
      * @param dt the time since the last update call, in seconds
      */
 	void update(double dt);
+	/**
+	 * Set the object that the camera focuses on. Only some camera models 
+	 * require a focus object. The free camera for example does not.
+     * @param obj the object to focus on
+     */
+	void focusOn(GameObject* obj) {
+		focus = obj;
+	}
 	virtual bool keyPressed(int key, int scancode, int mods, bool repeat);
 	virtual bool keyReleased(int key, int scancode, int mods);
 	virtual bool keyTyped(unsigned int codepoint);
@@ -110,6 +120,9 @@ public:
 	}
 	CameraModel* getCurrentModel() {
 		return currentIterator->second;
+	}
+	GameObject* getFocus() const {
+		return focus;
 	}
 private:
 	bool set(std::map<std::string, CameraModel*>::iterator it);

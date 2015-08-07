@@ -9,6 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -55,10 +56,14 @@ public:
 		return position;
 	}
 
+	void setPosition(glm::vec3 position) {
+		this->position = position;
+	}
+
 	virtual glm::quat getOrientation() {
 		return orientation;
 	}
-
+	
 	void rotate(float angle, float x, float y, float z) {
 		float f = sinf(angle / 2.0f);
 		glm::quat q = quat(cosf(angle / 2.0f), x*f, y*f, z * f);
@@ -77,6 +82,7 @@ private:
 	RenderManager* manager = nullptr;
 	CameraManager* cams = nullptr;
 	OrbitingCameraModel ocm;
+	double t = 0;
 public:
 
 	Helion(InputEventQueue* eventQueue) : GameAdaptor(), eventQueue(eventQueue) {
@@ -125,7 +131,10 @@ public:
 
 		// Set source position of sunlight (default is 0,0,0)
 		manager->setSunPosition(sun->getPosition());
-
+		
+		// Set sun as camera focus
+		cams->focusOn(sun);
+		
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -137,6 +146,12 @@ public:
 				cout << "Boop!" << endl;
 			}
 		}
+		
+		t+=dt;
+		sun->setPosition(vec3(-1+sin(t), 0, 0.75));
+		manager->setSunPosition(sun->getPosition());
+		obj3->rotate(dt, 1, 0, 0);
+		
 		cams->update(dt);
 	}
 
@@ -182,6 +197,7 @@ public:
 				game.exit();
 				return true;
 			case GLFW_KEY_C:
+			case GLFW_KEY_V:
 				helion.getCameraManager()->nextModel();
 				return true;
 			case GLFW_KEY_KP_8:
