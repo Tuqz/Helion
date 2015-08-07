@@ -35,8 +35,6 @@ public:
 	// Getters
 	Camera& getCamera();
 	SceneGraph& getScenegraph();
-private:
-
 };
 
 #endif	/* GAME3D_HPP */

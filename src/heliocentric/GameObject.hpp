@@ -10,6 +10,10 @@
 
 #include <glm/fwd.hpp>
 
+/**
+ * All classes representing objects in the game world should be derived from 
+ * this abstract class, so the framework is provided with the given getters.
+ */
 class GameObject {
 public:
 	virtual ~GameObject() {};

@@ -14,13 +14,16 @@
 
 using namespace std;
 
+CameraManager::CameraManager(Game3D& game) : CameraManager(game, game.getCamera()) {
+}
+
 CameraManager::CameraManager(Game3D& game, Camera& camera) : game(game), camera(camera) {
 	CameraModel* freecam = new FreeCameraModel();
 	if (!addModel("free", freecam)) {
-		throw Exception("Unable to add free camera model.");
+		throw Exception("Unable to initialize camera manager: failed to add free camera model.");
 	}
 	if (!setModel("free")) {
-		throw Exception("Unable to select free camera model.");
+		throw Exception("Unable to initialize camera manager: failed to select free camera model.");
 	}
 	if (currentModel == nullptr) {
 		throw Exception("Unable to initialize camera manager.");
@@ -39,7 +42,7 @@ CameraManager::~CameraManager() {
 bool CameraManager::addModel(std::string label, CameraModel* model) {
 	pair < map<string, CameraModel*>::iterator, bool> res = models.insert(pair<string, CameraModel*>(label, model));
 	if (res.second) {
-		model->setManager(this);
+		model->manager = this;
 	}
 	return res.second;
 }

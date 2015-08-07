@@ -7,6 +7,7 @@
 
 #include "GLFW/glfw3.h"
 #include "FreeCameraModel.hpp"
+#include "CameraManager.hpp"
 #include "Camera.hpp"
 #include "../Game3D.hpp"
 

@@ -11,6 +11,9 @@
 #include "CameraModel.hpp"
 #include <glm/vec3.hpp>
 
+/**
+ * Camera model for a free camera.
+ */
 class FreeCameraModel : public CameraModel {
 private:
 	bool pantilt = false;

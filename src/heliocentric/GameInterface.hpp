@@ -36,7 +36,8 @@ public:
 	/**
 	 * This function is called each iteration of the game loop and should be 
 	 * implemented to update the game state.
-     * @param dt the time since the last update call
+	 * 
+     * @param dt the time since the last update call, in seconds
      */
 	virtual void update(double dt) = 0;
 	/**
@@ -85,8 +86,8 @@ public:
 	 * One exception is when extra cameras are defined. In that case you need to
 	 * call `yourCamera.updateAspect(width, height)` here.
 	 * 
-     * @param width
-     * @param height
+     * @param width the new window width
+     * @param height the new window height
      */
 	virtual void windowResized(int width, int height) = 0;
 	/**

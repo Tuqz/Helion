@@ -79,15 +79,6 @@ public:
 	}
 };
 
-
-class Input2 : public InputAdaptor {
-public:
-	virtual bool keyPressed(int key, int scancode, int mods, bool repeat) {
-		cout << "Unprocessed key event!" << endl;
-		return true;
-	}
-};
-
 class TestObject : public GameObject {
 private:
 	glm::vec3 position;
@@ -138,7 +129,7 @@ public:
 	void init() {
 		// Set up managers
 		manager = new RenderManager(*game);
-		cams = new CameraManager(*game, game->getCamera());
+		cams = new CameraManager(*game);
 		game->addInputListener(cams);
 
 		// Add an extra shader because I want a white 'sun'
@@ -213,14 +204,16 @@ public:
  */
 int main(int argc, char** argv) {
 	InputEventQueue eventQueue;
+	
 	Helion helion(&eventQueue);
 	Game3D game(helion);
+	
 	Input listener(game);
-	Input2 listener2;
 	game.addInputListener(&eventQueue);
-	game.addInputListener(&listener2);
 	game.addInputListener(&listener);
+	
 	game.run();
+	
 	return 0;
 }
 

@@ -53,6 +53,12 @@ public:
 	Window& getWindow();
 	int getFPS();
 	std::list<InputListener*>& getInputListeners();
+	/**
+	 * Adds an input listener to the front of the list. In other words, the new 
+	 * listener will be called before all currently registered ones.
+	 * To add the listener at an other point, use `getInputListeners` to get a
+	 * reference to the list of listeners.
+	 */
 	void addInputListener(InputListener* inputListener);
 	// Input handling
 	/**
@@ -75,9 +81,26 @@ public:
 	bool isMouseButtonPressed(int button);
 	void getMousePosition(double &x, double &y);
 	void setMousePosition(double x, double y);
+	/**
+	 * Hides the cursor, and allows for virtual, unbounded mouse movement.
+     */
 	void grabMouse();
+	/**
+	 * Show the cursor and gives normal mouse behaviour.
+     */
 	void releaseMouse();
+	/**
+	 * If `grab` is true, this does the same as `grabMouse`, if grab is false
+	 * this does the same as `releaseMouse`
+	 * 
+     * @param grab true to grab or false to release the mouse
+     */
 	void setMouseGrabbed(bool grab);
+	/**
+	 * Returns true if the mouse is grabbed.
+	 * 
+     * @return true if the mouse is grabbed
+     */
 	bool isMouseGrabbed();
 private:
 	void resized();
