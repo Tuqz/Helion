@@ -84,7 +84,7 @@ private:
 	CameraManager* cams = nullptr;
 	OrbitingCameraModel ocm;
 	double t = 0;
-	
+
 	// Texture stuff
 	vector<GLubyte> textureData;
 	int texturesize = 512;
@@ -137,7 +137,7 @@ public:
 		manager->addToSceneGraph(*obj2, *cube);
 		manager->addToSceneGraph(*obj3, *cube);
 		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
-		
+
 		initTextureTest();
 
 		// Set initial camera location (default is 0,0,0)
@@ -158,46 +158,49 @@ public:
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("normal");
-//		textureShader = new ShaderProgram("data/shaders/texture.vert", 
-//				"data/shaders/texture.frag", &attributes);
+		//		textureShader = new ShaderProgram("data/shaders/texture.vert", 
+		//				"data/shaders/texture.frag", &attributes);
 		DefaultRenderer* texRenderer = (DefaultRenderer*)
 				manager->createRenderer("data/shaders/texture.vert",
 				"data/shaders/texture.frag", &attributes);
-		
+
 		// Build texture
-		for (float i = 0; i < texturesize; i++) {
-			textureData.push_back(sin(PI * i / (texturesize - 1))*255.0f);
+		for (float y = 0; y < texturesize; y++) {
+			for (float x = 0; x < texturesize; x++) {
+				textureData.push_back(sin(PI * x / (texturesize - 1))
+						*(cos(2 * PI * y / (texturesize - 1)) + 1) / 2 * 255.0f);
+			}
 		}
 
 		// Upload texture
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_1D, texture);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, texturesize, 0,
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texturesize, texturesize, 0,
 				GL_RED, GL_UNSIGNED_BYTE, &textureData[0]);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
-		glBindTexture(GL_TEXTURE_1D, 0);
-		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 		// Link sampler to texture unit
 		glUseProgram(texRenderer->getProgram().getProgram());
 		glUniform1i(texRenderer->getProgram().getUniformLocation("redTexture"), textureUnit);
-		
+
 		// Link texture to texture unit
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
-		glBindTexture(GL_TEXTURE_1D, texture);
-		
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 		// Sampler object
 		glGenSamplers(1, &samplerObject);
 		glSamplerParameteri(samplerObject, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glSamplerParameteri(samplerObject, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glSamplerParameteri(samplerObject, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glBindSampler(textureUnit, samplerObject);
-		
+
 		// Demo object
 		textureObject = new TestObject(glm::vec3(0.5, 0.5, 0.5));
 		manager->addToSceneGraph(*textureObject, *square, *texRenderer);
 	}
-	
+
 	virtual void update(double dt) {
 		InputEvent* event;
 		while (event = eventQueue->nextEvent()) {
