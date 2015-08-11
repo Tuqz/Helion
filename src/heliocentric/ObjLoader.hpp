@@ -34,20 +34,22 @@ class ObjLoader {
 private:
 	// Settings
 	bool inlining;
+	int textureCoordinateDimensions;
 	bool loadColorData;
 	// Mesh data
 	std::vector<float> vertexData;
 	std::vector<unsigned short> indices;
 	std::vector<std::vector<float>> vertices;
+	std::vector<std::vector<float>> texcoords;
 	std::vector<std::vector<float>> normals;
 	std::vector<unsigned short> vIndices;
-//	std::vector<unsigned short> tIndices;
+	std::vector<unsigned short> tIndices;
 	std::vector<unsigned short> nIndices;
 	// For error handling
 	std::string currentFile;
 	int lineNumber;
 public:
-	ObjLoader(bool inlining = true, bool loadColorData = false);
+	ObjLoader(bool inlining = true, int textureCoordinateDimensions = 2, bool loadColorData = false);
 	ObjLoader(const ObjLoader& orig);
 	virtual ~ObjLoader();
 	Mesh* load(std::string filename);
@@ -58,6 +60,14 @@ public:
 
 	void setInlining(bool inlining) {
 		this->inlining = inlining;
+	}
+
+	int getTextureCoordinateDimensions() const {
+		return textureCoordinateDimensions;
+	}
+
+	void setTextureCoordinateDimensions(int textureCoordinateDimensions) {
+		this->textureCoordinateDimensions = textureCoordinateDimensions;
 	}
 
 	bool isLoadingColorData() const {
@@ -73,6 +83,7 @@ private:
 			char separator = ' ', bool allowEmptyTokens = false);
 	void parseLine(std::string& line);
 	void parseVEntry(int N, const std::vector<std::string>& tokens);
+	void parseVTEntry(int N, const std::vector<std::string>& tokens);
 	void parseVNEntry(int N, const std::vector<std::string>& tokens);
 	void parseFEntry(int N, const std::vector<std::string>& tokens);
 	void parseIndices(const std::string& token);

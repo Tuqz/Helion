@@ -37,7 +37,7 @@ public:
 		return vbo;
 	}
 
-	void print();
+	void print(int n = -1);
 };
 
 #endif	/* MESH_HPP */

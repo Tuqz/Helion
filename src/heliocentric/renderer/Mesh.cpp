@@ -35,13 +35,16 @@ Mesh::Mesh(vector<float>& vertices, vector<unsigned short>& indices)
 Mesh::~Mesh() {
 }
 
-void Mesh::print() {
-	cout << "Number of vertices: " << vertices.size() << endl << "Vertices: ";
+void Mesh::print(int n) {
+	cout << "Number of vertices: " << vertices.size() << endl;
 	for (int i = 0; i < vertices.size(); i++) {
 		cout << vertices[i] << " ";
+		if (i % n == n - 1) {
+			cout << endl;
+		}
 	}
 	cout << endl;
-	cout << "Number of indices: " << indices.size() << endl << "Indices: ";
+	cout << "Number of indices: " << indices.size() << endl;
 	for (int i = 0; i < indices.size(); i++) {
 		cout << indices[i] << " ";
 	}

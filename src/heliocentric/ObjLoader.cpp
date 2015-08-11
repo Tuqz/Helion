@@ -22,11 +22,13 @@ struct Index {
 	unsigned short i;
 };
 
-ObjLoader::ObjLoader(bool inlining, bool loadColorData)
-: inlining(inlining), loadColorData(loadColorData) {
+ObjLoader::ObjLoader(bool inlining, int textureCoordinateDimensions, bool loadColorData)
+: inlining(inlining), textureCoordinateDimensions(textureCoordinateDimensions), 
+		loadColorData(loadColorData) {
 }
 
-ObjLoader::ObjLoader(const ObjLoader& orig) : ObjLoader(orig.inlining, orig.loadColorData) {
+ObjLoader::ObjLoader(const ObjLoader& orig) 
+: ObjLoader(orig.inlining, orig.textureCoordinateDimensions, orig.loadColorData) {
 }
 
 ObjLoader::~ObjLoader() {
@@ -62,7 +64,7 @@ Mesh* ObjLoader::load(string filename) {
 	vertices.clear();
 	normals.clear();
 	vIndices.clear();
-    //tIndices.clear();
+    tIndices.clear();
 	nIndices.clear();
 	
 	currentFile = filename;
@@ -106,6 +108,8 @@ void ObjLoader::parseLine(std::string& line) {
 	// Send string to the correct parser
 	if (linetype.compare("v") == 0) {
 		parseVEntry(N, tokens);
+	} else if (linetype.compare("vt") == 0) {
+		parseVTEntry(N, tokens);
 	} else if (linetype.compare("vn") == 0) {
 		parseVNEntry(N, tokens);
 	} else if (linetype.compare("f") == 0) {
@@ -146,6 +150,26 @@ void ObjLoader::parseVEntry(int N, const std::vector<string>& tokens) {
 	vertices.push_back(vertex);
 }
 
+void ObjLoader::parseVTEntry(int N, const std::vector<std::string>& tokens) {
+	// Check number of element correctness
+	if (N == 0 || N > 3) {
+		throw error("Expected one, two or three values in vt-entry.");
+	}
+	
+	// Push texture coordinate values
+	vector<float> coord;
+	for (int i = 1; i <= textureCoordinateDimensions; i++) {
+		if (i <= N) {
+			coord.push_back(toFloat(tokens[i]));
+		} else {
+			coord.push_back(0);
+		}
+	}
+	
+	// Add coord to the list
+	texcoords.push_back(coord);
+}
+
 void ObjLoader::parseVNEntry(int N, const std::vector<std::string>& tokens) {
 	// Check number of element correctness
 	if (N != 3) {
@@ -179,19 +203,19 @@ void ObjLoader::parseIndices(const std::string& token) {
 
 	if (tokens.size() == 3) {
 		vIndices.push_back(toInt(tokens[0]) - 1);
-		//if (tokens[1].empty()) {
-		//	tIndices.push_back(toInt(tokens[0]) - 1);
-		//} else {
-		//	tIndices.push_back(toInt(tokens[1]) - 1);
-		//}
+		if (tokens[1].empty()) {
+			tIndices.push_back(toInt(tokens[0]) - 1);
+		} else {
+			tIndices.push_back(toInt(tokens[1]) - 1);
+		}
 		nIndices.push_back(toInt(tokens[2]) - 1);
 	} else if (tokens.size() == 2) {
 		vIndices.push_back(toInt(tokens[0]) - 1);
-		//tIndices.push_back(toInt(tokens[1]) - 1);
+		tIndices.push_back(toInt(tokens[1]) - 1);
 		nIndices.push_back(toInt(tokens[0]) - 1);
 	} else if (tokens.size() == 1) {
 		vIndices.push_back(toInt(tokens[0]) - 1);
-		//tIndices.push_back(toInt(tokens[0]) - 1);
+		tIndices.push_back(toInt(tokens[0]) - 1);
 		nIndices.push_back(toInt(tokens[0]) - 1);
 	} else {
 		throw error("Incorrect face specification.");
@@ -231,17 +255,24 @@ void ObjLoader::reorderVertexData() {
 	// Populate vertexData
 	vector<float> actualNormalData;
 	vector<float>* normalData = &actualNormalData;
+	vector<float> actualTexCoordData;
+	vector<float>* texCoordData = &actualTexCoordData;
 	if (inlining) {
 		normalData = &vertexData;
+		texCoordData = &vertexData;
 	}
 	for (int i = 0; i < entry.i; i++) {
 		int iv = reverseLookup[i].v;
 		int in = reverseLookup[i].n;
 		vertexData.insert(vertexData.end(), vertices[iv].begin(), vertices[iv].end());
 		normalData->insert(normalData->end(), normals[in].begin(), normals[in].end());
+		if (iv < texcoords.size()) {
+			texCoordData->insert(texCoordData->end(), texcoords[iv].begin(), texcoords[iv].end());
+		}
 	}
 	if (!inlining) {
 		vertexData.insert(vertexData.end(), normalData->begin(), normalData->end());
+		vertexData.insert(vertexData.end(), texCoordData->begin(), texCoordData->end());
 	}
 }
 

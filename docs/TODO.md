@@ -21,7 +21,7 @@
   - [x] vertex indices (f, Should work with all notations, ignoring texture and normal indices)
   - [x] normals (vn)
   - [x] normal indices (extension of f)
-  - [ ] texture coordinates (vt)
+  - [x] texture coordinates (vt)
   - [ ] texture indices (extension of f)
   - [ ] Material references (needs MTL parser)
   - [x] colors (extension of v)
