@@ -158,10 +158,8 @@ public:
 		vector<string> attributes;
 		attributes.push_back("position");
 		attributes.push_back("normal");
-		//		textureShader = new ShaderProgram("data/shaders/texture.vert", 
-		//				"data/shaders/texture.frag", &attributes);
 		DefaultRenderer* texRenderer = (DefaultRenderer*)
-				manager->createRenderer("data/shaders/texture.vert",
+				manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/texture.frag", &attributes);
 
 		// Build texture
@@ -197,7 +195,7 @@ public:
 		glBindSampler(textureUnit, samplerObject);
 
 		// Demo object
-		textureObject = new TestObject(glm::vec3(0.5, 0.5, 0.5));
+		textureObject = new TestObject(glm::vec3());
 		manager->addToSceneGraph(*textureObject, square, *texRenderer);
 	}
 

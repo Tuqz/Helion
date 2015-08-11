@@ -23,13 +23,13 @@ struct Index {
 	unsigned short i;
 };
 
-ObjLoader::ObjLoader(bool inlining, int textureCoordinateDimensions, bool loadColorData)
-: inlining(inlining), textureCoordinateDimensions(textureCoordinateDimensions),
+ObjLoader::ObjLoader(int textureCoordinateDimensions, bool inlining, bool loadColorData)
+: textureCoordinateDimensions(textureCoordinateDimensions), inlining(inlining),
 loadColorData(loadColorData) {
 }
 
 ObjLoader::ObjLoader(const ObjLoader& orig)
-: ObjLoader(orig.inlining, orig.textureCoordinateDimensions, orig.loadColorData) {
+: ObjLoader(orig.textureCoordinateDimensions, orig.inlining, orig.loadColorData) {
 }
 
 ObjLoader::~ObjLoader() {
@@ -269,6 +269,7 @@ void ObjLoader::reorderVertexData() {
 	vector<float>* normalData = &actualNormalData;
 	vector<float> actualTexCoordData;
 	vector<float>* texCoordData = &actualTexCoordData;
+	vector<float> coord(textureCoordinateDimensions, 0);
 	if (inlining) {
 		normalData = &vertexData;
 		texCoordData = &vertexData;
@@ -281,6 +282,8 @@ void ObjLoader::reorderVertexData() {
 		normalData->insert(normalData->end(), normals[in].begin(), normals[in].end());
 		if (it < texcoords.size()) {
 			texCoordData->insert(texCoordData->end(), texcoords[it].begin(), texcoords[it].end());
+		} else if (textureCoordinateDimensions > 0) {
+			texCoordData->insert(texCoordData->end(), coord.begin(), coord.end());
 		}
 	}
 	if (!inlining) {
@@ -288,8 +291,6 @@ void ObjLoader::reorderVertexData() {
 		vertexData.insert(vertexData.end(), texCoordData->begin(), texCoordData->end());
 	}
 }
-
-
 
 float ObjLoader::toFloat(std::string str) {
 	try {

@@ -33,8 +33,8 @@ public:
 class ObjLoader {
 private:
 	// Settings
-	bool inlining;
 	int textureCoordinateDimensions;
+	bool inlining;
 	bool loadColorData;
 	// Mesh data
 	std::vector<float> vertexData;
@@ -49,7 +49,7 @@ private:
 	std::string currentFile;
 	int lineNumber;
 public:
-	ObjLoader(bool inlining = true, int textureCoordinateDimensions = 2, bool loadColorData = false);
+	ObjLoader(int textureCoordinateDimensions = 2, bool inlining = true, bool loadColorData = false);
 	ObjLoader(const ObjLoader& orig);
 	virtual ~ObjLoader();
 	Mesh load(std::string filename);

@@ -28,9 +28,9 @@
   - [ ] ~~parameter space vertices~~ (not planned)
   - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Textures
-  - [ ] texture coordinates
+  - [x] texture coordinates
   - [ ] texture creation
-  - [ ] textures in shaders
+  - [x] textures in shaders
   - [ ] renderer support for textures
   - [ ] image loading
 - [ ] GUI

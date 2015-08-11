@@ -37,8 +37,11 @@ void DefaultRenderer::render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera) {
 void DefaultRenderer::setVertexAttribs() {
 	// Vertex coordinates
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 9*sizeof(float), 0);
 	// Vertex normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*) (4*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*) (4*sizeof(float)));
+	// Texture coordinates
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*) (7*sizeof(float)));
 }
