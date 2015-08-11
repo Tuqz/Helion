@@ -22,15 +22,11 @@
   - [x] normals (vn)
   - [x] normal indices (extension of f)
   - [x] texture coordinates (vt)
-  - [ ] texture indices (extension of f)
+  - [x] texture indices (extension of f)
   - [ ] Material references (needs MTL parser)
   - [x] colors (extension of v)
   - [ ] ~~parameter space vertices~~ (not planned)
   - [ ] What should happen when some v-entries use color and others don't?
-- [x] Basic lighting
-  - [x] normals
-  - [x] diffuse lighting from point source
-  - [x] gamma
 - [ ] Textures
   - [ ] texture coordinates
   - [ ] texture creation

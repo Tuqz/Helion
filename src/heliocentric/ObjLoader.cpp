@@ -19,15 +19,16 @@ using namespace std;
 struct Index {
 	unsigned short v;
 	unsigned short n;
+	unsigned short t;
 	unsigned short i;
 };
 
 ObjLoader::ObjLoader(bool inlining, int textureCoordinateDimensions, bool loadColorData)
-: inlining(inlining), textureCoordinateDimensions(textureCoordinateDimensions), 
-		loadColorData(loadColorData) {
+: inlining(inlining), textureCoordinateDimensions(textureCoordinateDimensions),
+loadColorData(loadColorData) {
 }
 
-ObjLoader::ObjLoader(const ObjLoader& orig) 
+ObjLoader::ObjLoader(const ObjLoader& orig)
 : ObjLoader(orig.inlining, orig.textureCoordinateDimensions, orig.loadColorData) {
 }
 
@@ -64,9 +65,9 @@ Mesh* ObjLoader::load(string filename) {
 	vertices.clear();
 	normals.clear();
 	vIndices.clear();
-    tIndices.clear();
+	tIndices.clear();
 	nIndices.clear();
-	
+
 	currentFile = filename;
 	lineNumber = 0;
 	string line;
@@ -155,7 +156,7 @@ void ObjLoader::parseVTEntry(int N, const std::vector<std::string>& tokens) {
 	if (N == 0 || N > 3) {
 		throw error("Expected one, two or three values in vt-entry.");
 	}
-	
+
 	// Push texture coordinate values
 	vector<float> coord;
 	for (int i = 1; i <= textureCoordinateDimensions; i++) {
@@ -165,7 +166,7 @@ void ObjLoader::parseVTEntry(int N, const std::vector<std::string>& tokens) {
 			coord.push_back(0);
 		}
 	}
-	
+
 	// Add coord to the list
 	texcoords.push_back(coord);
 }
@@ -234,13 +235,15 @@ void ObjLoader::reorderVertexData() {
 
 		// Look if this index pair already exists
 		int j;
-		for (j = 0; j < lookup[vIndices[i]].size()
-				&& !(found = lookup[vIndices[i]][j].n == nIndices[i]); j++);
+		for (j = 0; j < lookup[vIndices[i]].size() &&
+				!(found = lookup[vIndices[i]][j].n == nIndices[i]
+				&& lookup[vIndices[i]][j].t == tIndices[i]); j++);
 
 		// If not, add a new entry to the lookup tables
 		if (!found) {
 			entry.v = vIndices[i];
 			entry.n = nIndices[i];
+			entry.t = tIndices[i];
 
 			lookup[vIndices[i]].push_back(entry);
 			reverseLookup.push_back(entry);
@@ -264,10 +267,11 @@ void ObjLoader::reorderVertexData() {
 	for (int i = 0; i < entry.i; i++) {
 		int iv = reverseLookup[i].v;
 		int in = reverseLookup[i].n;
+		int it = reverseLookup[i].t;
 		vertexData.insert(vertexData.end(), vertices[iv].begin(), vertices[iv].end());
 		normalData->insert(normalData->end(), normals[in].begin(), normals[in].end());
-		if (iv < texcoords.size()) {
-			texCoordData->insert(texCoordData->end(), texcoords[iv].begin(), texcoords[iv].end());
+		if (it < texcoords.size()) {
+			texCoordData->insert(texCoordData->end(), texcoords[it].begin(), texcoords[it].end());
 		}
 	}
 	if (!inlining) {
@@ -275,6 +279,8 @@ void ObjLoader::reorderVertexData() {
 		vertexData.insert(vertexData.end(), texCoordData->begin(), texCoordData->end());
 	}
 }
+
+
 
 float ObjLoader::toFloat(std::string str) {
 	try {
