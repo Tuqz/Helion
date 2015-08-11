@@ -28,6 +28,7 @@
 #include "heliocentric/renderer/Mesh.hpp"
 #include "heliocentric/renderer/DefaultRenderer.hpp"
 #include "heliocentric/renderer/ShaderProgram.hpp"
+#include "heliocentric/renderer/Image.hpp"
 #include "heliocentric/GameObject.hpp"
 #include "heliocentric/scenegraph/SceneGraph.hpp"
 #include "heliocentric/scenegraph/Spatial.hpp"
@@ -86,12 +87,8 @@ private:
 	double t = 0;
 
 	// Texture stuff
-	vector<GLubyte> textureData;
-	int texturesize = 512;
 	GLuint texture, samplerObject;
-	ShaderProgram* textureShader = nullptr;
-	MeshRenderer* textureRenderer = nullptr;
-	TestObject* textureObject = nullptr;
+	TestObject* texturedObject = nullptr;
 	int textureUnit = 0;
 public:
 
@@ -161,20 +158,14 @@ public:
 		DefaultRenderer* texRenderer = (DefaultRenderer*)
 				manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/texture.frag", &attributes);
-
-		// Build texture
-		for (float y = 0; y < texturesize; y++) {
-			for (float x = 0; x < texturesize; x++) {
-				textureData.push_back(sin(PI * x / (texturesize - 1))
-						*(cos(2 * PI * y / (texturesize - 1)) + 1) / 2 * 255.0f);
-			}
-		}
+		
+		Image image("data/images/earthmap1k.jpg");
 
 		// Upload texture
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texturesize, texturesize, 0,
-				GL_RED, GL_UNSIGNED_BYTE, &textureData[0]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 1000, 500, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, image.getData());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -195,8 +186,8 @@ public:
 		glBindSampler(textureUnit, samplerObject);
 
 		// Demo object
-		textureObject = new TestObject(glm::vec3());
-		manager->addToSceneGraph(*textureObject, square, *texRenderer);
+		texturedObject = new TestObject(glm::vec3());
+		manager->addToSceneGraph(*texturedObject, square, *texRenderer);
 	}
 
 	virtual void update(double dt) {
@@ -230,8 +221,7 @@ public:
 		delete obj2;
 		delete obj3;
 		delete sun;
-		delete textureShader;
-		delete textureRenderer;
+		delete texturedObject;
 	}
 
 	CameraManager* getCameraManager() const {
