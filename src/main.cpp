@@ -63,7 +63,7 @@ public:
 	virtual glm::quat getOrientation() {
 		return orientation;
 	}
-	
+
 	void rotate(float angle, float x, float y, float z) {
 		float f = sinf(angle / 2.0f);
 		glm::quat q = quat(cosf(angle / 2.0f), x*f, y*f, z * f);
@@ -77,12 +77,22 @@ private:
 	InputEventQueue* eventQueue;
 	Mesh* cube = nullptr;
 	Mesh* sphere = nullptr;
+	Mesh* square = nullptr;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	RenderManager* manager = nullptr;
 	CameraManager* cams = nullptr;
 	OrbitingCameraModel ocm;
 	double t = 0;
+	
+	// Texture stuff
+	vector<GLubyte> textureData;
+	int texturesize = 512;
+	GLuint texture, samplerObject;
+	ShaderProgram* textureShader = nullptr;
+	MeshRenderer* textureRenderer = nullptr;
+	TestObject* textureObject = nullptr;
+	int textureUnit = 0;
 public:
 
 	Helion(InputEventQueue* eventQueue) : GameAdaptor(), eventQueue(eventQueue) {
@@ -98,6 +108,7 @@ public:
 		cams = new CameraManager(*game);
 		game->addInputListener(cams);
 		cams->addModel("orbit", &ocm);
+		manager->setGamma(2.2f);
 
 		// Add an extra shader because I want a white 'sun'
 		vector<string> attributes;
@@ -111,6 +122,7 @@ public:
 		ObjLoader loader;
 		cube = loader.load("data/meshes/cube.obj");
 		sphere = loader.load("data/meshes/sphere.obj");
+		square = loader.load("data/meshes/test.obj");
 
 		// Create game objects
 		obj1 = new TestObject(glm::vec3(1, 0, 0));
@@ -125,20 +137,67 @@ public:
 		manager->addToSceneGraph(*obj2, *cube);
 		manager->addToSceneGraph(*obj3, *cube);
 		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
+		
+		initTextureTest();
 
 		// Set initial camera location (default is 0,0,0)
 		game->getCamera().setPosition(vec3(0, 0, 2));
 
 		// Set source position of sunlight (default is 0,0,0)
 		manager->setSunPosition(sun->getPosition());
-		
+
 		// Set sun as camera focus
 		cams->focusOn(sun);
-		
+
 		// Set clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
+	void initTextureTest() {
+		// Texture shaders
+		vector<string> attributes;
+		attributes.push_back("position");
+		attributes.push_back("normal");
+//		textureShader = new ShaderProgram("data/shaders/texture.vert", 
+//				"data/shaders/texture.frag", &attributes);
+		DefaultRenderer* texRenderer = (DefaultRenderer*)
+				manager->createRenderer("data/shaders/texture.vert",
+				"data/shaders/texture.frag", &attributes);
+		
+		// Build texture
+		for (float i = 0; i < texturesize; i++) {
+			textureData.push_back(sin(PI * i / (texturesize - 1))*255.0f);
+		}
+
+		// Upload texture
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_1D, texture);
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, texturesize, 0,
+				GL_RED, GL_UNSIGNED_BYTE, &textureData[0]);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
+		glBindTexture(GL_TEXTURE_1D, 0);
+		
+		// Link sampler to texture unit
+		glUseProgram(texRenderer->getProgram().getProgram());
+		glUniform1i(texRenderer->getProgram().getUniformLocation("redTexture"), textureUnit);
+		
+		// Link texture to texture unit
+		glActiveTexture(GL_TEXTURE0 + textureUnit);
+		glBindTexture(GL_TEXTURE_1D, texture);
+		
+		// Sampler object
+		glGenSamplers(1, &samplerObject);
+		glSamplerParameteri(samplerObject, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glSamplerParameteri(samplerObject, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glSamplerParameteri(samplerObject, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glBindSampler(textureUnit, samplerObject);
+		
+		// Demo object
+		textureObject = new TestObject(glm::vec3(0.5, 0.5, 0.5));
+		manager->addToSceneGraph(*textureObject, *square, *texRenderer);
+	}
+	
 	virtual void update(double dt) {
 		InputEvent* event;
 		while (event = eventQueue->nextEvent()) {
@@ -146,12 +205,12 @@ public:
 				cout << "Boop!" << endl;
 			}
 		}
-		
-		t+=dt;
-		sun->setPosition(vec3(-1+sin(t), 0, 0.75));
+
+		t += dt;
+		sun->setPosition(vec3(-1 + sin(t), 0, 0.75));
 		manager->setSunPosition(sun->getPosition());
 		obj3->rotate(dt, 1, 0, 0);
-		
+
 		cams->update(dt);
 	}
 
@@ -168,12 +227,15 @@ public:
 		delete cams;
 		delete cube;
 		delete sphere;
+		delete square;
 		delete obj1;
 		delete obj2;
 		delete obj3;
 		delete sun;
+		delete textureShader;
+		delete textureRenderer;
 	}
-	
+
 	CameraManager* getCameraManager() const {
 		return cams;
 	}
@@ -232,16 +294,16 @@ public:
  */
 int main(int argc, char** argv) {
 	InputEventQueue eventQueue;
-	
+
 	Helion helion(&eventQueue);
 	Game3D game(helion);
-	
+
 	Input listener(game, helion);
 	game.addInputListener(&eventQueue);
 	game.addInputListener(&listener);
-	
+
 	game.run();
-	
+
 	return 0;
 }
 

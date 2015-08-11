@@ -32,6 +32,11 @@
   - [x] diffuse lighting from point source
   - [x] gamma
 - [ ] Textures
+  - [ ] texture coordinates
+  - [ ] texture creation
+  - [ ] textures in shaders
+  - [ ] renderer support for textures
+  - [ ] image loading
 - [ ] GUI
 
 - [ ] Use const keyword where useful
