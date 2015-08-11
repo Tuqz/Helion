@@ -17,6 +17,7 @@ private:
 	std::vector<unsigned short> indices;
 	GLuint vbo, ibo;
 public:
+	Mesh();
 	Mesh(std::vector<float>& vertices, std::vector<unsigned short>& indices);
 	Mesh(const Mesh& orig);
 	virtual ~Mesh();

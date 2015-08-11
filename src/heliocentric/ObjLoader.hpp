@@ -52,7 +52,8 @@ public:
 	ObjLoader(bool inlining = true, int textureCoordinateDimensions = 2, bool loadColorData = false);
 	ObjLoader(const ObjLoader& orig);
 	virtual ~ObjLoader();
-	Mesh* load(std::string filename);
+	Mesh load(std::string filename);
+	void load(std::string filename, Mesh* mesh);
 	
 	bool isInlining() const {
 		return inlining;
@@ -81,6 +82,7 @@ public:
 private:
 	static std::vector<std::string> tokenize(std::string line,
 			char separator = ' ', bool allowEmptyTokens = false);
+	void load();
 	void parseLine(std::string& line);
 	void parseVEntry(int N, const std::vector<std::string>& tokens);
 	void parseVTEntry(int N, const std::vector<std::string>& tokens);

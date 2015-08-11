@@ -58,7 +58,19 @@ vector<string> ObjLoader::tokenize(string line, char separator, bool allowEmptyT
 	return tokens;
 }
 
-Mesh* ObjLoader::load(string filename) {
+Mesh ObjLoader::load(string filename) {
+	currentFile = filename;
+	load();
+	return Mesh(vertexData, indices);
+}
+
+void ObjLoader::load(string filename, Mesh* mesh) {
+	currentFile = filename;
+	load();
+	*mesh = Mesh(vertexData, indices);
+}
+
+void ObjLoader::load() {
 	// Set globals
 	vertexData.clear();
 	indices.clear();
@@ -68,15 +80,14 @@ Mesh* ObjLoader::load(string filename) {
 	tIndices.clear();
 	nIndices.clear();
 
-	currentFile = filename;
 	lineNumber = 0;
 	string line;
 
 
 	// Open the file
-	ifstream file(filename);
+	ifstream file(currentFile);
 	if (!file.is_open()) {
-		throw IOException("Cannot read file \"" + filename + "\": " + strerror(errno) + ".");
+		throw IOException("Cannot read file \"" + currentFile + "\": " + strerror(errno) + ".");
 	}
 
 	// Read and process the file line-by-line
@@ -88,7 +99,7 @@ Mesh* ObjLoader::load(string filename) {
 		}
 	}
 	if (file.bad()) {
-		throw IOException("Error while reading file \"" + filename + "\": " + strerror(errno) + ".");
+		throw IOException("Error while reading file \"" + currentFile + "\": " + strerror(errno) + ".");
 	}
 
 	// Close the file
@@ -96,8 +107,6 @@ Mesh* ObjLoader::load(string filename) {
 
 	// Convert to singular indices and populate vertexData
 	reorderVertexData();
-
-	return new Mesh(vertexData, indices);
 }
 
 void ObjLoader::parseLine(std::string& line) {

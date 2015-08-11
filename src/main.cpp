@@ -75,9 +75,9 @@ class Helion : public GameAdaptor {
 private:
 	Game3D* game = nullptr;
 	InputEventQueue* eventQueue;
-	Mesh* cube = nullptr;
-	Mesh* sphere = nullptr;
-	Mesh* square = nullptr;
+	Mesh cube;
+	Mesh sphere;
+	Mesh square;
 	TestObject* obj1 = nullptr, * obj2 = nullptr, * obj3 = nullptr;
 	TestObject* sun = nullptr;
 	RenderManager* manager = nullptr;
@@ -120,9 +120,9 @@ public:
 
 		// Load meshes
 		ObjLoader loader;
-		cube = loader.load("data/meshes/cube.obj");
-		sphere = loader.load("data/meshes/sphere.obj");
-		square = loader.load("data/meshes/test.obj");
+		loader.load("data/meshes/cube.obj", &cube);
+		loader.load("data/meshes/sphere.obj", &sphere);
+		loader.load("data/meshes/test.obj", &square);
 
 		// Create game objects
 		obj1 = new TestObject(glm::vec3(1, 0, 0));
@@ -133,10 +133,10 @@ public:
 		sun = new TestObject(glm::vec3(-1, 0, 1));
 
 		// Add game objects to SceneGraph
-		manager->addToSceneGraph(*obj1, *cube);
-		manager->addToSceneGraph(*obj2, *cube);
-		manager->addToSceneGraph(*obj3, *cube);
-		manager->addToSceneGraph(*sun, *sphere, *whiteRenderer)->setScale(0.2f);
+		manager->addToSceneGraph(*obj1, cube);
+		manager->addToSceneGraph(*obj2, cube);
+		manager->addToSceneGraph(*obj3, cube);
+		manager->addToSceneGraph(*sun, sphere, *whiteRenderer)->setScale(0.2f);
 
 		initTextureTest();
 
@@ -198,7 +198,7 @@ public:
 
 		// Demo object
 		textureObject = new TestObject(glm::vec3(0.5, 0.5, 0.5));
-		manager->addToSceneGraph(*textureObject, *square, *texRenderer);
+		manager->addToSceneGraph(*textureObject, square, *texRenderer);
 	}
 
 	virtual void update(double dt) {
@@ -228,9 +228,6 @@ public:
 	void shutdown() {
 		delete manager;
 		delete cams;
-		delete cube;
-		delete sphere;
-		delete square;
 		delete obj1;
 		delete obj2;
 		delete obj3;

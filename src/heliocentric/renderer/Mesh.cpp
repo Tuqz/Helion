@@ -12,6 +12,10 @@
 
 using namespace std;
 
+Mesh::Mesh() {
+
+}
+
 Mesh::Mesh(vector<float>& vertices, vector<unsigned short>& indices)
 : vertices(vertices), indices(indices) {
 
