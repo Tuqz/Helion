@@ -28,7 +28,7 @@
 #include "heliocentric/renderer/Mesh.hpp"
 #include "heliocentric/renderer/DefaultRenderer.hpp"
 #include "heliocentric/renderer/ShaderProgram.hpp"
-#include "heliocentric/renderer/Image.hpp"
+#include "heliocentric/renderer/Texture.hpp"
 #include "heliocentric/GameObject.hpp"
 #include "heliocentric/scenegraph/SceneGraph.hpp"
 #include "heliocentric/scenegraph/Spatial.hpp"
@@ -87,7 +87,7 @@ private:
 	double t = 0;
 
 	// Texture stuff
-	GLuint texture, samplerObject;
+	GLuint samplerObject;
 	TestObject* texturedObject = nullptr;
 	int textureUnit = 0;
 public:
@@ -108,12 +108,9 @@ public:
 		manager->setGamma(2.2f);
 
 		// Add an extra shader because I want a white 'sun'
-		vector<string> attributes;
-		attributes.push_back("position");
-		attributes.push_back("normal");
 		DefaultRenderer* whiteRenderer = (DefaultRenderer*)
 				manager->createRenderer("data/shaders/default.vert",
-				"data/shaders/white.frag", &attributes);
+				"data/shaders/white.frag", manager->getDefaultAttributes());
 
 		// Load meshes
 		ObjLoader loader;
@@ -152,31 +149,18 @@ public:
 
 	void initTextureTest() {
 		// Texture shaders
-		vector<string> attributes;
-		attributes.push_back("position");
-		attributes.push_back("normal");
 		DefaultRenderer* texRenderer = (DefaultRenderer*)
 				manager->createRenderer("data/shaders/default.vert",
-				"data/shaders/texture.frag", &attributes);
+				"data/shaders/texture.frag", manager->getDefaultAttributes());
 		
-		Image image("data/images/earthmap1k.jpg");
-
-		// Upload texture
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 1000, 500, 0,
-				GL_RGB, GL_UNSIGNED_BYTE, image.getData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
+		Texture texture("data/images/earthmap1k.jpg");
+		
 		// Link sampler to texture unit
 		glUseProgram(texRenderer->getProgram().getProgram());
-		glUniform1i(texRenderer->getProgram().getUniformLocation("redTexture"), textureUnit);
+		glUniform1i(texRenderer->getProgram().getUniformLocation("diffuseTexture"), textureUnit);
 
 		// Link texture to texture unit
-		glActiveTexture(GL_TEXTURE0 + textureUnit);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		texture.bindToUnit(textureUnit);
 
 		// Sampler object
 		glGenSamplers(1, &samplerObject);
@@ -199,7 +183,7 @@ public:
 		}
 
 		t += dt;
-		sun->setPosition(vec3(-1 + sin(t), 0, 0.75));
+		sun->setPosition(vec3((sin(t)-1)*0.75, 0, 0.75));
 		manager->setSunPosition(sun->getPosition());
 		obj3->rotate(dt, 1, 0, 0);
 

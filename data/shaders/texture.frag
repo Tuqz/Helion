@@ -4,7 +4,7 @@ in vec3 cameraSpacePosition;
 in vec3 vertexNormal;
 in vec2 texCoords;
 
-uniform sampler2D redTexture;
+uniform sampler2D diffuseTexture;
 
 // Lighting parameters
 uniform vec3 sunPosition;
@@ -32,7 +32,7 @@ void main()
     float cosAI_sun = clamp(dot(vertexNormal, dirToSun), 0, 1);
 
     // Output including ambient and diffuse lighting
-	vec4 diffuseColor = texture(redTexture, texCoords);
+	vec4 diffuseColor = texture(diffuseTexture, texCoords);
     outputColor = diffuseColor * ambientIntensity
             + diffuseColor * attenIntensity * cosAI_sun;
 	

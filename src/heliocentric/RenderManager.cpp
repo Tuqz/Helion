@@ -18,6 +18,9 @@
 using namespace std;
 
 RenderManager::RenderManager(Game3D& game, bool generateDefaultRenderer) : game(game) {
+	defaultAttributes.push_back("position");
+	defaultAttributes.push_back("normal");
+	defaultAttributes.push_back("texcoord");
 	if (generateDefaultRenderer) {
 		createDefaultRenderer();
 	}
@@ -36,11 +39,8 @@ RenderManager::~RenderManager() {
 }
 
 MeshRenderer* RenderManager::createDefaultRenderer() {
-	vector<string> attributes;
-	attributes.push_back("position");
-	attributes.push_back("normal");
 	createRenderer("data/shaders/default.vert",
-			"data/shaders/default.frag", &attributes);
+			"data/shaders/default.frag", &defaultAttributes);
 }
 
 MeshRenderer* RenderManager::createRenderer(string vertexShader,

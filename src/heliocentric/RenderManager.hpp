@@ -37,6 +37,7 @@ private:
 	std::vector<MeshRenderer*> renderers;
 	std::vector<ShaderProgram*> programs;
 	std::vector<Spatial*> nodes;
+	std::vector<std::string> defaultAttributes;
 	float gamma = 1;
 	glm::vec3 sunLightColor = glm::vec3(1,1,1);
 	float ambientIntensity = 0.05f;
@@ -138,6 +139,15 @@ public:
      * @return the newly created scene graph node
      */
 	Spatial* addToSceneGraph(GameObject& obj, Mesh& mesh, MeshRenderer& renderer);
+	/**
+	 * Returns a pointer to the default attribute list, which is expected by
+	 * the default vertex shader provided with this engine.
+	 * 
+     * @return a pointer to the default attribute list
+     */
+	std::vector<std::string>* getDefaultAttributes() {
+		return &defaultAttributes;
+	}
 private:
 	void initializeProgram(ShaderProgram& program);
 	void forall (void (RenderManager::*f)(ShaderProgram&));
