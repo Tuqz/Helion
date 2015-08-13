@@ -9,15 +9,16 @@
 #define	TEXTURE_HPP
 
 #include <string>
-#include "Image.hpp"
 #include <GL/glew.h>
+#include "Image.hpp"
 
 class Texture {
 private:
 	const Image image;
 	GLuint address;
 public:
-	Texture(std::string filename);
+	Texture(const std::string& filename);
+	Texture(const Image& image);
 	Texture(const Texture& orig) = delete;
 	virtual ~Texture();
 	const Image& getImage() const {
@@ -27,6 +28,8 @@ public:
 		return address;
 	}
 	void bindToUnit(int unit);
+private:
+	void initialize();
 };
 
 #endif	/* TEXTURE_HPP */

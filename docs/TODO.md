@@ -29,10 +29,10 @@
   - [ ] What should happen when some v-entries use color and others don't?
 - [ ] Textures
   - [x] texture coordinates
-  - [ ] texture creation
+  - [x] texture creation
   - [x] textures in shaders
   - [ ] renderer support for textures
-  - [ ] image loading
+  - [x] image loading
 - [ ] GUI
 
 - [ ] Use const keyword where useful
