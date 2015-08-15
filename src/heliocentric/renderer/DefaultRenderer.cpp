@@ -12,21 +12,21 @@
 #include "DefaultRenderer.hpp"
 #include "Mesh.hpp"
 #include "ShaderProgram.hpp"
+#include "Texture.hpp"
 
 DefaultRenderer::DefaultRenderer(const ShaderProgram& program) : program(program) {
 }
 
-DefaultRenderer::DefaultRenderer(const DefaultRenderer& orig) : DefaultRenderer(orig.program) {
-}
-
-DefaultRenderer::~DefaultRenderer() {
-}
-
-void DefaultRenderer::render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera) {
+void DefaultRenderer::render(glm::mat4 modelToCamera, Mesh& mesh, GLuint vao, const Texture* texture) {
 	glUseProgram(program.getProgram());
 	glUniformMatrix4fv(program.getUniformLocation("modelToCameraMatrix"),
 			1, GL_FALSE, glm::value_ptr(modelToCamera));
 
+	if (texture) {
+		glUniform1i(program.getUniformLocation("diffuseTexture"), 0);
+		texture->bindToUnit(0);
+	}
+	
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, mesh.getIndices().size(), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);

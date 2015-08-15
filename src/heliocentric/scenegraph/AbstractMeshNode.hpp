@@ -14,7 +14,7 @@
 class Mesh;
 class MeshRenderer;
 class ShaderProgram;
-
+class Texture;
 
 class Mesh;
 
@@ -23,6 +23,7 @@ private:
 	GLuint vao;
 	MeshRenderer& renderer;
 	Mesh& mesh;
+	const Texture* texture = nullptr;
 public:
 	AbstractMeshNode(MeshRenderer& renderer, Mesh& mesh);
 	AbstractMeshNode(const AbstractMeshNode& orig);
@@ -31,6 +32,12 @@ public:
 	
 	GLuint getVAO() const {
 		return vao;
+	}
+	const Texture* getTexture() const {
+		return texture;
+	}
+	void setTexture(const Texture* texture) {
+		this->texture = texture;
 	}
 };
 

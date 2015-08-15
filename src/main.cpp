@@ -87,6 +87,7 @@ private:
 	double t = 0;
 
 	// Texture stuff
+	Texture* texture;
 	GLuint samplerObject;
 	TestObject* texturedObject = nullptr;
 	int textureUnit = 0;
@@ -153,14 +154,7 @@ public:
 				manager->createRenderer("data/shaders/default.vert",
 				"data/shaders/texture.frag", manager->getDefaultAttributes());
 		
-		Texture texture("data/images/earthmap1k.jpg");
-		
-		// Link sampler to texture unit
-		glUseProgram(texRenderer->getProgram().getProgram());
-		glUniform1i(texRenderer->getProgram().getUniformLocation("diffuseTexture"), textureUnit);
-
-		// Link texture to texture unit
-		texture.bindToUnit(textureUnit);
+		texture = new Texture("data/images/earthmap1k.jpg");
 
 		// Sampler object
 		glGenSamplers(1, &samplerObject);
@@ -171,7 +165,7 @@ public:
 
 		// Demo object
 		texturedObject = new TestObject(glm::vec3());
-		manager->addToSceneGraph(*texturedObject, square, *texRenderer);
+		manager->addToSceneGraph(*texturedObject, square, *texRenderer)->setTexture(texture);
 	}
 
 	virtual void update(double dt) {
@@ -206,6 +200,7 @@ public:
 		delete obj3;
 		delete sun;
 		delete texturedObject;
+		delete texture;
 	}
 
 	CameraManager* getCameraManager() const {

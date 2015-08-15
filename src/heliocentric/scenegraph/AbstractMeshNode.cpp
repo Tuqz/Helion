@@ -15,6 +15,7 @@
 #include "../renderer/Mesh.hpp"
 #include "../renderer/MeshRenderer.hpp"
 #include "../renderer/ShaderProgram.hpp"
+#include "../renderer/Texture.hpp"
 
 using namespace std;
 
@@ -37,5 +38,5 @@ AbstractMeshNode::~AbstractMeshNode() {
 }
 
 void AbstractMeshNode::render(glm::mat4 base) {
-	renderer.render(mesh, vao, base);
+	renderer.render(base, mesh, vao, texture);
 }

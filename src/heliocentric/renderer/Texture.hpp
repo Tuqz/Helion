@@ -27,7 +27,7 @@ public:
 	GLuint getAddress() const {
 		return address;
 	}
-	void bindToUnit(int unit);
+	void bindToUnit(int unit) const;
 private:
 	void initialize();
 };

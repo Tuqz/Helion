@@ -31,7 +31,9 @@
   - [x] texture coordinates
   - [x] texture creation
   - [x] textures in shaders
-  - [ ] renderer support for textures
+  - [x] renderer support for textures
+  - [ ] renderer support for multiple textures
+  - [ ] sampler object support
   - [x] image loading
 - [ ] GUI
 

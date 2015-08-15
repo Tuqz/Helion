@@ -10,15 +10,15 @@
 
 #include <GL/glew.h>
 #include "MeshRenderer.hpp"
+class Texture;
 
 class DefaultRenderer : public MeshRenderer {
 private:
 	const ShaderProgram& program;
 public:
 	DefaultRenderer(const ShaderProgram& program);
-	DefaultRenderer(const DefaultRenderer& orig);
-	virtual ~DefaultRenderer();
-	virtual void render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera);
+	virtual ~DefaultRenderer() = default;
+	virtual void render(glm::mat4 modelToCamera, Mesh& mesh, GLuint vao, const Texture* texture);
 	virtual void setVertexAttribs();
 	const ShaderProgram& getProgram() const {
 		return program;

@@ -12,11 +12,12 @@
 #include <glm/fwd.hpp>
 class Mesh;
 class ShaderProgram;
+class Texture;
 
 class MeshRenderer {
 public:
 	virtual ~MeshRenderer() {};
-	virtual void render(Mesh& mesh, GLuint vao, glm::mat4 modelToCamera) = 0;
+	virtual void render(glm::mat4 modelToCamera, Mesh& mesh, GLuint vao, const Texture* texture = nullptr) = 0;
 	virtual void setVertexAttribs() = 0;
 };
 
