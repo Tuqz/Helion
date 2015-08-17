@@ -5,10 +5,11 @@
 #include <glm/vec3.hpp>
 
 namespace helion {
+	class Orbit;
 	class CelestialBody : public Orbiter {
 	public:
 		CelestialBody(double mass, const Orbit &orbit);
-		void update(double time);
+		virtual void update(double time);
 		double getMass();
 		virtual glm::vec3 getPosition();
 		double mu();

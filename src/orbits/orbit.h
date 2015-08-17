@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <glm/vec3.hpp>
-#include "celestialbody.h"
 
 namespace helion {
 	class CelestialBody;
@@ -18,10 +17,12 @@ namespace helion {
 		double getTimeOfPeriapsis();
 		double getPeriod();
 		CelestialBody& getParent();
+		Orbit &operator=(const Orbit &o);
 	private:
 		CelestialBody &parent;
 		double semimajor, eccentricity, inclination, long_asc_node, arg_of_periapsis, time_of_periapsis, period;
 		std::vector<glm::vec3> orbital_points; //Precalculated points for rendering purposes
+
 		glm::vec3 getPosition(double r, double theta) const;
 		double altitude(double theta) const;
 		void calculatePoints();

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include "constants.h"
+#include "celestialbody.h"
 
 using namespace helion;
 
@@ -94,4 +95,17 @@ double Orbit::getPeriod() {
 
 CelestialBody& Orbit::getParent() {
 	return parent;
+}
+
+Orbit &operator=(const Orbit &o) {
+	parent = o.getParent();
+	semimajor = o.getSemimajor();
+	eccentricity = o.getEccentricity();
+	inclination = o.getInclination();
+	long_asc_node = o.getLongitude();
+	arg_of_periapsis = o.getArgument();
+	time_of_periapsis = o.getTimeOfPeriapsis();
+	period = o.getPeriod();
+	o.calculatePoints();
+	return *this;
 }
