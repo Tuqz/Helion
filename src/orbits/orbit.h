@@ -9,14 +9,14 @@ namespace helion {
 		Orbit(CelestialBody &p, double semimajor = 0, double eccentricity = 0, double inclination = 0, double longitude = 0, double argument = 0, double time_of_periapsis = 0);
 		//semimajor is as normal for ellipses, the periapsis distance for parabolas, and half the spacing between branchs of a hyperbola
 		glm::vec3 position(double theta) const;
-		double getSemimajor();
-		double getEccentricity();
-		double getInclination();
-		double getLongitude();
-		double getArgument();
-		double getTimeOfPeriapsis();
-		double getPeriod();
-		CelestialBody& getParent();
+		double getSemimajor() const;
+		double getEccentricity() const;
+		double getInclination() const;
+		double getLongitude() const;
+		double getArgument() const;
+		double getTimeOfPeriapsis() const;
+		double getPeriod() const;
+		CelestialBody& getParent() const;
 		Orbit &operator=(const Orbit &o);
 	private:
 		CelestialBody &parent;

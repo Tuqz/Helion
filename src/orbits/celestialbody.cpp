@@ -3,6 +3,10 @@
 
 using namespace helion;
 
+CelestialBody::CelestialBody() : Orbiter(Orbit(*this)) {
+	mass = 0;
+}
+
 CelestialBody::CelestialBody(double m, const Orbit &o) : Orbiter(o) { 
 	mass = m;
 }

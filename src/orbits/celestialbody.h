@@ -8,6 +8,7 @@ namespace helion {
 	class Orbit;
 	class CelestialBody : public Orbiter {
 	public:
+		CelestialBody();
 		CelestialBody(double mass, const Orbit &orbit);
 		virtual void update(double time);
 		double getMass();

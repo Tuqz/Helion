@@ -65,39 +65,39 @@ double Orbit::altitude(double theta) const {
 	return l/(1 + (eccentricity * cos(theta)));
 }
 
-double Orbit::getSemimajor() {
+double Orbit::getSemimajor() const {
 	return semimajor;
 }
 
-double Orbit::getEccentricity() {
+double Orbit::getEccentricity() const {
 	return eccentricity;
 }
 
-double Orbit::getInclination() {
+double Orbit::getInclination() const {
 	return inclination;
 }
 
-double Orbit::getLongitude() {
+double Orbit::getLongitude() const {
 	return long_asc_node;
 }
 
-double Orbit::getArgument() {
+double Orbit::getArgument() const {
 	return arg_of_periapsis;
 }
 
-double Orbit::getTimeOfPeriapsis() {
+double Orbit::getTimeOfPeriapsis() const {
 	return time_of_periapsis;
 }
 
-double Orbit::getPeriod() {
+double Orbit::getPeriod() const {
 	return period;
 }
 
-CelestialBody& Orbit::getParent() {
+CelestialBody& Orbit::getParent() const {
 	return parent;
 }
 
-Orbit &operator=(const Orbit &o) {
+Orbit &Orbit::operator=(const Orbit &o) {
 	parent = o.getParent();
 	semimajor = o.getSemimajor();
 	eccentricity = o.getEccentricity();
@@ -106,6 +106,6 @@ Orbit &operator=(const Orbit &o) {
 	arg_of_periapsis = o.getArgument();
 	time_of_periapsis = o.getTimeOfPeriapsis();
 	period = o.getPeriod();
-	o.calculatePoints();
+	calculatePoints();
 	return *this;
 }
