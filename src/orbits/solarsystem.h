@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <string>
+#include<vector>
 #include "celestialbody.h"
 
 namespace helion {
@@ -12,6 +13,8 @@ namespace helion {
 		void addBody(std::string name, CelestialBody &body);
 		void addBody(std::string name, CelestialBody &&body);
 		CelestialBody &getBody(std::string name);
+		std::string getName(CelestialBody &body);
+		std::vector<std::string> getNames();
 	private:
 		std::unordered_map<std::string, CelestialBody> system;
 	};

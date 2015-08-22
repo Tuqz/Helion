@@ -1,11 +1,11 @@
-#include "solarSystem.h"
+#include "solarsystem.h"
 
 #include <string>
 #include <fstream>
 #include <locale>
 #include <sstream>
-
 #include <iostream>
+#include <unordered_map>
 
 #include "star.hpp"
 #include "celestialbody.h"
@@ -113,4 +113,21 @@ void SolarSystem::addBody(std::string name, CelestialBody &&body) {
 
 CelestialBody &SolarSystem::getBody(std::string name) {
 	return system[name];
+}
+
+std::vector<std::string> getNames() {
+	std::vector<std::string> names;
+	for(auto it : system) {
+		names.push_back(it.first);
+	}
+	return names;
+}
+
+std::string SolarSystem::getName(CelestialBody &body) {
+	for(auto it : getNames()) {
+		if(&body == &getBody(it)) {
+			return it;
+		}
+	}
+	return "";
 }
