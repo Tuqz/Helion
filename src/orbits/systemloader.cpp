@@ -1,4 +1,4 @@
-#include "solarsystem.h"
+#include "systemloader.h"
 
 #include <string>
 #include <fstream>
@@ -45,22 +45,24 @@ struct PlanetInfo {
 	double mass, semi, eccen, inclin, lon, aop, top;
 };
 
-SolarSystem::SolarSystem(const std::string &filename) {
+std::shared_ptr<CelestialBody> helion::loadSystem(std::string filename) {
 	std::ifstream file(filename);
+	std::unordered_map<std::string, std::shared_ptr<CelestialBody>> system; //somewhere to store the objects with identifiers
+	std::string sol_name; //name of the sun for retrieval purposes
 	if(file.is_open()) {
 		std::string in_line;
 		std::getline(file, in_line);
 		std::stringstream sun_line(in_line);
 		sun_line.imbue(std::locale(sun_line.getloc(), new CommaSpacing()));
-		std::string name;
-		sun_line >> name;
+		sun_line >> sol_name;
 		double mass;
 		sun_line >> mass;
-		addBody(name, Star(mass));
+		system[sol_name] = std::make_shared<Star>(sol_name, mass);
 		std::vector<PlanetInfo> postponed; //Any planets that can't be made on first pass - incorrect ordering in file
 		while(std::getline(file, in_line)) {
 			std::stringstream line(in_line);
 			line.imbue(std::locale(line.getloc(), new CommaSpacing()));
+			std::string name;
 			line >> name;
 			line >> mass;
 			std::string parent;
@@ -74,7 +76,8 @@ SolarSystem::SolarSystem(const std::string &filename) {
 			line >> top;
 			if(system.find(name) == system.end()) { //body not already present
 				if(system.find(parent) != system.end()) { //parent present
-					addBody(name, CelestialBody(mass, Orbit(system[parent], semi, eccen, inclin, lon, aop, top)));
+					system[name] = std::make_shared<CelestialBody>(name, mass, Orbit(*system[parent], semi, eccen, inclin, lon, aop, top));
+					system[parent]->addChild(system[name]);
 				} else {
 					PlanetInfo info(name, parent, mass, semi, eccen, inclin, lon, aop, top);
 					postponed.push_back(info);
@@ -90,7 +93,8 @@ SolarSystem::SolarSystem(const std::string &filename) {
 			for(auto it = postponed.begin(); it != postponed.end(); ++it) {
 				if(system.find(it->parent) != system.end()) {
 					stopped = false;
-					addBody(it->name, CelestialBody(it->mass, Orbit(system[it->parent], it->semi, it->eccen, it->inclin, it->lon, it->aop, it->top)));
+					system[it->name] = std::make_shared<CelestialBody>(it->name, it->mass, Orbit(*system[it->parent], it->semi, it->eccen, it->inclin, it->lon, it->aop, it->top));
+					system[it->parent]->addChild(system[it->name]);
 					postponed.erase(it);
 					--it;
 				}
@@ -101,33 +105,5 @@ SolarSystem::SolarSystem(const std::string &filename) {
 		}
 	}
 	file.close();
-}
-
-void SolarSystem::addBody(std::string name, CelestialBody &body) {
-	system.insert({name, body});
-}
-
-void SolarSystem::addBody(std::string name, CelestialBody &&body) {
-	system.insert({name, body});
-}
-
-CelestialBody &SolarSystem::getBody(std::string name) {
-	return system[name];
-}
-
-std::vector<std::string> getNames() {
-	std::vector<std::string> names;
-	for(auto it : system) {
-		names.push_back(it.first);
-	}
-	return names;
-}
-
-std::string SolarSystem::getName(CelestialBody &body) {
-	for(auto it : getNames()) {
-		if(&body == &getBody(it)) {
-			return it;
-		}
-	}
-	return "";
+	return system[sol_name];
 }

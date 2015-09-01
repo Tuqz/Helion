@@ -10,7 +10,7 @@ namespace helion {
 		Orbit orbit;
 
 		virtual void update(double time) = 0; //Do other stuff - should probably call orbit_update
-		virtual glm::vec3 getPosition() = 0;
+		virtual glm::vec3 getPosition() {}
 	protected:
 		double anomaly;
 

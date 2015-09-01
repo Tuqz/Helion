@@ -5,7 +5,7 @@
 namespace helion {
 	class Star : public CelestialBody {
 	public:
-		Star(double m) : CelestialBody(m, Orbit(*this)) {
+		Star(std::string n, double m) : CelestialBody(n, m, Orbit(*this)) {
 		}
 
 		glm::vec3 getPosition() {
