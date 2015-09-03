@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include "constants.h"
+#include "celestialbody.h"
 
 using namespace helion;
 
@@ -16,9 +17,9 @@ glm::vec3 Orbit::getPosition(double r, double theta) const {
 			return glm::vec3(x, y, z);
 }
 
-Orbit::Orbit(Orbitable &p, double a, double e, double inc, double lan, double aop, double top)
+Orbit::Orbit(CelestialBody &p, double a, double e, double inc, double lan, double aop, double top)
 	: parent(p), semimajor(a), eccentricity(e), inclination(inc), long_asc_node(lan), arg_of_periapsis(aop), time_of_periapsis(top) {
-		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu); //Reasonable only for ellipses, but the value is useful for other types
+		period = 2*pi*sqrt(pow(std::abs(semimajor), 3)/p.mu()); //Reasonable only for ellipses, but the value is useful for other types
 		calculatePoints();
 }
 
@@ -64,34 +65,47 @@ double Orbit::altitude(double theta) const {
 	return l/(1 + (eccentricity * cos(theta)));
 }
 
-double Orbit::getSemimajor() {
+double Orbit::getSemimajor() const {
 	return semimajor;
 }
 
-double Orbit::getEccentricity() {
+double Orbit::getEccentricity() const {
 	return eccentricity;
 }
 
-double Orbit::getInclination() {
+double Orbit::getInclination() const {
 	return inclination;
 }
 
-double Orbit::getLongitude() {
+double Orbit::getLongitude() const {
 	return long_asc_node;
 }
 
-double Orbit::getArgument() {
+double Orbit::getArgument() const {
 	return arg_of_periapsis;
 }
 
-double Orbit::getTimeOfPeriapsis() {
+double Orbit::getTimeOfPeriapsis() const {
 	return time_of_periapsis;
 }
 
-double Orbit::getPeriod() {
+double Orbit::getPeriod() const {
 	return period;
 }
 
-Orbitable& Orbit::getParent() {
+CelestialBody& Orbit::getParent() const {
 	return parent;
+}
+
+Orbit &Orbit::operator=(const Orbit &o) {
+	parent = o.getParent();
+	semimajor = o.getSemimajor();
+	eccentricity = o.getEccentricity();
+	inclination = o.getInclination();
+	long_asc_node = o.getLongitude();
+	arg_of_periapsis = o.getArgument();
+	time_of_periapsis = o.getTimeOfPeriapsis();
+	period = o.getPeriod();
+	calculatePoints();
+	return *this;
 }

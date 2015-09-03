@@ -53,5 +53,4 @@ void Orbiter::update_orbit(double time) {
 			anomaly = 2*atan(tan_true_by_two);
 		}
 	}
-	pos = orbit.position(anomaly);
 }
